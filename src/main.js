@@ -1,3 +1,5 @@
+import './story-flow.js';
+
 const logoAsset = 'public/hrtechify-logo.svg';
 
 document.querySelectorAll('img[src$="hrtechify-logo.svg"]').forEach((image) => {
@@ -56,18 +58,6 @@ if (dialog) {
   });
 }
 
-const toast = document.querySelector('.toast');
-const pathCard = document.querySelector('.path-card');
-if (toast && pathCard) {
-  pathCard.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const path = new FormData(event.currentTarget).get('path');
-    toast.textContent = `${path === 'guided' ? 'Guided story' : 'Write freely'} selected. Your private draft is ready to begin.`;
-    toast.classList.add('show');
-    window.setTimeout(() => toast.classList.remove('show'), 3500);
-  });
-}
-
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (!reduceMotion) {
@@ -121,7 +111,8 @@ const revealGroups = [
   '.experience',
   '.journey-copy > *',
   '.timeline li',
-  '.prompt-inner > *',
+  '.story-flow-intro > *',
+  '.story-builder',
   '.safety-grid > *',
   '.safety-points article',
   '.policy-card',
