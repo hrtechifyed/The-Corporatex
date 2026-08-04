@@ -5,8 +5,12 @@
 <h1 align="center">The Corporate Ex</h1>
 
 <p align="center">
-  <strong>Anonymous workplace exit stories, told responsibly.</strong><br>
-  Former employees share what changed, why they left, and what future candidates should ask before joining.
+  <strong>Before you join a company, hear from the people who left it.</strong><br>
+  Not ratings. Not rumours. Structured exit stories for better employer decisions.
+</p>
+
+<p align="center">
+  As AI changes work, choosing how an employer treats people through that change matters more than ever.
 </p>
 
 <p align="center">
@@ -15,11 +19,11 @@
 
 <p align="center">
   <a href="#what-this-is"><strong>Product</strong></a> ·
+  <a href="#how-this-is-different"><strong>Why different</strong></a> ·
+  <a href="#why-this-matters-in-the-ai-era"><strong>AI era</strong></a> ·
   <a href="#how-it-works"><strong>How it works</strong></a> ·
   <a href="#privacy-and-safety"><strong>Privacy & safety</strong></a> ·
-  <a href="#repository-shape"><strong>Architecture</strong></a> ·
-  <a href="#quick-start"><strong>Quick start</strong></a> ·
-  <a href="#deployment"><strong>Deployment</strong></a>
+  <a href="#quick-start"><strong>Quick start</strong></a>
 </p>
 
 <p align="center">
@@ -43,7 +47,41 @@ The governing rule is simple:
 
 > **AI can help edit the account. It cannot own the account.**
 
-The product is designed for former employees who want to explain an exit thoughtfully and for candidates who want better questions to ask before accepting an offer.
+The product is designed for former employees who want to make their exit experience useful and for candidates who want better questions to ask before accepting an offer.
+
+## How this is different
+
+The Corporate Ex does not aim to become another anonymous workplace feed, rating site, salary database, or job board.
+
+| Product approach | Primary question |
+| --- | --- |
+| **Blind and Fishbowl** | What are professionals discussing right now? |
+| **Glassdoor** | How is the employer reviewed, rated, paid, and represented in the job market? |
+| **The Corporate Ex** | What changed, why did someone leave, and what should a candidate investigate before joining? |
+
+The distinction is deliberate:
+
+> **Not ratings. Not rumours. Structured exit stories for better employer decisions.**
+
+Each story is designed to preserve the sequence and context behind an exit rather than compressing the experience into a score.
+
+## Why this matters in the AI era
+
+AI is not creating one uniform future of work. Employers are making different decisions about how automation, productivity gains, workforce design, training, and headcount should interact.
+
+Some organisations use AI to:
+
+- remove repetitive work;
+- improve employee efficiency;
+- retrain people for new responsibilities;
+- strengthen human decision-making;
+- create better roles and services.
+
+Others may use the same technology mainly to increase expected output, reduce labour costs, or remove roles without meaningful redeployment.
+
+The Corporate Ex does not assume that using AI is good or bad. It helps candidates understand **how an employer treated people while introducing change**.
+
+> As AI changes work, choosing how an employer treats people through that change matters more than ever.
 
 ## Product principles
 
@@ -51,9 +89,9 @@ The product is designed for former employees who want to explain an exit thought
 | --- | --- |
 | **Meaning stays with the contributor** | AI may structure or summarise only the material the contributor supplied. |
 | **Nothing publishes automatically** | AI analysis produces a private draft, not a public story. |
-| **The contributor approves every word** | The final cut can be edited, rewritten, or abandoned before moderation. |
+| **The contributor approves every word** | The final version can be edited, rewritten, or abandoned before moderation. |
 | **Humans moderate publication** | A moderator checks privacy, safety, unsupported claims, and community rules. |
-| **Identity is minimised** | Public stories use an anonymous `HRT-XXXXXXXXX` contributor identifier rather than a name or avatar. |
+| **Identity is minimised** | Public stories use an anonymous `HRT-XXXXXXXXX` identifier rather than a name or avatar. |
 | **One story is one perspective** | Published accounts are contributor experiences, not independently verified statements about an entire company. |
 
 ## How it works
@@ -63,17 +101,17 @@ The product is designed for former employees who want to explain an exit thought
 | **1. Set the context** | Add the company, broad function, region, approximate tenure, work arrangement, and optional primary exit reason. |
 | **2. Choose a format** | Use guided prompts, write a complete account freely, or combine both approaches. |
 | **3. Organise with AI** | Gemini receives only the story material and broad context needed to prepare a clearer private draft. |
-| **4. Approve the final cut** | The contributor reviews the headline, summary, themes, and story sections before submitting anything. |
+| **4. Approve the final version** | The contributor reviews the headline, summary, themes, and story sections before submitting anything. |
 | **5. Human moderation** | A moderator may publish, request changes, reject, edit for safety, or later withdraw a story. |
-| **6. Responsible discovery** | Readers browse moderated stories by company and broad workplace context, then look for repeated patterns rather than treating one story as a verdict. |
+| **6. Responsible discovery** | Readers look for repeated patterns and better interview questions rather than treating one story as a company-wide verdict. |
 
 ## Product surfaces
 
 | Page | Purpose |
 | --- | --- |
-| `index.html` | Branded public prototype with stories, the contribution journey, and the private-draft entry point. |
+| `index.html` | Branded public prototype with positioning, sample stories, the contribution journey, and the private-draft entry point. |
 | `privacy-safety.html` | Plain-language explanation of data handling, prohibited information, AI boundaries, contributor control, moderation, and privacy requests. |
-| `more-info.html` | Product overview, workflow, privacy summary, safety rules, moderation model, and contact details. |
+| `more-info.html` | Product overview, competitive distinction, AI-era context, workflow, privacy summary, safety rules, moderation model, and contact details. |
 | `app/` | Next.js App Router application scaffold for authenticated submissions, browsing, moderation, and server routes. |
 | `supabase/` | Versioned database schema, row-level security policies, triggers, and seed support. |
 
@@ -108,7 +146,7 @@ This repository currently contains two related surfaces.
 
 ### 1. Branded static prototype
 
-The root `index.html`, `privacy-safety.html`, `more-info.html`, `src/`, and `public/` files form the directly testable HRTechify-branded prototype. The current `npm` scripts build and serve this surface.
+The root HTML files, `src/`, and `public/` form the directly testable HRTechify-branded prototype. The current `npm` scripts build and serve this surface.
 
 ```text
 index.html
@@ -118,6 +156,7 @@ src/
   main.js
   style.css
   hrtechify-theme.css
+  readability-fixes.css
 public/
   hrtechify-logo.svg
 scripts/
@@ -263,10 +302,6 @@ Questions, partnerships, privacy requests, or suggestions:
 ---
 
 <p align="center">
-  <strong>HRTechify</strong><br>
-  People · Technology · Growth
-</p>
-
-<p align="center">
-  © 2026 HRTechify. All Rights Reserved.
+  <strong>The Corporate Ex - Powered by - HRTechify - People • Technology • Growth</strong><br>
+  © 2026 All Rights Reserved.
 </p>
