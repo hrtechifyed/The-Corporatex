@@ -1,0 +1,97 @@
+/* Readability, logo-path and shared-footer refinements */
+.brand-logo{
+  width:60px;
+  height:60px;
+  padding:3px;
+  border:1px solid rgba(255,196,0,.62);
+  border-radius:16px;
+  background:#fff8ed;
+  box-shadow:0 10px 26px rgba(0,0,0,.38),0 0 0 3px rgba(255,101,0,.10);
+}
+.site-header nav a{color:#fff0e2;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+.site-header nav a:hover,.site-header nav a:focus-visible{color:#fff}
+.brand-copy strong{font-size:.82rem;color:#fffdf8}
+.brand-copy small{font-size:.61rem;color:#ffd84a}
+
+/* Content must remain readable even before or during scroll animation. */
+.js .reveal-target{
+  opacity:1;
+  transform:translateY(10px);
+}
+.js .reveal-target.is-visible{opacity:1;transform:none}
+
+.journey{color:#fffaf0;background:linear-gradient(135deg,#280403,#3a0705 55%,#230302)}
+.journey-copy h2,.timeline h3{color:#fffaf0}
+.journey-copy>p:not(.eyebrow),.timeline p{color:#f0cfbd}
+.privacy-note p{color:#f1d3c2}
+.privacy-note b{color:#fff}
+.timeline li{
+  border-color:rgba(255,196,0,.22);
+  background:linear-gradient(120deg,rgba(255,248,237,.075),rgba(255,101,0,.035));
+}
+.timeline li:hover,.timeline li.active,.timeline li.timeline-current{
+  border-color:rgba(255,196,0,.58);
+  background:linear-gradient(120deg,rgba(255,196,0,.12),rgba(255,101,0,.09));
+}
+.timeline small{color:#ff9b38}
+
+.prompt-section{color:#fffaf0}
+.prompt-inner>div>p:last-child{color:#f1d2c1}
+
+.safety{
+  color:#fffaf0;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(255,101,0,.18),transparent 24rem),
+    linear-gradient(90deg,rgba(255,196,0,.035) 1px,transparent 1px),
+    linear-gradient(rgba(255,196,0,.035) 1px,transparent 1px),
+    #2b0403;
+  background-size:auto,36px 36px,36px 36px,auto;
+}
+.safety h2,.safety-points h3{color:#fffaf0}
+.safety h2 em{color:#ff9a2e}
+.safety-intro,.safety-points p{color:#f2cfbd}
+.safety-points article>span{color:#ffc928}
+.safety-points{border-top-color:rgba(255,196,0,.34)}
+.safety-points article{border-bottom-color:rgba(255,196,0,.28)}
+.safety-points article:hover{background:linear-gradient(90deg,rgba(255,196,0,.10),transparent)}
+.button-outline{color:#ffe056;border-color:rgba(255,224,86,.78);background:rgba(255,196,0,.06)}
+
+.info-hero-copy>p:last-child{color:#f1d2c1}
+.info-hero .eyebrow{color:#ffd43d}
+.rules-banner p:last-child{color:#f0cfbd}
+
+.footer{
+  display:block;
+  padding:2rem clamp(1.2rem,6vw,7rem);
+  border-top:1px solid rgba(255,196,0,.42);
+  background:linear-gradient(110deg,#180201,#2b0403 52%,#180201);
+}
+.footer-shell{
+  display:grid;
+  grid-template-columns:1fr;
+  justify-items:center;
+  gap:.55rem;
+  width:min(100%,1320px);
+  margin-inline:auto;
+  text-align:center;
+}
+.footer-shell p{margin:0;text-align:center}
+.footer-primary{
+  color:#fff8ed !important;
+  font-family:"Manrope",sans-serif;
+  font-size:clamp(.78rem,1.2vw,.98rem) !important;
+  font-weight:800;
+  letter-spacing:.015em;
+}
+.footer-secondary{
+  color:#e8c7b5 !important;
+  font-size:.74rem !important;
+}
+
+@media(max-width:760px){
+  .brand-logo{width:48px;height:48px;border-radius:13px}
+  .brand-copy strong{font-size:.7rem}
+  .brand-copy small{font-size:.54rem}
+  .footer{padding:1.6rem 1rem}
+  .footer-primary{max-width:34rem;line-height:1.55}
+}
