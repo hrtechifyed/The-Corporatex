@@ -20,6 +20,26 @@
 }
 .js .reveal-target.is-visible{opacity:1;transform:none}
 
+.hero-copy h1{
+  max-width:900px;
+  font-size:clamp(3.2rem,6.2vw,6.7rem);
+  line-height:.94;
+}
+.hero-lede{
+  max-width:660px;
+  margin-bottom:.75rem;
+  color:#fff1e6;
+  font-size:clamp(1.05rem,1.5vw,1.3rem);
+}
+.hero-lede strong{color:#ffd84a}
+.hero-context{
+  max-width:630px;
+  margin:0;
+  color:#e9cbbb;
+  font-size:.98rem;
+  line-height:1.7;
+}
+
 .journey{color:#fffaf0;background:linear-gradient(135deg,#280403,#3a0705 55%,#230302)}
 .journey-copy h2,.timeline h3{color:#fffaf0}
 .journey-copy>p:not(.eyebrow),.timeline p{color:#f0cfbd}
@@ -34,6 +54,33 @@
   background:linear-gradient(120deg,rgba(255,196,0,.12),rgba(255,101,0,.09));
 }
 .timeline small{color:#ff9b38}
+
+.ai-era-note{
+  margin-top:1.5rem;
+  padding:1.35rem 1.4rem;
+  border:1px solid rgba(255,196,0,.32);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,196,0,.10),rgba(255,101,0,.06));
+  box-shadow:inset 4px 0 #ffc400;
+}
+.ai-era-note>span{
+  color:#ffd84a;
+  font-family:"Manrope",sans-serif;
+  font-size:.59rem;
+  font-weight:800;
+  letter-spacing:.18em;
+}
+.ai-era-note h3{
+  margin:.65rem 0 .55rem;
+  color:#fffaf0;
+  font-size:1.25rem;
+}
+.ai-era-note p{
+  margin:.45rem 0;
+  color:#f2d2c1;
+  font-size:.84rem;
+  line-height:1.65;
+}
 
 .prompt-section{color:#fffaf0}
 .prompt-inner>div>p:last-child{color:#f1d2c1}
@@ -58,7 +105,38 @@
 
 .info-hero-copy>p:last-child{color:#f1d2c1}
 .info-hero .eyebrow{color:#ffd43d}
+.info-hero h1{font-size:clamp(2.8rem,5.6vw,6rem)}
 .rules-banner p:last-child{color:#f0cfbd}
+
+.comparison-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.75rem;
+  margin-top:1.35rem;
+}
+.comparison-grid span{
+  display:grid;
+  gap:.32rem;
+  padding:1rem;
+  border:1px solid rgba(93,14,8,.15);
+  border-radius:14px;
+  background:#fffaf0;
+}
+.comparison-grid b{color:#4c0704;font-size:.78rem}
+.comparison-grid small{color:#7f594d;font-size:.68rem;line-height:1.5}
+.comparison-grid .comparison-focus{
+  border-color:rgba(255,101,0,.45);
+  background:linear-gradient(135deg,#fff4cf,#fffaf0);
+  box-shadow:inset 4px 0 #ff6500;
+}
+.ai-context-card{
+  background:linear-gradient(135deg,#fffaf4,#fff1d2);
+}
+.ai-context-card .more-icon{
+  font-size:.74rem;
+  font-weight:900;
+  letter-spacing:.05em;
+}
 
 .footer{
   display:block;
@@ -88,10 +166,16 @@
   font-size:.74rem !important;
 }
 
+@media(max-width:900px){
+  .comparison-grid{grid-template-columns:1fr}
+}
+
 @media(max-width:760px){
   .brand-logo{width:48px;height:48px;border-radius:13px}
   .brand-copy strong{font-size:.7rem}
   .brand-copy small{font-size:.54rem}
+  .hero-copy h1{font-size:clamp(2.75rem,13vw,4.4rem)}
+  .hero-context{font-size:.92rem}
   .footer{padding:1.6rem 1rem}
   .footer-primary{max-width:34rem;line-height:1.55}
 }
