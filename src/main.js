@@ -1,3 +1,29 @@
+const logoAsset = 'public/hrtechify-logo.svg';
+
+document.querySelectorAll('img[src$="hrtechify-logo.svg"]').forEach((image) => {
+  image.setAttribute('src', logoAsset);
+});
+
+document.querySelectorAll('link[rel="icon"]').forEach((icon) => {
+  icon.setAttribute('href', logoAsset);
+});
+
+if (!document.querySelector('link[href$="readability-fixes.css"]')) {
+  const readabilityStyles = document.createElement('link');
+  readabilityStyles.rel = 'stylesheet';
+  readabilityStyles.href = 'src/readability-fixes.css';
+  document.head.append(readabilityStyles);
+}
+
+const sharedFooter = document.querySelector('.footer');
+if (sharedFooter) {
+  sharedFooter.innerHTML = `
+    <div class="footer-shell">
+      <p class="footer-primary">The Corporate Ex - Powered by - HRTechify - People • Technology • Growth</p>
+      <p class="footer-secondary">© 2026 All Rights Reserved.</p>
+    </div>`;
+}
+
 document.documentElement.classList.add('js');
 
 const menuButton = document.querySelector('.menu-button');
