@@ -1,0 +1,1 @@
+export default function Loading(){return <div className="light-panel min-h-screen px-5 py-16" role="status"><div className="mx-auto max-w-7xl"><p className="scene-tag">Public Premiere</p><h1 className="mt-3 text-5xl font-black">Loading published stories…</h1></div></div>}

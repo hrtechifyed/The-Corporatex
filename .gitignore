@@ -1,0 +1,9 @@
+dist/
+node_modules/
+npm-debug.log*
+.next/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.env.local
