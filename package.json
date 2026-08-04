@@ -1,0 +1,10 @@
+{
+  "name": "the-corporate-ex",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 4173",
+    "build": "node scripts/build.mjs",
+    "preview": "python3 -m http.server 4173 -d dist"
+  }
+}
