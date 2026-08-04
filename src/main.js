@@ -1,31 +1,132 @@
+document.documentElement.classList.add('js');
+
 const menuButton = document.querySelector('.menu-button');
 const mobileNav = document.querySelector('#mobile-nav');
-menuButton.addEventListener('click', () => {
-  const open = menuButton.getAttribute('aria-expanded') === 'true';
-  menuButton.setAttribute('aria-expanded', String(!open));
-  menuButton.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
-  mobileNav.hidden = open;
-});
-mobileNav.addEventListener('click', () => {
-  mobileNav.hidden = true;
-  menuButton.setAttribute('aria-expanded', 'false');
-});
+
+if (menuButton && mobileNav) {
+  menuButton.addEventListener('click', () => {
+    const open = menuButton.getAttribute('aria-expanded') === 'true';
+    menuButton.setAttribute('aria-expanded', String(!open));
+    menuButton.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+    mobileNav.hidden = open;
+  });
+
+  mobileNav.addEventListener('click', () => {
+    mobileNav.hidden = true;
+    menuButton.setAttribute('aria-expanded', 'false');
+  });
+}
 
 const dialog = document.querySelector('#story-dialog');
-document.querySelectorAll('[data-story]').forEach((link) => link.addEventListener('click', (event) => {
-  event.preventDefault();
-  dialog.showModal();
-}));
-document.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
-dialog.addEventListener('click', (event) => {
-  if (event.target === dialog) dialog.close();
-});
+if (dialog) {
+  document.querySelectorAll('[data-story]').forEach((link) => link.addEventListener('click', (event) => {
+    event.preventDefault();
+    dialog.showModal();
+  }));
+
+  document.querySelector('.dialog-close')?.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+}
 
 const toast = document.querySelector('.toast');
-document.querySelector('.path-card').addEventListener('submit', (event) => {
-  event.preventDefault();
-  const path = new FormData(event.currentTarget).get('path');
-  toast.textContent = `${path === 'guided' ? 'Guided story' : 'Director’s Cut'} selected. Your private draft is ready to begin.`;
-  toast.classList.add('show');
-  window.setTimeout(() => toast.classList.remove('show'), 3500);
+const pathCard = document.querySelector('.path-card');
+if (toast && pathCard) {
+  pathCard.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const path = new FormData(event.currentTarget).get('path');
+    toast.textContent = `${path === 'guided' ? 'Guided story' : 'Director’s Cut'} selected. Your private draft is ready to begin.`;
+    toast.classList.add('show');
+    window.setTimeout(() => toast.classList.remove('show'), 3500);
+  });
+}
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!reduceMotion) {
+  window.addEventListener('pointermove', (event) => {
+    document.documentElement.style.setProperty('--mx', `${event.clientX}px`);
+    document.documentElement.style.setProperty('--my', `${event.clientY}px`);
+  }, { passive: true });
+
+  const heroArt = document.querySelector('.hero-art');
+  if (heroArt) {
+    heroArt.addEventListener('pointermove', (event) => {
+      const rect = heroArt.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      heroArt.style.setProperty('--ry', `${x * 8}deg`);
+      heroArt.style.setProperty('--rx', `${y * -7}deg`);
+      heroArt.style.setProperty('--px', `${x * 16}px`);
+      heroArt.style.setProperty('--py', `${y * 16}px`);
+    });
+
+    heroArt.addEventListener('pointerleave', () => {
+      heroArt.style.setProperty('--ry', '0deg');
+      heroArt.style.setProperty('--rx', '0deg');
+      heroArt.style.setProperty('--px', '0px');
+      heroArt.style.setProperty('--py', '0px');
+    });
+  }
+
+  document.querySelectorAll('.experience').forEach((card) => {
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+      card.style.setProperty('--tilt-y', `${(x - 0.5) * 7}deg`);
+      card.style.setProperty('--tilt-x', `${(y - 0.5) * -6}deg`);
+      card.style.setProperty('--shine-x', `${x * 100}%`);
+      card.style.setProperty('--shine-y', `${y * 100}%`);
+      card.style.setProperty('--shine-opacity', '1');
+    });
+
+    card.addEventListener('pointerleave', () => {
+      card.style.setProperty('--tilt-y', '0deg');
+      card.style.setProperty('--tilt-x', '0deg');
+      card.style.setProperty('--shine-opacity', '0');
+    });
+  });
+}
+
+const revealGroups = [
+  '.section-heading > *',
+  '.experience',
+  '.journey-copy > *',
+  '.timeline li',
+  '.prompt-inner > *',
+  '.safety-grid > *',
+  '.safety-points article',
+];
+
+const revealTargets = document.querySelectorAll(revealGroups.join(','));
+revealTargets.forEach((element, index) => {
+  element.classList.add('reveal-target');
+  element.style.setProperty('--reveal-delay', `${Math.min(index % 5, 4) * 75}ms`);
 });
+
+if ('IntersectionObserver' in window && !reduceMotion) {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.13, rootMargin: '0px 0px -8% 0px' });
+
+  revealTargets.forEach((target) => revealObserver.observe(target));
+
+  const timelineItems = document.querySelectorAll('.timeline li');
+  const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      timelineItems.forEach((item) => item.classList.remove('timeline-current'));
+      entry.target.classList.add('timeline-current');
+    });
+  }, { threshold: 0.65 });
+
+  timelineItems.forEach((item) => timelineObserver.observe(item));
+} else {
+  revealTargets.forEach((target) => target.classList.add('is-visible'));
+}
