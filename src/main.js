@@ -36,7 +36,7 @@ if (toast && pathCard) {
   pathCard.addEventListener('submit', (event) => {
     event.preventDefault();
     const path = new FormData(event.currentTarget).get('path');
-    toast.textContent = `${path === 'guided' ? 'Guided story' : 'Director’s Cut'} selected. Your private draft is ready to begin.`;
+    toast.textContent = `${path === 'guided' ? 'Guided story' : 'Write freely'} selected. Your private draft is ready to begin.`;
     toast.classList.add('show');
     window.setTimeout(() => toast.classList.remove('show'), 3500);
   });
@@ -98,6 +98,9 @@ const revealGroups = [
   '.prompt-inner > *',
   '.safety-grid > *',
   '.safety-points article',
+  '.policy-card',
+  '.more-card',
+  '.rules-banner > *',
 ];
 
 const revealTargets = document.querySelectorAll(revealGroups.join(','));
