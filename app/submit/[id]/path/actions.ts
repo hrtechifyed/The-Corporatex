@@ -1,0 +1,2 @@
+'use server';import {redirect} from 'next/navigation';import {ownedExperience} from '@/lib/auth';
+export async function choosePath(id:string,form:FormData){const path=String(form.get('path'));if(!['guided','directors-cut','both'].includes(path))throw new Error('Invalid story path');const {supabase}=await ownedExperience(id);const {error}=await supabase.from('experiences').update({story_path:path}).eq('id',id);if(error)throw error;redirect(path==='directors-cut'?`/submit/${id}/directors-cut`:`/submit/${id}/guided`)}
