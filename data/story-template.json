@@ -1,0 +1,24 @@
+{
+  "id": "story_replace-me",
+  "slug": "replace-with-approved-slug",
+  "employer": "Approved employer name",
+  "headline": "Contributor-approved headline",
+  "summary": "A concise summary approved by the contributor and moderator.",
+  "anonymous_id": "HRT-ABCDEFG",
+  "broad_function": "Broad function",
+  "tenure": "1–2 years",
+  "region": "Broad region",
+  "primary_theme": "Primary exit theme",
+  "contributing_themes": ["Optional contributing theme"],
+  "published_at": "2026-08-05",
+  "labels": ["Anonymous contributor", "Contributor approved", "Human moderated"],
+  "sections": {
+    "beginning": "What attracted the contributor and why joining initially made sense.",
+    "good_part": "What genuinely worked or remained valuable.",
+    "shift": "What changed, using first-person and appropriately scoped language.",
+    "tipping_point": "Why leaving became necessary or practical.",
+    "candidate_question": "The question a future candidate should ask before joining.",
+    "right_fit": "Optional: who might still thrive under particular conditions.",
+    "ai_impact": "Optional: how AI, automation or productivity expectations affected the work."
+  }
+}

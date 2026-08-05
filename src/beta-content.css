@@ -1,0 +1,9 @@
+/* 9/10 programme — Phase 6: controlled beta content */
+.beta-empty-state{display:grid;gap:.7rem;margin-bottom:1rem;padding:clamp(1.2rem,3vw,2rem);text-align:center}
+.beta-empty-state h2{margin:0;font-size:clamp(1.6rem,3vw,2.8rem)}
+.beta-empty-state p{max-width:720px;margin:0 auto;color:var(--muted);line-height:1.7}
+.demo-layout-preview{border:1px solid var(--line-soft);border-radius:20px;background:rgba(255,255,255,.015);overflow:hidden}
+.demo-layout-preview>summary{display:flex;align-items:center;justify-content:center;min-height:54px;padding:.9rem 1rem;color:#d8bba8;font-size:.76rem;font-weight:800;cursor:pointer;list-style:none}
+.demo-layout-preview>summary::-webkit-details-marker{display:none}
+.demo-layout-body{padding:0 0 1rem}
+.demo-layout-body .company-list{padding:0 .8rem}
