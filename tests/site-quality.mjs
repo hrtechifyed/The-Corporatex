@@ -10,6 +10,15 @@ const pages = {
 };
 const css = await read('src/reference-exact.css');
 const js = await read('src/reference-exact.js');
+const artParts = await Promise.all(
+  Array.from({ length: 8 }, (_, index) => read(`src/reference-art-lock-${index + 1}.js`)),
+);
+const art = artParts.map((source, index) => {
+  const match = source.match(/^export default (".*");\s*$/s);
+  assert.ok(match, `reference artwork part ${index + 1} must export one string`);
+  return JSON.parse(match[1]);
+}).join('');
+
 const navHrefs = ['index.html', 'share-story.html', 'stories.html', 'more-info.html', 'privacy-safety.html'];
 for (const [name, html] of Object.entries(pages)) {
   const nav = html.match(/<nav class="ref-primary-nav"[\s\S]*?<\/nav>/)?.[0] || '';
@@ -26,16 +35,22 @@ assert.match(pages.home, /Real exit stories\. Real insights\. Smarter career mov
 assert.match(pages.home, /What others talk about/);
 assert.equal((pages.home.match(/<article>/g) || []).length, 4, 'home must keep exactly four trust statements');
 assert.match(pages.home, /The Corporate Ex<\/span><b>•<\/b><span>Powered by <u>HRTechify<\/u>/);
+assert.match(pages.home, /href="#home-hero"/);
 
 assert.match(pages.share, /How would you like to share your story\?/);
 assert.equal((pages.share.match(/class="ref-choice-card/g) || []).length, 2, 'share page must show exactly two story choices');
 assert.match(pages.share, /Start Guided Story/);
 assert.match(pages.share, /Start Free-flow Story/);
+assert.match(pages.share, /href="#share-guided"/);
+assert.match(pages.share, /href="#share-freeflow"/);
 
 assert.match(pages.guided, /Tell the arc,<br \/>not just the ending\./);
 assert.equal((pages.guided.match(/class="ref-journey-card/g) || []).length, 8, 'guided page must keep exactly eight chapter cards');
 for (const title of ['The Beginning', 'The Promise', 'The Good Part', 'The Shift', 'The Tipping Point', 'The Lesson', 'The AI Chapter', 'Who Thrives Here?']) {
   assert.ok(pages.guided.includes(title), `guided page is missing ${title}`);
+}
+for (let index = 1; index <= 8; index += 1) {
+  assert.ok(pages.guided.includes(`href="#guided-${index}"`), `guided page is missing exact artwork ${index}`);
 }
 
 assert.match(pages.freeflow, /Your experience,<br \/>in your own order\./);
@@ -43,18 +58,20 @@ assert.equal((pages.freeflow.match(/<article>/g) || []).length, 4, 'free-flow pa
 for (const title of ['No structure', 'Your voice', 'What matters', 'Switch anytime']) {
   assert.ok(pages.freeflow.includes(title), `free-flow page is missing ${title}`);
 }
+assert.match(pages.freeflow, /href="#freeflow-hero"/);
 
-const expectedSceneUses = [
-  'public/story-scenes.svg#personal',
-  'public/story-scenes.svg#wellbeing',
-  'public/story-scenes.svg#growth',
-  'public/story-scenes.svg#leadership',
-  'public/story-scenes.svg#change',
-  'public/story-scenes.svg#ai',
+const artworkIds = [
+  'home-hero',
+  'share-guided',
+  'share-freeflow',
+  'freeflow-hero',
+  ...Array.from({ length: 8 }, (_, index) => `guided-${index + 1}`),
 ];
-for (const scene of expectedSceneUses) {
-  assert.ok(Object.values(pages).some((html) => html.includes(scene)), `locked pages are missing scene ${scene}`);
+for (const id of artworkIds) {
+  assert.ok(art.includes(`id="${id}"`), `embedded reference artwork is missing ${id}`);
 }
+assert.equal((art.match(/<symbol id=/g) || []).length, 12, 'embedded artwork must contain exactly twelve locked crops');
+assert.match(art, /data:image\/webp;base64,/);
 
 assert.match(css, /\.ref-nav\{/);
 assert.match(css, /\.ref-choice-grid\{/);
@@ -62,6 +79,8 @@ assert.match(css, /grid-template-columns:repeat\(8,minmax\(0,1fr\)\)/);
 assert.match(css, /\.ref-freeflow-features\{/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(js, /injectReferenceArtwork/);
+assert.match(js, /reference-art-lock-/);
 assert.doesNotMatch(js, /localStorage|sessionStorage/, 'locked page runtime must not persist interface state');
 assert.match(js, /data-ref-menu/);
 assert.match(js, /data-ref-signin/);
