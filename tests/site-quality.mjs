@@ -10,13 +10,16 @@ const pages = {
 };
 const css = await read('src/reference-exact.css');
 const js = await read('src/reference-exact.js');
-const artParts = await Promise.all(
-  Array.from({ length: 8 }, (_, index) => read(`src/reference-art-lock-${index + 1}.js`)),
+
+// Load the artwork exactly as the browser runtime does. These are JavaScript
+// string modules, not JSON files, so JSON.parse would reject valid JS escapes.
+const artModules = await Promise.all(
+  Array.from({ length: 8 }, (_, index) => import(`../src/reference-art-lock-${index + 1}.js`)),
 );
-const art = artParts.map((source, index) => {
-  const match = source.match(/^export default (".*");\s*$/s);
-  assert.ok(match, `reference artwork part ${index + 1} must export one string`);
-  return JSON.parse(match[1]);
+const art = artModules.map((module, index) => {
+  assert.equal(typeof module.default, 'string', `reference artwork part ${index + 1} must export one string`);
+  assert.ok(module.default.length > 0, `reference artwork part ${index + 1} must not be empty`);
+  return module.default;
 }).join('');
 
 const navHrefs = ['index.html', 'share-story.html', 'stories.html', 'more-info.html', 'privacy-safety.html'];
