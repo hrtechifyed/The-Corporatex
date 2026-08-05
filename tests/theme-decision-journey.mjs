@@ -43,6 +43,10 @@ summary = summarizeThemeDecisions(state);
 assert.equal(summary.selected.length, 0, 'users must be able to revise Select to Ignore');
 assert.equal(summary.ignored.length, 2, 'revised choices must update counts');
 
+state = setThemeCardStatus(state, 'role-rewrite', 'selected');
+summary = summarizeThemeDecisions(state);
+assert.equal(summary.selected.length, 1, 'users must be able to revise Ignore to Select');
+
 for (const card of state.cards) {
   if (['unseen', 'viewed'].includes(card.status)) state = setThemeCardStatus(state, card.id, 'skipped');
 }
@@ -55,19 +59,28 @@ assert.ok(state.cards.every((card) => card.status === 'unseen'));
 
 const journeySource = await readFile('src/theme-decision-journey.js', 'utf8');
 const stateSource = await readFile('src/theme-decision-state.js', 'utf8');
+const dataSource = await readFile('src/theme-decision-data.js', 'utf8');
 const css = await readFile('src/theme-decision-journey.css', 'utf8');
 
-assert.doesNotMatch(journeySource, /localStorage|sessionStorage/, 'journey choices must remain in memory');
-assert.doesNotMatch(stateSource, /localStorage|sessionStorage/, 'journey state must remain in memory');
+for (const [name, source] of Object.entries({ journeySource, stateSource, dataSource })) {
+  assert.doesNotMatch(source, /localStorage|sessionStorage/, `${name} must keep choices in memory only`);
+}
+
+assert.match(journeySource, /pageName === 'freeflow-story\.html'/, 'the replacement must target only the Free-flow optional-theme section');
+assert.doesNotMatch(journeySource, /\['guided-story\.html', 'freeflow-story\.html'\]/, 'Guided Story must retain its separate turning-point flow');
 assert.match(journeySource, /aria-live="polite"/, 'selection confirmations require an aria-live region');
 assert.match(journeySource, /aria-pressed/, 'Select and Ignore actions require pressed state');
+assert.match(journeySource, /aria-hidden="\$\{state\.isFlipped\}"/, 'the hidden front face must be removed from accessibility navigation');
+assert.match(journeySource, /state\.isFlipped \? '' : 'inert'/, 'the hidden back face must be inert');
+assert.match(journeySource, /theme-next-preview/, 'the next card name must stay visible outside the flipped face');
 assert.match(journeySource, /ArrowLeft/, 'Left Arrow navigation is required');
 assert.match(journeySource, /ArrowRight/, 'Right Arrow navigation is required');
 assert.match(journeySource, /Escape/, 'Escape must return the card to its front side');
 assert.match(journeySource, /data-review-skipped/, 'skipped cards must be reviewable');
 assert.match(journeySource, /data-confirm-themes/, 'selected themes must have a confirmation action');
 assert.match(journeySource, /data-restart-journey/, 'the journey must support restart');
-assert.match(journeySource, /CustomEvent\('themejourneyconfirmed'/, 'confirmation must expose selected themes for future form integration');
+assert.match(journeySource, /emitState\('themejourneyconfirmed'\)/, 'confirmation must expose selected themes for future form or database integration');
+assert.match(journeySource, /themejourneychange/, 'every choice change must be exposed in application state');
 
 assert.match(css, /perspective:1600px/, 'the card stage requires CSS perspective');
 assert.match(css, /rotateY\(180deg\)/, 'the card must flip around the vertical axis');
