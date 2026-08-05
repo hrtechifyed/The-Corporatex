@@ -1,0 +1,6 @@
+/* 9/10 programme — Phase 3: trust and moderation framing */
+.candidate-takeaway{margin:1.1rem -1rem 0;padding:1.4rem 1rem;border:1px solid rgba(255,194,41,.38);border-radius:18px;background:linear-gradient(135deg,rgba(255,194,41,.08),rgba(255,107,18,.05))}
+.candidate-takeaway small{color:var(--gold)}
+.candidate-takeaway h2{color:#fff4df}
+.perspective-disclaimer{margin:1.4rem 0 0;padding:1rem;border-top:1px solid var(--line-soft);color:var(--muted);font-size:.72rem;line-height:1.6;text-align:center}
+.directory-hero .notice[role="note"]{max-width:860px}
