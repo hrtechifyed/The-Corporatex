@@ -30,3 +30,7 @@ document.querySelectorAll('.story-door-stage, .theme-cloud-card').forEach((zone)
   zone.addEventListener('focusin', () => zone.classList.add('is-reading'));
   zone.addEventListener('focusout', () => zone.classList.remove('is-reading'));
 });
+
+import('./accessibility-polish.js').catch(() => {
+  // Accessibility enhancements are additive; semantic source remains the baseline.
+});
