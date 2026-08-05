@@ -13,9 +13,11 @@ These pages deliberately use a dedicated stylesheet and runtime:
 
 - `src/reference-exact.css`
 - `src/reference-exact.js`
-- the existing crisp anime scene system in `public/story-scenes.svg`
+- `src/reference-art-lock-1.js` through `src/reference-art-lock-8.js`
 
-They do not load the previous form, carousel, progressive-disclosure or theme-decision runtimes.
+The eight artwork modules contain twelve image crops derived from the approved composite: the Home hero, both Share Your Story choices, the Free-flow hero and eight Guided Story chapter scenes. At page load, the runtime joins the modules into one hidden SVG sprite so each page renders the supplied artwork without relying on an external asset service.
+
+The four locked pages do not load the previous form, carousel, progressive-disclosure, beta-content or theme-decision runtimes.
 
 ## Locked composition
 
@@ -23,7 +25,7 @@ They do not load the previous form, carousel, progressive-disclosure or theme-de
 
 - Glass HRTechify navigation
 - “Before you join, learn from those who left.”
-- Anime doorway hero
+- Anime doorway hero from the approved composite
 - One Share Your Story action
 - “Open for everyone”
 - Orbital “What others talk about” word cloud
@@ -35,14 +37,14 @@ They do not load the previous form, carousel, progressive-disclosure or theme-de
 - One centred question
 - Guided Story card in orange
 - Free-flow Story card in purple
-- Large anime scene on each card
+- The exact supplied anime scene on each card
 - One start action per card
 - “You can switch anytime.”
 
 ### Guided Story
 
 - Centred Guided Story heading
-- Eight image-led chapter cards
+- Eight image-led chapter cards using the supplied crops
 - Orange and purple accent treatment shown in the reference
 - Three progress dots
 - Free-flow switching note
@@ -51,14 +53,14 @@ They do not load the previous form, carousel, progressive-disclosure or theme-de
 ### Free-flow Story
 
 - Centred Free-flow Story heading
-- One large anime writing scene
+- The supplied large anime writing scene
 - Four compact supporting ideas
 - Guided switching note
 - No form, carousel or additional content block
 
 ## Change control
 
-Changes to these four pages should be rejected unless the user explicitly supplies a new visual reference or asks to unlock a specific element. Copy, section count, colour roles and content hierarchy are covered by `tests/site-quality.mjs`.
+Changes to these four pages should be rejected unless the user explicitly supplies a new visual reference or asks to unlock a specific element. Copy, section count, colour roles, artwork IDs and content hierarchy are covered by `tests/site-quality.mjs`.
 
 ## Responsive interpretation
 
@@ -66,8 +68,8 @@ The desktop composition is preserved at wide viewports. At smaller widths, the s
 
 - navigation becomes a compact menu;
 - the two choice cards stack;
-- guided cards become a horizontal snap row;
-- free-flow features become a two-column grid;
+- Guided cards become a horizontal snap row;
+- Free-flow features become a two-column grid;
 - no horizontal page overflow is allowed.
 
 ## Validation
@@ -78,4 +80,4 @@ Run:
 npm run check
 ```
 
-The fidelity test confirms the locked copy, section counts, scene references, dedicated runtime, responsive rules and absence of legacy form/carousel modules.
+The fidelity test confirms the locked copy, section counts, twelve embedded artwork symbols, dedicated runtime, responsive rules and absence of legacy form/carousel modules.
