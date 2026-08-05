@@ -1,3 +1,8 @@
+const style = document.createElement('link');
+style.rel = 'stylesheet';
+style.href = 'src/accessibility-polish.css';
+document.head.append(style);
+
 // Keep interactive state available to assistive technology.
 document.querySelectorAll('[data-theme-filter]').forEach((button) => {
   const sync = () => button.setAttribute('aria-pressed', String(button.classList.contains('is-active')));
