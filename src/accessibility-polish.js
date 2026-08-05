@@ -3,7 +3,6 @@ style.rel = 'stylesheet';
 style.href = 'src/accessibility-polish.css';
 document.head.append(style);
 
-// Keep interactive state available to assistive technology.
 document.querySelectorAll('[data-theme-filter]').forEach((button) => {
   const sync = () => button.setAttribute('aria-pressed', String(button.classList.contains('is-active')));
   sync();
@@ -14,9 +13,7 @@ document.querySelectorAll('.story-door').forEach((button) => {
   const sync = () => button.setAttribute('aria-pressed', String(button.classList.contains('is-selected')));
   sync();
   button.addEventListener('click', () => requestAnimationFrame(() => {
-    document.querySelectorAll('.story-door').forEach((door) => {
-      door.setAttribute('aria-pressed', String(door.classList.contains('is-selected')));
-    });
+    document.querySelectorAll('.story-door').forEach((door) => door.setAttribute('aria-pressed', String(door.classList.contains('is-selected'))));
   }));
 });
 
@@ -28,7 +25,6 @@ document.querySelectorAll('details').forEach((details) => {
   details.addEventListener('toggle', sync);
 });
 
-// Associate helper text with the nearest control when source markup does not already do so.
 document.querySelectorAll('.field').forEach((label, index) => {
   const control = label.querySelector('input, select, textarea');
   const helper = label.querySelector('small');
@@ -37,7 +33,6 @@ document.querySelectorAll('.field').forEach((label, index) => {
   control.setAttribute('aria-describedby', helper.id);
 });
 
-// Announce the active writing mode without adding visual copy.
 const mode = document.querySelector('.mode-switch [aria-current="page"]');
 if (mode) {
   const announcement = document.createElement('p');
@@ -46,3 +41,7 @@ if (mode) {
   announcement.textContent = `${mode.textContent.trim()} story mode selected.`;
   document.querySelector('main')?.prepend(announcement);
 }
+
+import('./beta-content.js').catch(() => {
+  // The demonstration layout remains available if beta data cannot be loaded.
+});
