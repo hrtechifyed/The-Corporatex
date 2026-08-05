@@ -3,62 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#4b0805" />
-  <meta name="description" content="Data privacy and safety rules for The Corporate Ex - Powered by HRTechify." />
+  <meta name="theme-color" content="#120404" />
+  <meta name="description" content="Read the privacy, safety and moderation approach for The Corporate Ex." />
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="src/style.css" />
-  <link rel="stylesheet" href="src/hrtechify-theme.css" />
-  <link rel="stylesheet" href="src/readability-fixes.css" />
+  <link rel="stylesheet" href="src/app-v2.css" />
   <title>Data Privacy & Safety | The Corporate Ex</title>
 </head>
-<body class="info-page privacy-page">
-  <a class="skip-link" href="#main">Skip to main content</a>
-  
-    <header class="site-header">
-      <a class="brand" href="index.html#top" aria-label="The Corporate Ex - Powered by HRTechify, home">
-        <img class="brand-logo" src="public/hrtechify-logo.svg" alt="" aria-hidden="true" />
-        <span class="brand-copy">
-          <strong>The Corporate Ex</strong>
-          <small>Powered by HRTechify</small>
-        </span>
-      </a>
-      <nav aria-label="Primary navigation"><a href="index.html#stories">Stories</a><a href="index.html#how">How it works</a><a href="privacy-safety.html" aria-current="page">Data Privacy & Safety</a><a href="more-info.html">More</a></nav>
-      <a class="header-cta" href="index.html#share">Share your story <span aria-hidden="true">↗</span></a>
-      <button class="menu-button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu"><span></span><span></span></button>
-      <div id="mobile-nav" class="mobile-nav" hidden><a href="index.html#stories">Stories</a><a href="index.html#how">How it works</a><a href="privacy-safety.html" aria-current="page">Data Privacy & Safety</a><a href="more-info.html">More</a><a href="index.html#share">Share your story</a></div>
-    </header>
-  <main id="main">
-    <header class="info-hero">
-      <div class="info-hero-copy">
-        <p class="eyebrow">DATA PRIVACY & SAFETY RULES</p>
-        <h1>Your story matters.<br /><em>Your privacy matters too.</em></h1>
-        <p>The Corporate Ex is designed for responsible workplace storytelling. These rules explain what information is used, what should never be submitted, how AI assists, and what happens before publication.</p>
-      </div>
-      <div class="info-hero-seal" aria-hidden="true"><img src="public/hrtechify-logo.svg" alt="" /></div>
-    </header>
-
-    <section class="policy-section">
-      <div class="policy-grid">
-        <article class="policy-card"><span>01</span><h2>Privacy by design</h2><p>Public stories use an anonymous contributor ID. The platform does not display your email address, profile photograph or personal contact details with a published experience.</p><ul><li>Use broad role, region and tenure details.</li><li>Avoid precise job titles or unique project references.</li><li>Review all AI-organised text before approval.</li></ul></article>
-        <article class="policy-card"><span>02</span><h2>Information used</h2><p>We use the information needed to authenticate contributors, save private drafts, organise submitted text, support moderation and publish contributor-approved stories.</p><ul><li>Email is used for secure sign-in and account access.</li><li>Draft content remains private until you approve submission.</li><li>Moderation records may be retained for safety and accountability.</li></ul></article>
-        <article class="policy-card"><span>03</span><h2>Never include</h2><p>Do not submit information that identifies or endangers another person, violates confidentiality, or exposes protected records.</p><ul><li>Names, phone numbers, personal emails or home addresses.</li><li>Medical, payroll, disciplinary or performance records.</li><li>Client secrets, source code, internal documents or access credentials.</li><li>Threats, harassment, discriminatory abuse or doxxing.</li></ul></article>
-        <article class="policy-card"><span>04</span><h2>How AI is used</h2><p>AI may organise your account into clearer sections, identify possible personal details and suggest neutral wording. It must not invent events, intensify claims or decide whether your experience is true.</p><ul><li>AI output remains private during review.</li><li>You can rewrite or remove every suggestion.</li><li>Your approval is required before moderation.</li></ul></article>
-        <article class="policy-card"><span>05</span><h2>Human moderation</h2><p>A human moderator checks approved submissions for privacy, safety, clarity and compliance with the community rules. Approval by a contributor does not guarantee publication.</p><ul><li>Moderators may request changes.</li><li>Content may be rejected or withdrawn when unsafe.</li><li>Published stories remain personal perspectives, not verified company facts.</li></ul></article>
-        <article class="policy-card"><span>06</span><h2>Contributor control</h2><p>You control the wording sent for moderation. Contact HRTechify to request access, correction, withdrawal or deletion where applicable.</p><a class="text-link" href="mailto:hrtechifyed@gmail.com?subject=The%20Corporate%20Ex%20Privacy%20Request">hrtechifyed@gmail.com →</a></article>
-      </div>
-    </section>
-
-    <section class="rules-banner">
-      <div><p class="eyebrow">COMMUNITY SAFETY</p><h2>Share experiences—not identities.</h2><p>Be specific about workplace patterns and your own experience, but remove details that can identify colleagues, customers or vulnerable individuals. Use factual, first-person language and avoid presenting assumptions as proven facts.</p></div>
-      <a class="button button-primary" href="more-info.html#contact">Ask a privacy question →</a>
-    </section>
-  </main>
-    <footer class="footer">
-      <div class="footer-shell">
-        <p class="footer-primary">The Corporate Ex - Powered by - HRTechify - People • Technology • Growth</p>
-        <p class="footer-secondary">© 2026 All Rights Reserved.</p>
-      </div>
-    </footer>
-  <script type="module" src="src/main.js"></script>
+<body data-page="privacy">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="glass-nav">
+  <a class="brand" href="index.html" aria-label="The Corporate Ex home">
+    <span class="brand-logo-wrap"><img class="brand-logo" src="public/hrtechify-logo.svg" alt="HRTechify" /></span>
+    <span class="brand-copy"><strong>The Corporate Ex</strong><span>Real stories. Smarter decisions.</span></span>
+  </a>
+  <nav class="primary-nav" aria-label="Primary navigation">
+    <a data-nav="home" href="index.html"><span aria-hidden="true">⌂</span> Home</a>
+    <a data-nav="share" class="share-nav" href="share-story.html">Share Your Story</a>
+    <a data-nav="stories" href="stories.html"><span aria-hidden="true">▤</span> Stories</a>
+    <a data-nav="more" href="more-info.html"><span aria-hidden="true">✦</span> More</a>
+    <a data-nav="privacy" href="privacy-safety.html"><span aria-hidden="true">◇</span> Privacy &amp; Safety</a>
+  </nav>
+  <div class="nav-actions">
+    <a class="icon-button" href="stories.html#story-search" aria-label="Search stories">⌕</a>
+    <button class="signin-button" type="button" data-signin><span aria-hidden="true">◎</span> Sign In</button>
+    <button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
+  </div>
+</header>
+<nav class="mobile-panel" data-mobile-panel hidden aria-label="Mobile navigation">
+  <a href="index.html">Home</a>
+  <a href="share-story.html">Share Your Story</a>
+  <a href="stories.html">Stories</a>
+  <a href="more-info.html">More</a>
+  <a href="privacy-safety.html">Privacy &amp; Safety</a>
+  <button type="button" data-signin>Sign In — coming later</button>
+</nav>
+<main id="main">
+  <section class="page-shell hero-space info-hero"><p class="eyebrow">DATA PRIVACY &amp; SAFETY</p><h1 class="display-title">Serious stories deserve<br /><em>a steady hand.</em></h1><p class="lede">The product is designed to protect contributor identity, keep drafts private, remove identifying details and make publication a human-reviewed decision.</p></section>
+  <section class="page-shell policy-grid">
+    <article class="policy-card glass-card"><p class="eyebrow">PRIVATE BY DEFAULT</p><h2>Drafts are not public stories.</h2><p>In the current prototype, drafts remain in the contributor’s browser. In the production release, private account data and publishable story data will be separated by design.</p></article>
+    <article class="policy-card glass-card"><p class="eyebrow">DO NOT INCLUDE</p><h2>Protect people and confidential information.</h2><ul><li>Names, personal contact details or identifying descriptions</li><li>Customer or employee records</li><li>Trade secrets, source code or proprietary documents</li><li>Threats, harassment or deliberately misleading claims</li></ul></article>
+    <article class="policy-card glass-card"><p class="eyebrow">PERSPECTIVE LANGUAGE</p><h2>Write what you experienced.</h2><p>Use first-person wording such as “I experienced,” “I was told,” “In my team,” or “My understanding was.” Avoid turning one experience into a universal claim about every person or team.</p></article>
+    <article class="policy-card glass-card"><p class="eyebrow">HUMAN REVIEW</p><h2>Approval is not automatic publication.</h2><p>Contributor confirmation sends a story for moderation. A human reviewer checks privacy, safety, usefulness and responsible wording before anything can be published.</p></article>
+    <article class="policy-card glass-card"><p class="eyebrow">AI BOUNDARIES</p><h2>AI may organise. It may not invent.</h2><p>AI assistance can suggest structure, detect possible personal information and reduce repetition. It must not add events, intensify accusations, decide truth or publish a story.</p></article>
+    <article class="policy-card glass-card"><p class="eyebrow">CONTACT</p><h2>Raise a privacy or moderation concern.</h2><p>Email <a href="mailto:hrtechifyed@gmail.com">hrtechifyed@gmail.com</a>. Formal legal terms and jurisdiction-specific policies should be reviewed by qualified counsel before public launch.</p></article>
+  </section>
+</main>
+<footer class="site-footer">
+  <p class="footer-line">The Corporate Ex - Powered by - HRTechify - People • Technology • Growth</p>
+  <p class="footer-line secondary">© 2026 All Rights Reserved.</p>
+</footer>
+<div class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="src/app-v2.js"></script>
 </body>
 </html>
