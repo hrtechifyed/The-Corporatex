@@ -17,6 +17,13 @@ if (!document.querySelector('link[href$="readability-fixes.css"]')) {
   document.head.append(readabilityStyles);
 }
 
+if (!document.querySelector('link[href$="site-readability-refinements.css"]')) {
+  const refinementStyles = document.createElement('link');
+  refinementStyles.rel = 'stylesheet';
+  refinementStyles.href = 'src/site-readability-refinements.css';
+  document.head.append(refinementStyles);
+}
+
 const sharedFooter = document.querySelector('.footer');
 if (sharedFooter) {
   sharedFooter.innerHTML = `
