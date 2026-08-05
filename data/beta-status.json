@@ -1,0 +1,9 @@
+{
+  "state": "awaiting_genuine_contributors",
+  "minimum_story_count": 10,
+  "target_story_count": 15,
+  "minimum_employer_count": 5,
+  "minimum_theme_count": 6,
+  "verification_deferred": true,
+  "last_reviewed": "2026-08-05"
+}
