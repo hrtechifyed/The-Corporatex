@@ -46,3 +46,7 @@ if (mode) {
   announcement.textContent = `${mode.textContent.trim()} story mode selected.`;
   document.querySelector('main')?.prepend(announcement);
 }
+
+import('./beta-content.js').catch(() => {
+  // The demonstration layout remains available if beta data cannot be loaded.
+});
