@@ -1,0 +1,24 @@
+/* 9/10 programme — Phase 1: minimal interface copy */
+.hero-copy .lede{max-width:34rem;font-size:1.05rem;line-height:1.55}
+.trust-strip{gap:.9rem}.trust-strip span{font-size:.75rem}
+.cloud-caption{justify-content:center;text-align:center}
+.how-card{min-height:210px}.how-card h3{margin-top:1.1rem}.how-card p{max-width:24rem}
+.ai-banner{padding:clamp(1.25rem,3vw,2rem)}
+.ai-banner h2{font-size:clamp(1.8rem,3.4vw,3.5rem)}
+.ai-banner p{font-size:.94rem}
+.share-hero{min-height:calc(100vh - 165px);display:grid;align-content:center}
+.share-hero .display-title{font-size:clamp(2.8rem,5vw,5.4rem)}
+.share-hero .choice-grid{margin-top:1.35rem}
+.share-hero .choice-card{min-height:190px}
+.share-hero .choice-card p{max-width:25rem}
+.info-hero{min-height:430px}
+.info-hero .display-title{font-size:clamp(2.8rem,5vw,5.3rem)}
+.info-stack,.policy-grid{gap:.8rem}
+.info-card,.policy-card{padding:1.2rem}
+.info-card h2,.policy-card h2{font-size:clamp(1.35rem,2.2vw,2rem)}
+.info-card p,.policy-card p{max-width:70ch}
+@media(max-width:700px){
+  .share-hero{min-height:auto;padding-bottom:3rem}
+  .choice-card{min-height:auto}
+  .info-hero{min-height:360px}
+}
