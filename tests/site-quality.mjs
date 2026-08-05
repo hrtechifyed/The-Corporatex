@@ -4,12 +4,19 @@ import { readFile, readdir } from 'node:fs/promises';
 const read = (path) => readFile(path, 'utf8');
 const htmlFiles = (await readdir('.')).filter((file) => file.endsWith('.html')).sort();
 const upgradeSource = await read('src/site-upgrades.js');
+const disclosureSource = await read('src/progressive-disclosure.js');
 const appSource = await read('src/app-v2.js');
 
 assert.match(appSource, /import\('\.\/site-upgrades\.js'\)/, 'app-v2.js must load the quality module');
 assert.match(upgradeSource, /Exit stories\. Smarter decisions\./, 'prototype brand language must not imply genuine published stories');
 assert.match(upgradeSource, /THEMES WORKPLACE EXITS CAN REVEAL/, 'the theme cloud must use non-data-backed prototype language');
 assert.match(upgradeSource, /sections\.slice\(1\).*remove/s, 'Share Your Story must remove preview sections after the format choice');
+assert.match(upgradeSource, /progressive-disclosure\.js/, 'the progressive disclosure module must load');
+
+assert.match(disclosureSource, /makeDisclosureCard/, 'More and Privacy cards must support expandable detail');
+assert.match(disclosureSource, /form\.insertBefore\(writingSection, themeSection\)/, 'Free-flow writing must appear before optional themes');
+assert.match(disclosureSource, /optional-theme-disclosure/, 'Free-flow themes must be collapsed by default');
+assert.match(disclosureSource, /chapter-button span/, 'Guided helper copy must be hidden until the active editor');
 
 const budgets = Object.fromEntries(
   [...upgradeSource.matchAll(/\s+(home|share|guided|freeflow|stories|more|privacy|storyDetailPlatformCopy):\s*(\d+)/g)]
