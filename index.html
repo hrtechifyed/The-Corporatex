@@ -3,84 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#120404" />
-  <meta name="description" content="Structured exit stories for better employer decisions." />
+  <meta name="theme-color" content="#050505" />
+  <meta name="description" content="Real exit stories for smarter career moves." />
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="src/app-v2.css" />
   <title>The Corporate"x" - Powered by HRTechify</title>
 </head>
-<body data-page="home">
+<body class="ref-page ref-home" data-ref-page="home">
+
 <a class="skip-link" href="#main">Skip to main content</a>
-<header class="glass-nav">
-  <a class="brand" href="index.html" aria-label="The Corporate Ex home">
-    <span class="brand-logo-wrap"><img class="brand-logo" src="public/hrtechify-logo.svg" alt="HRTechify" /></span>
-    <span class="brand-copy"><strong>The Corporate Ex</strong><span>Real stories. Smarter decisions.</span></span>
+<header class="ref-nav">
+  <a class="ref-brand" href="index.html" aria-label="HRTechify home">
+    <img src="public/hrtechify-logo.svg" alt="" width="34" height="34" />
+    <strong>HRTechify</strong>
   </a>
-  <nav class="primary-nav" aria-label="Primary navigation">
-    <a data-nav="home" href="index.html"><span aria-hidden="true">⌂</span> Home</a>
-    <a data-nav="share" class="share-nav" href="share-story.html">Share Your Story</a>
-    <a data-nav="stories" href="stories.html"><span aria-hidden="true">▤</span> Stories</a>
-    <a data-nav="more" href="more-info.html"><span aria-hidden="true">✦</span> More</a>
-    <a data-nav="privacy" href="privacy-safety.html"><span aria-hidden="true">◇</span> Privacy &amp; Safety</a>
+  <nav class="ref-primary-nav" aria-label="Primary navigation">
+    <a data-ref-nav="home" href="index.html">Home</a>
+    <a data-ref-nav="share" class="ref-share-link" href="share-story.html">Share Your Story</a>
+    <a data-ref-nav="stories" href="stories.html">Stories</a>
+    <a data-ref-nav="more" href="more-info.html">More</a>
+    <a data-ref-nav="privacy" href="privacy-safety.html">Privacy &amp; Safety</a>
   </nav>
-  <div class="nav-actions">
-    <a class="icon-button" href="stories.html#story-search" aria-label="Search stories">⌕</a>
-    <button class="signin-button" type="button" data-signin><span aria-hidden="true">◎</span> Sign In</button>
-    <button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
+  <div class="ref-nav-actions">
+    <a class="ref-search" href="stories.html#story-search" aria-label="Search stories">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>
+    </a>
+    <button class="ref-signin" type="button" data-ref-signin>Sign In</button>
+    <button class="ref-menu" type="button" data-ref-menu aria-expanded="false" aria-label="Open navigation"><span></span><span></span></button>
   </div>
 </header>
-<nav class="mobile-panel" data-mobile-panel hidden aria-label="Mobile navigation">
+<nav class="ref-mobile-nav" data-ref-mobile-nav hidden aria-label="Mobile navigation">
   <a href="index.html">Home</a>
   <a href="share-story.html">Share Your Story</a>
   <a href="stories.html">Stories</a>
   <a href="more-info.html">More</a>
   <a href="privacy-safety.html">Privacy &amp; Safety</a>
-  <button type="button" data-signin>Sign In — coming later</button>
+  <button type="button" data-ref-signin>Sign In</button>
 </nav>
-<main id="main">
-  <section class="page-shell hero-space home-hero">
-    <div class="hero-copy">
-      <p class="eyebrow">EVERY EXIT HAS A STORY</p>
-      <h1 class="display-title">Before you join,<br /><em>hear from the people who left.</em></h1>
-      <p class="lede"><strong>Not ratings. Not rumours.</strong> Structured exit stories that help people understand what changed, why someone left and what they should ask before choosing an employer.</p>
-      <div class="hero-actions"><a class="button button-primary" href="share-story.html">Share Your Story →</a><a class="button button-secondary" href="stories.html">Explore Employer Stories</a></div>
-      <div class="trust-strip"><span><i>◇</i> Anonymous by design</span><span><i>✓</i> Contributor approved</span><span><i>⌁</i> Human moderated</span><span><i>◎</i> Open access beta</span></div>
+
+<main id="main" class="ref-home-main">
+  <section class="ref-home-hero">
+    <div class="ref-home-copy">
+      <h1>Before you join,<br />learn from those who left.</h1>
+      <p>Real exit stories. Real insights. Smarter career moves.</p>
+      <a class="ref-cta ref-cta-orange" href="share-story.html">Share Your Story</a>
+      <span class="ref-open-note"><span aria-hidden="true">◉</span> Open for everyone</span>
     </div>
-    <section class="theme-cloud-card glass-card" aria-labelledby="cloud-title">
-      <p class="eyebrow" id="cloud-title">COMMON THEMES ACROSS EXIT STORIES</p>
-      <div class="cloud-orbit" aria-hidden="true"></div>
-      <div class="word-cloud">
-        <a data-cloud-theme="leadership" data-weight="5" href="stories.html">Leadership</a>
-        <a data-cloud-theme="growth" data-weight="4" href="stories.html">Career growth</a>
-        <a data-cloud-theme="wellbeing" data-weight="5" href="stories.html">Burnout</a>
-        <a data-cloud-theme="compensation" data-weight="4" href="stories.html">Compensation</a>
-        <a data-cloud-theme="change" data-weight="3" href="stories.html">Job security</a>
-        <a data-cloud-theme="wellbeing" data-weight="4" href="stories.html">Workload</a>
-        <a data-cloud-theme="leadership" data-weight="3" href="stories.html">Culture</a>
-        <a data-cloud-theme="growth" data-weight="3" href="stories.html">Recognition</a>
-        <a data-cloud-theme="change" data-weight="3" href="stories.html">Layoffs</a>
-        <a data-cloud-theme="wellbeing" data-weight="2" href="stories.html">Remote work</a>
-        <a data-cloud-theme="ai" data-weight="4" href="stories.html">AI pressure</a>
-        <a data-cloud-theme="growth" data-weight="2" href="stories.html">Learning</a>
-        <a data-cloud-theme="leadership" data-weight="2" href="stories.html">Manager change</a>
-        <a data-cloud-theme="personal" data-weight="2" href="stories.html">Location</a>
-        <a data-cloud-theme="personal" data-weight="1" href="stories.html">Retirement</a>
-        <a data-cloud-theme="leadership" data-weight="2" href="stories.html">Values mismatch</a>
-        <a data-cloud-theme="change" data-weight="2" href="stories.html">Role drift</a>
-        <a data-cloud-theme="wellbeing" data-weight="1" href="stories.html">Health</a>
-      </div>
-      <div class="cloud-caption"><span><strong>Interactive preview:</strong> choose a theme to explore grouped stories.</span><span>Theme sizes will be driven by moderated outputs.</span></div>
-    </section>
+    <figure class="ref-home-art">
+      <svg class="ref-art-svg" viewBox="0 0 660 470" role="img" aria-label="Anime-style illustration of a person looking toward a city through an open doorway"><use href="#home-hero"></use></svg>
+    </figure>
   </section>
-  <section class="page-shell section">
-    <div class="section-heading"><div><p class="eyebrow">A SMALLER, MORE USEFUL LOOP</p><h2>From one exit to a better question.</h2></div><p>The product is designed as a publishing experience—not an endless feed, a popularity contest or a company score.</p></div>
-    <div class="how-grid">
-      <article class="how-card glass-card"><span>1</span><h3>Tell the experience</h3><p>Choose a guided story or write freely. Start with the chapter that feels closest to your turning point.</p></article>
-      <article class="how-card glass-card"><span>2</span><h3>Review it with care</h3><p>Keep the account first-person, remove identifying details and confirm that the experience is authentic.</p></article>
-      <article class="how-card glass-card"><span>3</span><h3>Help someone decide</h3><p>A future candidate can use the story to ask a sharper question before accepting a role.</p></article>
+
+  <section class="ref-cloud-card" aria-labelledby="ref-cloud-title">
+    <div class="ref-cloud-heading">
+      <h2 id="ref-cloud-title">What others talk about</h2>
+      <p>Explore common themes from real exit stories.</p>
     </div>
+    <div class="ref-orbits" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="ref-word-cloud">
+      <a class="w1" href="stories.html">Remote Work</a>
+      <a class="w2" href="stories.html">AI Pressure</a>
+      <a class="w3" href="stories.html">Workload</a>
+      <a class="w4" href="stories.html">Burnout</a>
+      <a class="w5" href="stories.html">Career Growth</a>
+      <a class="w6" href="stories.html">Work-life Balance</a>
+      <a class="w7" href="stories.html">Compensation</a>
+      <a class="w8" href="stories.html">Management</a>
+      <a class="w9" href="stories.html">Leadership</a>
+      <a class="w10" href="stories.html">Culture</a>
+      <a class="w11" href="stories.html">Role Clarity</a>
+      <a class="w12" href="stories.html">Values</a>
+      <a class="w13" href="stories.html">Better Opportunity</a>
+      <a class="w14" href="stories.html">Team Dynamics</a>
+      <a class="w15" href="stories.html">Recognition</a>
+      <a class="w16" href="stories.html">Stagnation</a>
+    </div>
+    <a class="ref-explore-pill" href="stories.html">Explore stories</a>
   </section>
-  <section class="page-shell section"><div class="ai-banner glass-card"><div><p class="eyebrow">WHY EMPLOYER CHOICE MATTERS NOW</p><h2>AI is changing work. Employers are choosing how.</h2><p>Some organisations use AI to remove repetitive work, improve employee capability and redesign roles responsibly. Others may use the same technology mainly to intensify output or reduce headcount. Exit stories can help candidates understand how an employer treats people through that change.</p></div><a class="button button-primary" href="more-info.html#ai-era">Read the AI-era view →</a></div></section>
+
+  <section class="ref-trust-row" aria-label="How stories are handled">
+    <article><span class="ref-round-icon">◆</span><div><h3>Human Moderated</h3><p>Carefully reviewed for privacy and usefulness.</p></div></article>
+    <article><span class="ref-round-icon">●</span><div><h3>Anonymous</h3><p>Your identity is protected. Your voice is real.</p></div></article>
+    <article><span class="ref-round-icon">▣</span><div><h3>One Person’s Story</h3><p>Individual perspective, not the whole company.</p></div></article>
+    <article><span class="ref-round-icon">↗</span><div><h3>Built for Better Choices</h3><p>Ask better questions. Make confident decisions.</p></div></article>
+  </section>
 </main>
 <footer class="site-footer">
   <p class="footer-line">The Corporate"x" - Powered by - HRTechify - People • Technology • Growth</p>
