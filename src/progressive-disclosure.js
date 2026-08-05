@@ -88,3 +88,7 @@ if (location.pathname.endsWith('guided-story.html')) {
     node.hidden = true;
   });
 }
+
+import('./trust-guardrails.js').catch(() => {
+  // Trust copy enhancements must never prevent reading or drafting a story.
+});
