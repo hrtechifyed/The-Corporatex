@@ -8,6 +8,8 @@ const disclosureSource = await read('src/progressive-disclosure.js');
 const trustSource = await read('src/trust-guardrails.js');
 const visualSource = await read('src/visual-polish.js');
 const visualCss = await read('src/visual-polish.css');
+const accessibilitySource = await read('src/accessibility-polish.js');
+const betaSource = await read('src/beta-content.js');
 const appSource = await read('src/app-v2.js');
 const storiesSource = await read('stories.html');
 
@@ -31,12 +33,19 @@ assert.match(trustSource, /visual-polish\.js/, 'visual polish must load after tr
 assert.match(visualSource, /setAttribute\('width', '50'\)/, 'logo width must be explicit');
 assert.match(visualSource, /setAttribute\('height', '50'\)/, 'logo height must be explicit');
 assert.match(visualSource, /loading', 'lazy'/, 'below-the-fold images must be lazy loaded');
+assert.match(visualSource, /accessibility-polish\.js/, 'accessibility enhancements must load after visual polish');
+assert.match(accessibilitySource, /aria-pressed/, 'interactive selection state must be exposed');
+assert.match(accessibilitySource, /aria-describedby/, 'form helper text must be associated with controls');
+assert.match(accessibilitySource, /beta-content\.js/, 'the controlled beta data layer must load last');
+assert.match(betaSource, /published-stories\.json/, 'published story data must drive the beta directory');
+assert.match(betaSource, /textContent/, 'contributor content must use safe text assignment');
+
 assert.match(visualCss, /--type-hero:/, 'a shared hero type scale is required');
 assert.match(visualCss, /--type-page:/, 'a shared page-title scale is required');
 assert.match(visualCss, /word-cloud a\{animation:none\}/, 'individual cloud words must not all animate continuously');
 assert.match(visualCss, /animation:story-breathe 16s/, 'story-card motion must be slow paced');
 assert.match(visualCss, /prefers-reduced-motion:reduce/, 'the visual system must respect reduced motion');
-assert.doesNotMatch(visualCss, /filter:blur\([^)]*\).*brand-logo/s, 'the brand logo must never be blurred');
+assert.doesNotMatch(visualCss, /brand-logo[^}]*filter:blur/s, 'the brand logo must never be blurred');
 
 assert.doesNotMatch(storiesSource, /Sony|NVIDIA/i, 'fictional demonstrations must not use real employer names');
 assert.doesNotMatch(storiesSource, /Illustrative preview/i, 'demonstration status should be stated once, not repeated on every row');
@@ -60,16 +69,17 @@ assert.deepEqual(budgets, {
   storyDetailPlatformCopy: 80,
 });
 
-const expectedNavOrder = ['Home', 'Share Your Story', 'Stories', 'More', 'Privacy &amp; Safety'];
+const expectedPrimaryNavHrefs = ['index.html', 'share-story.html', 'stories.html', 'more-info.html', 'privacy-safety.html'];
 const footerLine1 = 'The Corporate Ex - Powered by - HRTechify - People • Technology • Growth';
 const footerLine2 = '© 2026 All Rights Reserved.';
 const unsupportedTrustLabel = /Verified Employee|Verified Ex-Employee|Confirmed Account/i;
 
 for (const file of htmlFiles) {
   const html = await read(file);
-  const positions = expectedNavOrder.map((label) => html.indexOf(`>${label}<`));
-  assert.ok(positions.every((position) => position >= 0), `${file}: shared navigation labels must exist`);
-  assert.ok(positions.every((position, index) => index === 0 || position > positions[index - 1]), `${file}: navigation order must remain consistent`);
+  const primaryNav = html.match(/<nav class="primary-nav"[\s\S]*?<\/nav>/)?.[0] || '';
+  const positions = expectedPrimaryNavHrefs.map((href) => primaryNav.indexOf(`href="${href}"`));
+  assert.ok(positions.every((position) => position >= 0), `${file}: shared primary navigation links must exist`);
+  assert.ok(positions.every((position, index) => index === 0 || position > positions[index - 1]), `${file}: primary navigation order must remain consistent`);
   assert.ok(html.includes(footerLine1), `${file}: footer line one is missing`);
   assert.ok(html.includes(footerLine2), `${file}: footer line two is missing`);
   assert.doesNotMatch(html, unsupportedTrustLabel, `${file}: unsupported trust label found`);
