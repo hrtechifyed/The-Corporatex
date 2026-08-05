@@ -99,7 +99,7 @@
   }
 
   .ref-journey-deck {
-    width: min(1500px, 100%);
+    width: min(1280px, 100%);
     min-height: 470px;
     margin-inline: auto;
     overflow: visible;
@@ -122,7 +122,7 @@
     width: 156px;
     height: 318px;
     padding: 8px 9px 13px;
-    offset-path: path("M 90 360 C 375 42 1125 42 1410 360");
+    offset-path: path("M 100 360 C 340 42 940 42 1180 360");
     offset-rotate: 0deg;
     transform: translate(-50%, -50%);
     transform-origin: center;
@@ -211,6 +211,31 @@
   .ref-journey-card,
   .ref-journey-card:nth-child(n) {
     animation: none !important;
+  }
+}
+
+@media (min-width: 1280px) and (prefers-reduced-motion: reduce) {
+  .ref-journey-deck {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    min-height: auto !important;
+    padding: 14px 16px 24px;
+  }
+
+  .ref-journey-deck::before,
+  .ref-journey-deck::after {
+    display: none !important;
+  }
+
+  .ref-journey-card,
+  .ref-journey-card:nth-child(n) {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: 345px !important;
     offset-path: none !important;
+    transform: none !important;
   }
 }
