@@ -1,22 +1,22 @@
 const primaryReasons = [
-  ['💰', 'Compensation'],
-  ['↗', 'Career growth'],
-  ['🧭', 'Manager / leadership'],
-  ['🌐', 'Work culture'],
-  ['⚠', 'Workplace harassment'],
-  ['↻', 'Layoff / restructuring'],
-  ['⇄', 'Role change'],
-  ['🌅', 'Retirement'],
-  ['📍', 'Location / relocation constraints'],
-  ['◇', 'Personal reasons'],
-  ['🌙', 'Work-life balance / burnout'],
-  ['♡', 'Health / wellbeing'],
-  ['🚪', 'Better opportunity'],
-  ['▣', 'Job security'],
-  ['⚖', 'Values mismatch'],
-  ['📚', 'Learning / skill stagnation'],
-  ['✦', 'AI / automation impact'],
-  ['…', 'Other'],
+  ['💰', 'Compensation', 'The value of the work and the reward stopped matching.'],
+  ['↗', 'Career growth', 'The next chapter stayed promised but never arrived.'],
+  ['🧭', 'Manager / leadership', 'A leadership relationship changed the whole experience.'],
+  ['🌐', 'Work culture', 'The everyday atmosphere no longer felt workable.'],
+  ['⚠', 'Workplace harassment', 'Safety, dignity or respect was crossed.'],
+  ['↻', 'Layoff / restructuring', 'The organisation changed the ending for you.'],
+  ['⇄', 'Role change', 'The job became different from the role you joined.'],
+  ['🌅', 'Retirement', 'A long working chapter reached its natural close.'],
+  ['📍', 'Location / relocation constraints', 'Where the work happened no longer fit your life.'],
+  ['◇', 'Personal reasons', 'Life outside work needed a different choice.'],
+  ['🌙', 'Work-life balance / burnout', 'The pace began taking more than it gave.'],
+  ['♡', 'Health / wellbeing', 'Protecting your health became the necessary decision.'],
+  ['🚪', 'Better opportunity', 'Another path offered the next growth chapter.'],
+  ['▣', 'Job security', 'Uncertainty made staying harder to trust.'],
+  ['⚖', 'Values mismatch', 'The way work was done no longer matched your principles.'],
+  ['📚', 'Learning / skill stagnation', 'The role stopped stretching or teaching you.'],
+  ['✦', 'AI / automation impact', 'Technology changed the role, pressure or sense of security.'],
+  ['…', 'Other', 'Your ending deserves words of its own.'],
 ];
 
 const secondaryReasons = [
@@ -106,14 +106,19 @@ function slugify(value) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-function renderReasonOptions(reasons, type, name) {
-  return reasons.map(([icon, label]) => {
+function renderReasonOptions(reasons, type, name, variant = 'chip') {
+  return reasons.map(([icon, label, description = ''], index) => {
     const id = `${name}-${slugify(label)}`;
+    const className = variant === 'card' ? 'reason-option reason-chip reason-card' : 'reason-option reason-chip';
+    const detail = description ? `<span class="reason-description">${description}</span>` : '';
     return `
-      <label class="reason-chip" for="${id}">
+      <label class="${className}" for="${id}" style="--card-index:${index}">
         <input id="${id}" type="${type}" name="${name}" value="${label}" />
         <span class="reason-icon" aria-hidden="true">${icon}</span>
-        <span class="reason-label">${label}</span>
+        <span class="reason-copy">
+          <span class="reason-label">${label}</span>
+          ${detail}
+        </span>
         <span class="reason-check" aria-hidden="true">✓</span>
       </label>`;
   }).join('');
@@ -141,21 +146,28 @@ function initStoryFlow() {
     document.head.append(stylesheet);
   }
 
+  if (!document.querySelector('link[href$="story-flow-refinements.css"]')) {
+    const refinements = document.createElement('link');
+    refinements.rel = 'stylesheet';
+    refinements.href = 'src/story-flow-refinements.css';
+    document.head.append(refinements);
+  }
+
   promptSection.innerHTML = `
     <div class="prompt-glow" aria-hidden="true"></div>
     <div class="story-flow-shell">
       <aside class="story-flow-intro">
         <p class="eyebrow">YOUR EXIT, TOLD AS A STORY</p>
         <h2>Find the reason.<br /><em>Follow the turning point.</em></h2>
-        <p>Most exits are not one sentence. Start with the clearest reason, add the forces around it, then capture only the moments that matter.</p>
+        <p>Most exits are not one sentence. Start with the clearest reason, add the forces around it, then tell the experience in your own flow or follow the guided story beats.</p>
         <div class="story-flow-promise">
           <span aria-hidden="true">✦</span>
-          <p><strong>Light by design.</strong><br />Choose, reflect, write. Skip any prompt that does not belong to your story.</p>
+          <p><strong>Light by design.</strong><br />Choose, reflect, write. Use one descriptive field, the guided beats, or both.</p>
         </div>
         <ol class="story-flow-map" aria-label="Story creation steps">
           <li class="is-active" data-map-step="1"><span>1</span><div><b>The turning point</b><small>Name the main reason.</small></div></li>
           <li data-map-step="2"><span>2</span><div><b>The forces around it</b><small>Add the contributing reasons.</small></div></li>
-          <li data-map-step="3"><span>3</span><div><b>The story arc</b><small>Capture the moments that matter.</small></div></li>
+          <li data-map-step="3"><span>3</span><div><b>The story arc</b><small>Tell it freely or follow the prompts.</small></div></li>
         </ol>
       </aside>
 
@@ -165,9 +177,9 @@ function initStoryFlow() {
 
         <fieldset class="story-step" data-story-step="1">
           <legend>Name the turning point.</legend>
-          <p class="story-step-lede">Every ending has a headline. Choose the reason that best explains yours.</p>
+          <p class="story-step-lede">Every ending has a headline. Move through the card stack and choose the reason that sits closest to the centre of yours.</p>
           <div class="reason-grid primary-reasons" role="radiogroup" aria-label="Primary reason for leaving">
-            ${renderReasonOptions(primaryReasons, 'radio', 'primaryReason')}
+            ${renderReasonOptions(primaryReasons, 'radio', 'primaryReason', 'card')}
           </div>
           <label class="other-reason" data-other-primary hidden>
             <span>Write your own headline</span>
@@ -198,10 +210,24 @@ function initStoryFlow() {
 
         <fieldset class="story-step" data-story-step="3" hidden>
           <legend>Tell the arc, not just the ending.</legend>
-          <p class="story-step-lede">Pick up the moments that matter. Write a line or a chapter—skip any beat that does not belong to your story.</p>
+          <p class="story-step-lede">Start with the full experience field when you need room to tell it naturally. The guided beats below are optional helpers—not boxes your story must fit into.</p>
           <div class="story-reason-recap">
             <div><small>THE HEADLINE REASON</small><strong data-primary-summary>Not selected</strong></div>
             <div><small>THE THREADS BENEATH IT</small><span data-secondary-summary>None selected—and that is okay.</span></div>
+          </div>
+
+          <label class="experience-canvas" for="story-full-experience">
+            <span class="experience-canvas-kicker">THE FULL SCENE · OPTIONAL</span>
+            <strong>Need more room? Tell the experience in your own flow.</strong>
+            <span>Begin with the moment you keep replaying, move backwards, jump ahead, or write it exactly as you remember it. The guided cards below can support the story without interrupting it.</span>
+            <textarea id="story-full-experience" name="fullExperience" rows="9" maxlength="2400" placeholder="Tell the experience in the order that feels natural to you…"></textarea>
+            <small><span data-count-for="story-full-experience">0</span>/2400 · This is your open canvas.</small>
+          </label>
+
+          <div class="story-guided-heading">
+            <span>OPTIONAL STORY BEATS</span>
+            <h3>Prefer a little structure?</h3>
+            <p>Use any of these prompts to uncover details a single paragraph may miss.</p>
           </div>
           <div class="story-beats-grid">
             ${renderStoryBeats()}
@@ -224,7 +250,7 @@ function initStoryFlow() {
   const primaryOther = form.querySelector('[data-other-primary]');
   const secondaryOther = form.querySelector('[data-other-secondary]');
 
-  const selectedLabel = (input) => input?.closest('.reason-chip')?.querySelector('.reason-label')?.textContent?.trim() || '';
+  const selectedLabel = (input) => input?.closest('.reason-option')?.querySelector('.reason-label')?.textContent?.trim() || '';
 
   function toggleOtherFields() {
     const primaryOtherSelected = form.querySelector('input[name="primaryReason"][value="Other"]')?.checked;
@@ -316,9 +342,12 @@ function initStoryFlow() {
     event.preventDefault();
     updateSummary();
     const primaryReason = form.querySelector('[data-primary-summary]').textContent;
+    const hasDescription = Boolean(form.elements.fullExperience.value.trim());
     const toast = document.querySelector('.toast');
     if (toast) {
-      toast.textContent = `Your private story map now has a centre: ${primaryReason}. Nothing has been published.`;
+      toast.textContent = hasDescription
+        ? `Your private story map and descriptive experience are saved around: ${primaryReason}. Nothing has been published.`
+        : `Your private story map now has a centre: ${primaryReason}. Nothing has been published.`;
       toast.classList.add('show');
       window.setTimeout(() => toast.classList.remove('show'), 4200);
     }
