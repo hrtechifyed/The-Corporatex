@@ -1,0 +1,93 @@
+/* Final footer and orange text-accent refinements */
+:root{
+  --orange-text-on-dark:#ffad42;
+  --orange-text-on-light:#b94700;
+}
+
+/* Keep the brand's burgundy surfaces, but use orange wherever text previously read as red. */
+.hero-copy h1 em{
+  background:linear-gradient(100deg,#ffd84a,#ff9a2e 58%,#ff6500);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.section-heading h2 em{
+  color:var(--orange-text-on-light);
+}
+
+.journey-copy h2 em,
+.safety h2 em,
+.info-hero h1 em,
+.story-flow-intro h2 em{
+  color:var(--orange-text-on-dark);
+}
+
+.experience footer a,
+.text-link,
+.contact-email,
+.labels span,
+.feature-chips span{
+  color:var(--orange-text-on-light);
+}
+
+.experience footer a:hover,
+.text-link:hover{
+  color:#8f3600;
+}
+
+.more-card .eyebrow,
+.policy-card .eyebrow,
+.stories .eyebrow{
+  color:#c44b00;
+}
+
+.rules-banner .eyebrow,
+.journey .eyebrow,
+.safety .eyebrow,
+.prompt-section .eyebrow{
+  color:#ffb347;
+}
+
+/* Footer: exactly two centred statements, equal typography, one statement per line. */
+.footer-shell{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  justify-items:center!important;
+  align-items:center!important;
+  gap:.58rem!important;
+  text-align:center!important;
+}
+
+.footer-shell p,
+.footer-primary,
+.footer-secondary{
+  display:block;
+  width:100%;
+  margin:0!important;
+  color:#fff8ed!important;
+  font-family:"Manrope",sans-serif!important;
+  font-size:clamp(.82rem,1.15vw,.96rem)!important;
+  font-weight:700!important;
+  line-height:1.5!important;
+  letter-spacing:.012em!important;
+  text-align:center!important;
+}
+
+.footer-secondary{
+  color:#f0d1bf!important;
+}
+
+@media(min-width:761px){
+  .footer-primary,
+  .footer-secondary{
+    white-space:nowrap;
+  }
+}
+
+@media(max-width:760px){
+  .footer-primary,
+  .footer-secondary{
+    white-space:normal;
+  }
+}
