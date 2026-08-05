@@ -1,3 +1,12 @@
+const artParts = window.__REFERENCE_ART_PARTS__ || [];
+if (artParts.length) {
+  const template = document.createElement('template');
+  template.innerHTML = artParts.join('');
+  const sprite = template.content.firstElementChild;
+  if (sprite) document.body.prepend(sprite);
+  delete window.__REFERENCE_ART_PARTS__;
+}
+
 const page = document.body.dataset.refPage;
 document.querySelectorAll('[data-ref-nav]').forEach((link) => {
   if (link.dataset.refNav === page) link.setAttribute('aria-current', 'page');
