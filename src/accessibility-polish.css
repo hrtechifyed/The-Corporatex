@@ -1,0 +1,10 @@
+/* 9/10 programme — Phase 5: accessibility support */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+button,a,input,select,textarea,summary{scroll-margin-top:115px}
+button,a,.reason-option span,summary{min-height:44px}
+input,select,textarea{min-height:44px}
+[aria-pressed="true"]{outline:2px solid var(--gold);outline-offset:2px}
+@media(forced-colors:active){
+  .glass-card,.glass-nav,.button,.story-door,.chapter-button,.company-group{border:1px solid CanvasText}
+  .button,[aria-pressed="true"]{forced-color-adjust:auto}
+}
