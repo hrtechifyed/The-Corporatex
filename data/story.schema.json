@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hrtechify.com/schemas/corporate-ex-story.json",
+  "title": "The Corporate Ex published story",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "slug", "employer", "headline", "summary", "anonymous_id", "broad_function", "tenure", "region", "primary_theme", "published_at", "labels", "sections"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^story_[a-z0-9_-]+$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "employer": { "type": "string", "minLength": 2, "maxLength": 120 },
+    "headline": { "type": "string", "minLength": 8, "maxLength": 140 },
+    "summary": { "type": "string", "minLength": 20, "maxLength": 320 },
+    "anonymous_id": { "type": "string", "pattern": "^HRT-[A-Z0-9]{7,12}$" },
+    "broad_function": { "type": "string", "minLength": 2, "maxLength": 80 },
+    "tenure": { "type": "string", "enum": ["Less than 1 year", "1–2 years", "3–5 years", "6–10 years", "More than 10 years"] },
+    "region": { "type": "string", "minLength": 2, "maxLength": 80 },
+    "primary_theme": { "type": "string", "minLength": 2, "maxLength": 80 },
+    "contributing_themes": { "type": "array", "maxItems": 6, "uniqueItems": true, "items": { "type": "string", "minLength": 2, "maxLength": 80 } },
+    "published_at": { "type": "string", "format": "date" },
+    "labels": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "enum": ["Anonymous contributor", "Contributor approved", "Human moderated"] } },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beginning", "good_part", "shift", "tipping_point", "candidate_question"],
+      "properties": {
+        "beginning": { "type": "string", "minLength": 20, "maxLength": 2400 },
+        "good_part": { "type": "string", "minLength": 10, "maxLength": 2400 },
+        "shift": { "type": "string", "minLength": 20, "maxLength": 2400 },
+        "tipping_point": { "type": "string", "minLength": 20, "maxLength": 2400 },
+        "candidate_question": { "type": "string", "minLength": 10, "maxLength": 600 },
+        "right_fit": { "type": "string", "maxLength": 1200 },
+        "ai_impact": { "type": "string", "maxLength": 1200 }
+      }
+    }
+  }
+}
