@@ -1,16 +1,17 @@
 import {
   GUIDED_CHAPTERS,
-  FREEFLOW_MIN_LENGTH,
   adjacentChapterId,
   buildGuidedReview,
+  buildGuidedSubmission,
   chapterStatus,
   createGuidedState,
   getChapter,
   guidedProgress,
   markGuidedSkipped,
   setActiveChapter,
+  setGuidedContext,
   setGuidedResponse,
-  validateFreeflowDraft,
+  validateGuidedContext,
 } from './story-workflow-model.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -70,6 +71,11 @@ function initialiseGuidedWorkflow() {
   if (!root) return;
 
   const cards = [...root.querySelectorAll('[data-guided-chapter]')];
+  const contextPanel = root.querySelector('[data-guided-context]');
+  const companyField = root.querySelector('[data-guided-company]');
+  const teamField = root.querySelector('[data-guided-team]');
+  const locationField = root.querySelector('[data-guided-location]');
+  const contextStatus = root.querySelector('[data-guided-context-status]');
   const editor = root.querySelector('[data-guided-editor]');
   const review = root.querySelector('[data-guided-review-panel]');
   const textarea = root.querySelector('[data-guided-text]');
@@ -91,6 +97,47 @@ function initialiseGuidedWorkflow() {
   const agreement = root.querySelector('[data-guided-agreement]');
   const confirmButton = root.querySelector('[data-guided-confirm]');
   let state = createGuidedState();
+
+  function clearContextValidation() {
+    [companyField, locationField].forEach((field) => field?.removeAttribute('aria-invalid'));
+    root.querySelectorAll('[data-guided-error]').forEach((node) => { node.textContent = ''; });
+  }
+
+  function showContextValidation(result) {
+    clearContextValidation();
+    Object.entries(result.errors).forEach(([name, message]) => {
+      const field = name === 'company' ? companyField : locationField;
+      field?.setAttribute('aria-invalid', 'true');
+      const error = root.querySelector(`[data-guided-error="${name}"]`);
+      if (error) error.textContent = message;
+    });
+    if (contextStatus) contextStatus.textContent = 'Add the highlighted story context before review.';
+    scrollToElement(contextPanel);
+    (companyField?.matches('[aria-invalid="true"]') ? companyField : locationField)?.focus();
+  }
+
+  function updateContextStatus() {
+    const validation = validateGuidedContext(state.context);
+    if (contextStatus) {
+      contextStatus.textContent = validation.valid
+        ? `Context ready: ${validation.context.company} · ${validation.context.location}`
+        : '';
+    }
+  }
+
+  [
+    [companyField, 'company'],
+    [teamField, 'team'],
+    [locationField, 'location'],
+  ].forEach(([field, name]) => {
+    field?.addEventListener('input', () => {
+      state = setGuidedContext(state, name, field.value);
+      field.removeAttribute('aria-invalid');
+      const error = root.querySelector(`[data-guided-error="${name}"]`);
+      if (error) error.textContent = '';
+      updateContextStatus();
+    });
+  });
 
   function renderProgressAndCards() {
     const progress = guidedProgress(state);
@@ -137,7 +184,9 @@ function initialiseGuidedWorkflow() {
     state = setActiveChapter(state, id);
     renderEditor();
     const activeCard = cards.find((card) => card.dataset.guidedChapter === id);
-    if (centreCard) activeCard?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
+    if (centreCard && window.innerWidth < 1280) {
+      activeCard?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
+    }
     if (focusEditor) {
       scrollToElement(editor);
       window.setTimeout(() => textarea?.focus(), reducedMotion ? 0 : 260);
@@ -174,7 +223,12 @@ function initialiseGuidedWorkflow() {
 
   function renderReview() {
     if (!reviewList) return;
-    reviewList.replaceChildren(...buildGuidedReview(state).map((item) => {
+    const submission = buildGuidedSubmission(state);
+    Object.entries(submission.context).forEach(([name, value]) => {
+      const node = review?.querySelector(`[data-guided-review-context="${name}"]`);
+      if (node) node.textContent = value || 'Not provided';
+    });
+    reviewList.replaceChildren(...submission.chapters.map((item) => {
       const article = document.createElement('article');
       article.className = 'ref-review-item';
       const heading = document.createElement('h3');
@@ -193,8 +247,15 @@ function initialiseGuidedWorkflow() {
   }
 
   reviewButton?.addEventListener('click', () => {
+    const contextValidation = validateGuidedContext(state.context);
+    if (!contextValidation.valid) {
+      showContextValidation(contextValidation);
+      return;
+    }
+    clearContextValidation();
     renderReview();
     if (editor) editor.hidden = true;
+    if (contextPanel) contextPanel.hidden = true;
     if (review) review.hidden = false;
     if (agreement) agreement.checked = false;
     if (confirmButton) confirmButton.disabled = true;
@@ -205,14 +266,16 @@ function initialiseGuidedWorkflow() {
     const edit = event.target.closest('[data-edit-chapter]');
     if (!edit) return;
     if (review) review.hidden = true;
+    if (contextPanel) contextPanel.hidden = false;
     if (editor) editor.hidden = false;
     activateChapter(edit.dataset.editChapter, { focusEditor: true });
   });
 
   editChoicesButton?.addEventListener('click', () => {
     if (review) review.hidden = true;
+    if (contextPanel) contextPanel.hidden = false;
     if (editor) editor.hidden = false;
-    scrollToElement(editor);
+    scrollToElement(contextPanel);
   });
 
   agreement?.addEventListener('change', () => {
@@ -220,129 +283,14 @@ function initialiseGuidedWorkflow() {
   });
 
   confirmButton?.addEventListener('click', () => {
-    const detail = { chapters: buildGuidedReview(state), progress: guidedProgress(state) };
-    root.dispatchEvent(new CustomEvent('guidedstoryconfirmed', { bubbles: true, detail }));
+    const submission = buildGuidedSubmission(state);
+    if (!agreement?.checked || !submission.valid || submission.progress.answered === 0) return;
+    root.dispatchEvent(new CustomEvent('guidedstoryconfirmed', { bubbles: true, detail: submission }));
     showToast('Your guided story is ready for the future moderation workflow. Nothing has been published.');
   });
 
   renderEditor();
 }
 
-function initialiseFreeflowWorkflow() {
-  const form = document.querySelector('[data-freeflow-form]');
-  const review = document.querySelector('[data-freeflow-review]');
-  if (!form || !review) return;
-
-  const employer = form.querySelector('[name="employer"]');
-  const role = form.querySelector('[name="role"]');
-  const tenure = form.querySelector('[name="tenure"]');
-  const region = form.querySelector('[name="region"]');
-  const title = form.querySelector('[name="storyTitle"]');
-  const theme = form.querySelector('[name="theme"]');
-  const story = form.querySelector('[name="story"]');
-  const counter = form.querySelector('[data-freeflow-count]');
-  const error = form.querySelector('[data-freeflow-error]');
-  const saveButton = form.querySelector('[data-freeflow-save]');
-  const reviewButton = form.querySelector('[data-freeflow-review-button]');
-  const editButton = review.querySelector('[data-freeflow-edit]');
-  const agreement = review.querySelector('[data-freeflow-agreement]');
-  const confirmButton = review.querySelector('[data-freeflow-confirm]');
-
-  function readDraft() {
-    return {
-      employer: employer?.value || '',
-      role: role?.value || '',
-      tenure: tenure?.value || '',
-      region: region?.value || '',
-      title: title?.value || '',
-      theme: theme?.value || '',
-      story: story?.value || '',
-    };
-  }
-
-  function updateCounter() {
-    if (counter) counter.textContent = String(story?.value.length || 0);
-  }
-
-  function clearValidation() {
-    [employer, story].forEach((field) => field?.removeAttribute('aria-invalid'));
-    form.querySelectorAll('[data-field-error]').forEach((node) => { node.textContent = ''; });
-    if (error) error.textContent = '';
-  }
-
-  function showValidation(result) {
-    clearValidation();
-    Object.entries(result.errors).forEach(([name, message]) => {
-      const field = form.querySelector(`[name="${name}"]`);
-      field?.setAttribute('aria-invalid', 'true');
-      const fieldError = form.querySelector(`[data-field-error="${name}"]`);
-      if (fieldError) fieldError.textContent = message;
-    });
-    if (error) error.textContent = 'Complete the highlighted fields before reviewing your story.';
-    const firstInvalid = form.querySelector('[aria-invalid="true"]');
-    firstInvalid?.focus();
-  }
-
-  function setReviewText(name, value, fallback = 'Not provided') {
-    const node = review.querySelector(`[data-review-value="${name}"]`);
-    if (node) node.textContent = String(value || '').trim() || fallback;
-  }
-
-  function renderReview(draft) {
-    setReviewText('employer', draft.employer);
-    setReviewText('role', draft.role);
-    setReviewText('tenure', draft.tenure);
-    setReviewText('region', draft.region);
-    setReviewText('title', draft.title, 'Untitled experience');
-    setReviewText('theme', draft.theme, 'No theme selected');
-    setReviewText('story', draft.story);
-  }
-
-  story?.addEventListener('input', updateCounter);
-  saveButton?.addEventListener('click', () => {
-    showToast('Your draft is kept only on this open page. Leaving or refreshing will clear it.');
-  });
-
-  reviewButton?.addEventListener('click', () => {
-    const draft = readDraft();
-    const validation = validateFreeflowDraft(draft);
-    if (!validation.valid) {
-      showValidation(validation);
-      return;
-    }
-    clearValidation();
-    renderReview(draft);
-    form.hidden = true;
-    review.hidden = false;
-    if (agreement) agreement.checked = false;
-    if (confirmButton) confirmButton.disabled = true;
-    scrollToElement(review);
-  });
-
-  editButton?.addEventListener('click', () => {
-    review.hidden = true;
-    form.hidden = false;
-    scrollToElement(form);
-    story?.focus();
-  });
-
-  agreement?.addEventListener('change', () => {
-    if (confirmButton) confirmButton.disabled = !agreement.checked;
-  });
-
-  confirmButton?.addEventListener('click', () => {
-    const draft = readDraft();
-    const validation = validateFreeflowDraft(draft);
-    if (!agreement?.checked || !validation.valid) return;
-    review.dispatchEvent(new CustomEvent('freeflowstoryconfirmed', { bubbles: true, detail: draft }));
-    showToast('Your free-flow story is ready for the future moderation workflow. Nothing has been published.');
-  });
-
-  story?.setAttribute('aria-describedby', 'freeflow-story-help freeflow-story-error');
-  if (story) story.placeholder = `Tell the experience in your own words. Aim for at least ${FREEFLOW_MIN_LENGTH} characters so a reader has enough context.`;
-  updateCounter();
-}
-
 initialiseShell();
 initialiseGuidedWorkflow();
-initialiseFreeflowWorkflow();
