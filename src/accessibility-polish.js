@@ -42,6 +42,10 @@ if (mode) {
   document.querySelector('main')?.prepend(announcement);
 }
 
+import('./theme-decision-journey.js').catch(() => {
+  // The original theme controls remain available if the enhanced journey cannot load.
+});
+
 import('./beta-content.js').catch(() => {
   // The demonstration layout remains available if beta data cannot be loaded.
 });

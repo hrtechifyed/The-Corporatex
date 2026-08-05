@@ -11,6 +11,23 @@
 | 5 | Accessibility, performance budgets and CI quality gates | Implemented |
 | 6 | Controlled-beta data model, safe rendering and intake operations | Engineering implemented |
 
+## Post-programme enhancement
+
+The Free-flow **Choose a chapter—or skip it** section now has a dedicated interactive theme-decision journey:
+
+- ten reusable, data-driven narrative cards;
+- polished front/back 3D reveal;
+- Select, Ignore and Skip decisions;
+- previous, next and direct-card navigation;
+- progress and selected/ignored/skipped counts;
+- revisable choices and skipped-card review;
+- final grouped summary and confirmation event;
+- mouse, touch, keyboard and screen-reader support;
+- reduced-motion behaviour;
+- theme choices held only in memory for the current page session.
+
+The implementation is documented in `docs/THEME_DECISION_JOURNEY.md` and tested by `npm run test:themes`.
+
 ## External content gate
 
 Phase 6 cannot be declared **content-ready** until genuine contributors provide stories and approve their publication.
@@ -28,7 +45,7 @@ The authoritative state is `data/beta-status.json`.
 
 ## Merge order
 
-The pull requests are stacked and must be reviewed and merged in phase order.
+The six programme pull requests must be reviewed and merged in phase order. The interactive theme-decision journey is stacked after the Phase 6 engineering branch.
 
 ## Final release decision
 
