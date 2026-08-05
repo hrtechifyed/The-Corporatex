@@ -1,8 +1,22 @@
 # Story Page Behaviour
 
-## Guided Story
+## Single Guided Story route
 
-### Card behaviour
+The website now offers one story-submission route: **Guided Story**. The retired Free-flow page and all visible route-switching controls are removed.
+
+## Required story context
+
+Before a story can enter review, the contributor must provide:
+
+- **Company or organisation** — required.
+- **Team** — optional and deliberately broad.
+- **Location** — required; this may be a city and country, a broad region, or a remote-work region.
+
+The location field includes suggestions such as `Bengaluru, India`, `Remote — Europe`, and `Hybrid — city and country`. The interface does not request a street address or another person's identity.
+
+Context is held in memory for the current page visit and included in the future `guidedstoryconfirmed` integration event.
+
+## Chapter cards
 
 Each of the eight cards represents one reusable chapter from `src/story-workflow-model.js`.
 
@@ -17,75 +31,64 @@ Each of the eight cards represents one reusable chapter from `src/story-workflow
 
 Selecting a card:
 
-- makes it the only active chapter;
+- makes it the active chapter;
 - updates `aria-pressed`;
-- centres the card in a horizontal deck when required;
-- reveals its prompt, helper and saved in-memory response;
-- moves focus to the editor when selected by click or tap.
+- reveals its full prompt, helper and current response in the editor;
+- keeps the card available for later revision;
+- moves focus to the editor after click or tap.
 
-### Card states
+## Aerial formation and motion
+
+On wide desktop screens with a precise pointer, the cards travel slowly along one shallow edge-to-edge curve.
+
+- The complete journey lasts 96 seconds before reversing.
+- Eight staggered delays keep the cards distributed across the curve.
+- Hovering or focusing anywhere in the deck pauses every card.
+- The active card moves forward visually without changing its semantic order.
+- Tablet layouts use a stable grid.
+- Mobile layouts use a horizontal snap journey.
+- Touch-only and reduced-motion environments do not use the aerial animation.
+
+## Card states
 
 - **Open chapter** — unanswered.
 - **Answered** — contains non-empty text.
 - **Skipped** — deliberately skipped and available for later editing.
 
-State is communicated by label, border and icon—not colour alone.
+State is communicated by text, border and icon—not colour alone.
 
-### Navigation
+## Navigation
 
 - Card click or tap activates a chapter.
 - Left and Right Arrow keys move between chapter cards.
 - Previous and Next move through the sequence.
 - Skip & Next marks the active chapter as skipped.
-- Review Story becomes available after at least one answered chapter.
-- Edit returns from review to the chosen chapter.
+- Review becomes available after at least one answered chapter.
+- Review is blocked until company and location are valid.
+- Edit returns from review to the context and chapter editor.
 
-### Animation
+## Review and confirmation
 
-- Hover and focus lift the card slightly.
-- The active card receives controlled depth, glow and image emphasis.
-- Editor and review panels fade upward once when opened.
-- There is no rapid bounce, spin or constant deck movement.
-- `prefers-reduced-motion` removes transforms and animation while retaining every interaction.
+Review mode displays:
 
-## Free-flow Story
+- company;
+- optional team;
+- location;
+- all eight chapter responses and their current states;
+- one responsibility checklist;
+- one final agreement checkbox.
 
-### Form order
-
-1. Employer or organisation
-2. Broad job function
-3. Approximate tenure
-4. Region or country
-5. Optional story title
-6. Optional primary theme
-7. Main story field
-
-Employer and story text are required for review. The main account must contain at least 80 characters so a reader receives useful context.
-
-### Review and confirmation
-
-Review mode displays the exact current values and full story. The contributor can return to editing at any time.
-
-One final checkbox confirms that the account is:
-
-- genuine and first-person;
-- not invented or deliberately exaggerated;
-- free from names, identifying details and confidential information;
-- a personal perspective rather than a universal claim;
-- written with awareness that readers may use it for career decisions.
-
-### Prototype state
-
-Choices and writing remain in memory only for the current page visit. The interface does not use `localStorage` or `sessionStorage`.
-
-The confirmation actions emit integration events for a future authenticated moderation workflow:
+The confirmation action emits:
 
 ```text
 guidedstoryconfirmed
-freeflowstoryconfirmed
 ```
 
-The current prototype does not publish, email or upload a story.
+Its event detail contains validated context, all chapters and progress. The prototype does not publish, email or upload the story.
+
+## Prototype state
+
+Context and writing remain in memory only for the current page visit. The interface does not use `localStorage` or `sessionStorage`.
 
 ## Accessibility contract
 
@@ -93,6 +96,6 @@ The current prototype does not publish, email or upload a story.
 - Interactive targets are at least 44px high.
 - Focus indicators remain visible.
 - Status changes use live regions.
-- Invalid fields receive `aria-invalid` and linked error text.
+- Invalid required context fields receive `aria-invalid` and linked error text.
 - The mobile navigation exposes `aria-controls` and closes with Escape.
 - Reduced-motion users receive the same workflow without animation.

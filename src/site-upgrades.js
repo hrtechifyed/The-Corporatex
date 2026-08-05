@@ -15,8 +15,6 @@ const setHtml = (selector, value) => {
   if (node) node.innerHTML = value;
 };
 
-const remove = (selector) => document.querySelectorAll(selector).forEach((node) => node.remove());
-
 // Honest prototype language until genuine moderated stories are published.
 document.querySelectorAll('.brand-copy span').forEach((node) => {
   node.textContent = 'Exit stories. Smarter decisions.';
@@ -53,31 +51,6 @@ if (page === 'home') {
   setText('.ai-banner h2', 'AI is changing work. Employers are choosing how.');
   setText('.ai-banner p', 'Exit stories show how people were treated through that change.');
   setText('.ai-banner .button', 'Why it matters →');
-}
-
-if (page === 'share') {
-  const sections = [...document.querySelectorAll('main > section')];
-  sections.slice(1).forEach((section) => section.remove());
-  setText('.share-hero .eyebrow', 'SHARE YOUR STORY');
-  setHtml('.share-hero .display-title', 'How would you like to<br><em>tell your story?</em>');
-  setText('.share-hero .lede', 'Choose the approach that feels natural. You can switch later.');
-
-  const choiceCards = [...document.querySelectorAll('.choice-card')];
-  const choices = [
-    ['Guided Story', 'A little structure when you need it.', 'Start Guided →'],
-    ['Free-flow Story', 'Your experience, in your own order.', 'Start Free-flow →'],
-  ];
-  choiceCards.forEach((card, index) => {
-    const choice = choices[index];
-    if (!choice) return;
-    const heading = card.querySelector('h2');
-    const paragraph = card.querySelector('p');
-    const link = card.querySelector('.button');
-    if (heading) heading.textContent = choice[0];
-    if (paragraph) paragraph.textContent = choice[1];
-    if (link) link.textContent = choice[2];
-  });
-  setHtml('.open-note', '<strong>Open beta:</strong> drafts stay in this browser.');
 }
 
 if (page === 'more') {
@@ -130,9 +103,8 @@ if (page === 'privacy') {
 
 export const copyBudgets = Object.freeze({
   home: 180,
-  share: 90,
-  guided: 140,
-  freeflow: 120,
+  share: 80,
+  guided: 150,
   stories: 80,
   more: 140,
   privacy: 160,

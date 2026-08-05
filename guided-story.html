@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="src/reference-exact.css" />
   <link rel="stylesheet" href="src/reference-functional.css" />
   <link rel="stylesheet" href="src/cinematic-card-system.css" />
+  <link rel="stylesheet" href="src/guided-only-aerial.css" />
   <title>Guided Story | The Corporate Ex</title>
 </head>
 <body class="ref-page ref-guided" data-ref-page="share">
@@ -21,7 +22,19 @@
 <nav class="ref-mobile-nav" data-ref-mobile-nav hidden aria-label="Mobile navigation"><a href="index.html">Home</a><a href="share-story.html">Share Your Story</a><a href="stories.html">Stories</a><a href="more-info.html">More</a><a href="privacy-safety.html">Privacy &amp; Safety</a><button type="button" data-ref-signin>Sign In</button></nav>
 
 <main id="main" class="ref-guided-main" data-guided-workflow>
-  <header class="ref-story-heading"><p>GUIDED STORY</p><h1>Tell the arc.</h1><span>Choose a chapter. Write. Return anytime.</span><i aria-hidden="true">↓</i></header>
+  <header class="ref-story-heading"><p>GUIDED STORY</p><h1>Tell the arc.</h1><span>Set the scene, choose a chapter, and return anytime.</span><i aria-hidden="true">↓</i></header>
+
+  <section class="ref-guided-context" data-guided-context aria-labelledby="guided-context-title">
+    <div class="ref-guided-context-head"><div><p class="ref-editor-kicker">SET THE SCENE</p><h2 id="guided-context-title">Where did this experience happen?</h2></div><p>Use broad details only. Do not name individual people or include confidential information.</p></div>
+    <div class="ref-guided-context-grid">
+      <label class="ref-field-label">Company <span aria-hidden="true">*</span><input type="text" name="company" data-guided-company required autocomplete="organization" placeholder="e.g. Northstar Technologies" /><span class="ref-field-error" data-guided-error="company"></span></label>
+      <label class="ref-field-label">Team — optional<input type="text" name="team" data-guided-team autocomplete="off" placeholder="e.g. Product, Sales, People" /><span class="ref-field-error"></span></label>
+      <label class="ref-field-label">Location <span aria-hidden="true">*</span><input type="text" name="location" data-guided-location required autocomplete="country-name" list="guided-location-suggestions" placeholder="e.g. Bengaluru, India or Remote — Europe" /><span class="ref-field-error" data-guided-error="location"></span></label>
+    </div>
+    <datalist id="guided-location-suggestions"><option value="Bengaluru, India"></option><option value="London, United Kingdom"></option><option value="New York, United States"></option><option value="Singapore"></option><option value="Remote — Asia-Pacific"></option><option value="Remote — Europe"></option><option value="Remote — North America"></option><option value="Hybrid — city and country"></option></datalist>
+    <p class="ref-guided-context-status" data-guided-context-status role="status" aria-live="polite"></p>
+  </section>
+
   <section class="ref-guided-progress" aria-label="Guided story progress"><p class="ref-progress-label" data-guided-progress-label>Chapter 1 of 8</p><div class="ref-progress-track" role="progressbar" aria-label="Story completion" aria-valuemin="0" aria-valuemax="100"><span class="ref-progress-fill" data-guided-progress-fill></span></div><p class="ref-progress-counts" data-guided-progress-counts>0 answered · 0 skipped</p></section>
   <section class="ref-journey-deck" aria-label="Guided story chapters">
     <button type="button" class="ref-journey-card orange is-active" data-guided-chapter="beginning" aria-pressed="true" aria-label="The Beginning. Why did you join?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#growth"></use></svg><span class="ref-card-icon" aria-hidden="true">1</span><h2>The Beginning</h2><p>Why did you join?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
@@ -39,12 +52,13 @@
     <div class="ref-editor-actions"><button class="ref-action ghost" type="button" data-guided-previous>Previous</button><button class="ref-action ghost" type="button" data-guided-skip>Skip</button><span class="ref-editor-spacer"></span><button class="ref-action" type="button" data-guided-next>Next</button><button class="ref-action primary" type="button" data-guided-review disabled>Review</button></div><p class="ref-status-live" data-guided-live role="status" aria-live="polite"></p>
   </section>
   <section class="ref-story-review" data-guided-review-panel hidden aria-labelledby="guided-review-title">
-    <p class="ref-editor-kicker">REVIEW</p><h2 id="guided-review-title">Read the complete arc.</h2><div class="ref-review-list" data-guided-review-list></div>
+    <p class="ref-editor-kicker">REVIEW</p><h2 id="guided-review-title">Read the complete arc.</h2>
+    <dl class="ref-context-review" aria-label="Story context"><div><dt>Company</dt><dd data-guided-review-context="company"></dd></div><div><dt>Team</dt><dd data-guided-review-context="team"></dd></div><div><dt>Location</dt><dd data-guided-review-context="location"></dd></div></dl>
+    <div class="ref-review-list" data-guided-review-list></div>
     <div class="ref-responsibility"><h3>Before confirming</h3><ul><li>Keep it first-person and authentic.</li><li>Remove names and confidential details.</li><li>Describe your perspective, not the whole organisation.</li><li>Remember that readers may use it for a career decision.</li></ul></div>
     <label class="ref-agreement"><input type="checkbox" data-guided-agreement /><span>I agree that this account is authentic, responsible and ready for review.</span></label>
-    <div class="ref-review-actions"><button class="ref-action ghost" type="button" data-guided-edit-choices>Edit chapters</button><span class="ref-editor-spacer"></span><button class="ref-action primary" type="button" data-guided-confirm disabled>Confirm for review</button></div>
+    <div class="ref-review-actions"><button class="ref-action ghost" type="button" data-guided-edit-choices>Edit story</button><span class="ref-editor-spacer"></span><button class="ref-action primary" type="button" data-guided-confirm disabled>Confirm for review</button></div>
   </section>
-  <a class="ref-mode-note" href="freeflow-story.html"><span aria-hidden="true">⇄</span> Switch to Free-flow</a>
 </main>
 <footer class="site-footer"><p class="footer-line">The Corporate Ex - Powered by - HRTechify - People • Technology • Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved.</p></footer>
 <div class="ref-toast" role="status" aria-live="polite"></div><script type="module" src="src/reference-exact.js"></script>

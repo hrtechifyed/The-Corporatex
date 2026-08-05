@@ -2,16 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   GUIDED_CHAPTERS,
-  FREEFLOW_MIN_LENGTH,
   adjacentChapterId,
   buildGuidedReview,
+  buildGuidedSubmission,
   chapterStatus,
   createGuidedState,
   guidedProgress,
   markGuidedSkipped,
   setActiveChapter,
+  setGuidedContext,
   setGuidedResponse,
-  validateFreeflowDraft,
+  validateGuidedContext,
 } from '../src/story-workflow-model.js';
 
 test('guided journey exposes eight unique, complete chapters', () => {
@@ -57,20 +58,39 @@ test('review output keeps every chapter and its current status', () => {
   assert.equal(review.find((chapter) => chapter.id === 'shift').response, 'The team changed after a reorganisation.');
 });
 
-test('free-flow validation requires employer and useful story context', () => {
-  const empty = validateFreeflowDraft({ employer: '', story: '' });
+test('company and location are required while team remains optional', () => {
+  const empty = validateGuidedContext({ company: '', team: '', location: '' });
   assert.equal(empty.valid, false);
-  assert.ok(empty.errors.employer);
-  assert.ok(empty.errors.story);
+  assert.ok(empty.errors.company);
+  assert.ok(empty.errors.location);
+  assert.equal(empty.errors.team, undefined);
 
-  const tooShort = validateFreeflowDraft({ employer: 'Northstar Technologies', story: 'Too short.' });
-  assert.equal(tooShort.valid, false);
-  assert.match(tooShort.errors.story, new RegExp(String(FREEFLOW_MIN_LENGTH)));
-
-  const valid = validateFreeflowDraft({
-    employer: 'Northstar Technologies',
-    story: 'I joined for a clear learning path, but the role changed after a reorganisation and the workload became difficult to sustain.',
+  const valid = validateGuidedContext({
+    company: 'Northstar Technologies',
+    team: '',
+    location: 'Remote — Europe',
   });
   assert.equal(valid.valid, true);
   assert.deepEqual(valid.errors, {});
+  assert.deepEqual(valid.context, {
+    company: 'Northstar Technologies',
+    team: '',
+    location: 'Remote — Europe',
+  });
+});
+
+test('guided submission combines required context, chapters and progress', () => {
+  let state = createGuidedState();
+  state = setGuidedContext(state, 'company', 'Northstar Technologies');
+  state = setGuidedContext(state, 'team', 'Product');
+  state = setGuidedContext(state, 'location', 'Bengaluru, India');
+  state = setGuidedResponse(state, 'beginning', 'I joined for meaningful ownership and a clear learning path.');
+
+  const submission = buildGuidedSubmission(state);
+  assert.equal(submission.valid, true);
+  assert.equal(submission.context.company, 'Northstar Technologies');
+  assert.equal(submission.context.team, 'Product');
+  assert.equal(submission.context.location, 'Bengaluru, India');
+  assert.equal(submission.chapters.length, 8);
+  assert.equal(submission.progress.answered, 1);
 });

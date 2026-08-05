@@ -1,0 +1,241 @@
+:root{
+  --guided-panel: rgba(15, 10, 12, .94);
+  --guided-line: rgba(255, 142, 37, .38);
+  --guided-focus: #ffc04a;
+}
+
+/* Guided-only entry */
+.ref-guided-entry {
+  width: min(860px, calc(100% - 32px));
+  margin-inline: auto;
+  grid-template-columns: 1fr;
+}
+
+.ref-guided-entry .ref-choice-card {
+  display: grid;
+  grid-template-columns: minmax(260px, .9fr) minmax(320px, 1.1fr);
+  min-height: 430px;
+}
+
+.ref-guided-entry .ref-choice-image {
+  height: 100%;
+  min-height: 360px;
+}
+
+.ref-guided-entry .ref-choice-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(28px, 5vw, 58px);
+}
+
+.ref-guided-entry .ref-choice-button {
+  align-self: flex-start;
+}
+
+/* Required story context before review */
+.ref-guided-context {
+  width: min(980px, calc(100% - 32px));
+  margin: 14px auto 18px;
+  padding: 18px;
+  border: 1px solid var(--guided-line);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 86% 0, rgba(255, 124, 25, .12), transparent 28%),
+    linear-gradient(150deg, rgba(34, 14, 13, .94), var(--guided-panel));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, .42), inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+.ref-guided-context-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.ref-guided-context-head h2 {
+  margin: 2px 0 0;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+}
+
+.ref-guided-context-head p {
+  margin: 0;
+  max-width: 410px;
+  color: #cdbeb5;
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+.ref-guided-context-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.ref-guided-context .ref-field-label {
+  margin: 0;
+}
+
+.ref-guided-context input {
+  min-height: 48px;
+}
+
+.ref-guided-context .ref-field-error {
+  min-height: 1.1em;
+}
+
+.ref-guided-context-status {
+  min-height: 1.2em;
+  margin: 6px 0 0;
+  color: #ffc57a;
+  font-size: .72rem;
+}
+
+/* Better card scale and calm edge-to-edge aerial path on wide pointer screens only. */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .ref-guided-main {
+    overflow-x: clip;
+  }
+
+  .ref-journey-deck {
+    width: min(1280px, 100%);
+    min-height: 470px;
+    margin-inline: auto;
+    overflow: visible;
+    perspective: 1600px;
+  }
+
+  .ref-journey-deck::before {
+    left: 5%;
+    right: 5%;
+    bottom: 18px;
+    height: 128px;
+  }
+
+  .ref-journey-card,
+  .ref-journey-card:nth-child(n) {
+    --order: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 156px;
+    height: 318px;
+    padding: 8px 9px 13px;
+    offset-path: path("M 100 360 C 340 42 940 42 1180 360");
+    offset-rotate: 0deg;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+    animation: guided-aerial-curve 96s linear infinite alternate;
+    animation-delay: calc(var(--order) * -12s);
+    will-change: offset-distance;
+  }
+
+  .ref-journey-card:nth-child(1) { --order: 0; }
+  .ref-journey-card:nth-child(2) { --order: 1; }
+  .ref-journey-card:nth-child(3) { --order: 2; }
+  .ref-journey-card:nth-child(4) { --order: 3; }
+  .ref-journey-card:nth-child(5) { --order: 4; }
+  .ref-journey-card:nth-child(6) { --order: 5; }
+  .ref-journey-card:nth-child(7) { --order: 6; }
+  .ref-journey-card:nth-child(8) { --order: 7; }
+
+  .ref-journey-card .ref-art-svg {
+    height: 164px;
+  }
+
+  .ref-card-icon {
+    top: 147px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .ref-journey-card h2 {
+    margin-top: 28px;
+    font-size: .8rem;
+  }
+
+  .ref-journey-card p {
+    font-size: .62rem;
+  }
+
+  .ref-journey-card:hover,
+  .ref-journey-card:focus-visible,
+  .ref-journey-card.is-active {
+    z-index: 40;
+    transform: translate(-50%, -50%) scale(1.07);
+  }
+
+  .ref-journey-deck:hover .ref-journey-card,
+  .ref-journey-deck:focus-within .ref-journey-card {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes guided-aerial-curve {
+  from { offset-distance: 0%; }
+  to { offset-distance: 100%; }
+}
+
+@media (max-width: 900px) {
+  .ref-guided-entry .ref-choice-card {
+    grid-template-columns: 1fr;
+  }
+
+  .ref-guided-entry .ref-choice-image {
+    min-height: 230px;
+    height: 230px;
+  }
+
+  .ref-guided-context-head {
+    display: block;
+  }
+
+  .ref-guided-context-head p {
+    margin-top: 7px;
+  }
+
+  .ref-guided-context-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ref-guided-context {
+    width: min(100% - 24px, 980px);
+    padding: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ref-journey-card,
+  .ref-journey-card:nth-child(n) {
+    animation: none !important;
+  }
+}
+
+@media (min-width: 1280px) and (prefers-reduced-motion: reduce) {
+  .ref-journey-deck {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    min-height: auto !important;
+    padding: 14px 16px 24px;
+  }
+
+  .ref-journey-deck::before,
+  .ref-journey-deck::after {
+    display: none !important;
+  }
+
+  .ref-journey-card,
+  .ref-journey-card:nth-child(n) {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: 345px !important;
+    offset-path: none !important;
+    transform: none !important;
+  }
+}

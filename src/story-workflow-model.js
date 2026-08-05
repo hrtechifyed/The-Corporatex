@@ -89,11 +89,12 @@ export const GUIDED_CHAPTERS = Object.freeze([
   },
 ]);
 
-export const FREEFLOW_MIN_LENGTH = 80;
+const GUIDED_CONTEXT_FIELDS = Object.freeze(['company', 'team', 'location']);
 
 export function createGuidedState() {
   return {
     activeId: GUIDED_CHAPTERS[0].id,
+    context: { company: '', team: '', location: '' },
     responses: Object.fromEntries(GUIDED_CHAPTERS.map((chapter) => [chapter.id, ''])),
     skipped: [],
   };
@@ -106,6 +107,28 @@ export function getChapter(id) {
 export function setActiveChapter(state, id) {
   if (!getChapter(id)) return state;
   return { ...state, activeId: id };
+}
+
+export function setGuidedContext(state, field, value) {
+  if (!GUIDED_CONTEXT_FIELDS.includes(field)) return state;
+  return {
+    ...state,
+    context: { ...state.context, [field]: String(value ?? '') },
+  };
+}
+
+export function validateGuidedContext(context) {
+  const company = String(context?.company || '').trim();
+  const team = String(context?.team || '').trim();
+  const location = String(context?.location || '').trim();
+  const errors = {};
+  if (!company) errors.company = 'Add the company or organisation name.';
+  if (!location) errors.location = 'Add a city, country, region or remote location.';
+  return {
+    valid: Object.keys(errors).length === 0,
+    errors,
+    context: { company, team, location },
+  };
 }
 
 export function setGuidedResponse(state, id, value) {
@@ -161,18 +184,13 @@ export function buildGuidedReview(state) {
   }));
 }
 
-export function validateFreeflowDraft(draft) {
-  const employer = String(draft?.employer || '').trim();
-  const story = String(draft?.story || '').trim();
-  const errors = {};
-  if (!employer) errors.employer = 'Add the employer or organisation name.';
-  if (!story) errors.story = 'Write your experience before reviewing it.';
-  else if (story.length < FREEFLOW_MIN_LENGTH) {
-    errors.story = `Add a little more context—at least ${FREEFLOW_MIN_LENGTH} characters.`;
-  }
+export function buildGuidedSubmission(state) {
+  const validation = validateGuidedContext(state.context);
   return {
-    valid: Object.keys(errors).length === 0,
-    errors,
-    characterCount: story.length,
+    valid: validation.valid,
+    errors: validation.errors,
+    context: validation.context,
+    chapters: buildGuidedReview(state),
+    progress: guidedProgress(state),
   };
 }
