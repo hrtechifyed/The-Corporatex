@@ -221,3 +221,7 @@ try {
     localStorage.removeItem('corporateExStoryFilter');
   }
 } catch (_) {}
+
+import('./site-upgrades.js').catch(() => {
+  // The core prototype remains usable if an optional quality module fails to load.
+});
