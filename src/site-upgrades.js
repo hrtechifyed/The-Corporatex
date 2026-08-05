@@ -138,3 +138,7 @@ export const copyBudgets = Object.freeze({
   privacy: 160,
   storyDetailPlatformCopy: 80,
 });
+
+import('./progressive-disclosure.js').catch(() => {
+  // Optional disclosure enhancements must not block the core forms.
+});

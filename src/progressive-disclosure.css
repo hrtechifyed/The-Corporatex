@@ -1,0 +1,30 @@
+/* 9/10 programme — Phase 2: progressive disclosure */
+.disclosure-card{padding:0;overflow:hidden}
+.disclosure-card summary{display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;padding:1.1rem 1.25rem;cursor:pointer;list-style:none}
+.disclosure-card summary::-webkit-details-marker{display:none}
+.disclosure-summary-copy{display:grid;gap:.28rem}
+.disclosure-summary-copy small{color:var(--orange-2);font-size:.58rem;font-weight:900;letter-spacing:.14em}
+.disclosure-summary-copy strong{font-size:clamp(1.05rem,2vw,1.45rem)}
+.disclosure-summary-copy>span{color:var(--muted);font-size:.78rem;line-height:1.5}
+.disclosure-marker{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);border-radius:50%;color:var(--gold);font-size:1.25rem;transition:transform .2s ease}
+.disclosure-card[open] .disclosure-marker{transform:rotate(45deg)}
+.disclosure-body{padding:0 1.25rem 1.25rem 5.8rem;border-top:1px solid var(--line-soft)}
+.disclosure-body p{max-width:70ch;color:var(--muted);line-height:1.7}
+.optional-theme-disclosure{border:1px solid var(--line-soft);border-radius:18px;background:rgba(255,255,255,.018);overflow:hidden}
+.optional-theme-disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.1rem;cursor:pointer;list-style:none}
+.optional-theme-disclosure>summary::-webkit-details-marker{display:none}
+.optional-theme-disclosure>summary span:first-child{display:grid;gap:.2rem}
+.optional-theme-disclosure>summary strong{font-size:1rem}
+.optional-theme-disclosure>summary small{color:var(--muted);font-size:.68rem}
+.optional-theme-disclosure>summary span:last-child{color:var(--gold);font-size:1.35rem;transition:transform .2s ease}
+.optional-theme-disclosure[open]>summary span:last-child{transform:rotate(45deg)}
+.optional-theme-body{padding:0 1rem 1rem;border-top:1px solid var(--line-soft)}
+.optional-theme-body>.eyebrow,.optional-theme-body>h2{display:none}
+.chapter-button span[hidden]{display:none!important}
+.chapter-button b{margin-top:4.8rem}
+@media(max-width:700px){
+  .disclosure-card summary{grid-template-columns:1fr auto}
+  .disclosure-card .info-icon{display:none}
+  .disclosure-body{padding:0 1rem 1rem}
+}
+@media(prefers-reduced-motion:reduce){.disclosure-marker,.optional-theme-disclosure>summary span:last-child{transition:none}}
