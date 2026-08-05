@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "python3 -m http.server 4173",
     "build": "node scripts/build.mjs",
-    "preview": "python3 -m http.server 4173 -d dist"
+    "preview": "python3 -m http.server 4173 -d dist",
+    "test": "npm run test:site",
+    "test:site": "node tests/site-quality.mjs",
+    "check": "node --check src/app-v2.js && node --check src/site-upgrades.js && npm run test:site && npm run build"
   }
 }
