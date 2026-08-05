@@ -9,6 +9,7 @@ const trustSource = await read('src/trust-guardrails.js');
 const visualSource = await read('src/visual-polish.js');
 const visualCss = await read('src/visual-polish.css');
 const accessibilitySource = await read('src/accessibility-polish.js');
+const betaSource = await read('src/beta-content.js');
 const appSource = await read('src/app-v2.js');
 const storiesSource = await read('stories.html');
 
@@ -35,6 +36,10 @@ assert.match(visualSource, /loading', 'lazy'/, 'below-the-fold images must be la
 assert.match(visualSource, /accessibility-polish\.js/, 'accessibility enhancements must load after visual polish');
 assert.match(accessibilitySource, /aria-pressed/, 'interactive selection state must be exposed');
 assert.match(accessibilitySource, /aria-describedby/, 'form helper text must be associated with controls');
+assert.match(accessibilitySource, /beta-content\.js/, 'the controlled beta data layer must load last');
+assert.match(betaSource, /published-stories\.json/, 'published story data must drive the beta directory');
+assert.match(betaSource, /textContent/, 'contributor content must use safe text assignment');
+
 assert.match(visualCss, /--type-hero:/, 'a shared hero type scale is required');
 assert.match(visualCss, /--type-page:/, 'a shared page-title scale is required');
 assert.match(visualCss, /word-cloud a\{animation:none\}/, 'individual cloud words must not all animate continuously');
