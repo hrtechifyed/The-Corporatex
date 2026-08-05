@@ -1,12 +1,11 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 
 const read = (path) => readFile(path, 'utf8');
 const pages = {
   home: await read('index.html'),
   share: await read('share-story.html'),
   guided: await read('guided-story.html'),
-  freeflow: await read('freeflow-story.html'),
   stories: await read('stories.html'),
   detail: await read('story-detail.html'),
   more: await read('more-info.html'),
@@ -15,6 +14,7 @@ const pages = {
 const referenceCss = await read('src/reference-exact.css');
 const functionalCss = await read('src/reference-functional.css');
 const cinematicCss = await read('src/cinematic-card-system.css');
+const guidedCss = await read('src/guided-only-aerial.css');
 const referenceJs = await read('src/reference-exact.js');
 const workflowModel = await read('src/story-workflow-model.js');
 const storyScenes = await read('public/story-scenes.svg');
@@ -42,9 +42,12 @@ for (const [name, html] of Object.entries(pages)) {
   assert.match(html, /class="site-footer"/, `${name}: shared footer class missing`);
 }
 
-for (const name of ['home', 'share', 'guided', 'freeflow']) {
+for (const name of ['home', 'share', 'guided']) {
   assert.doesNotMatch(pages[name], /src\/app-v2\.(?:css|js)/, `${name}: legacy app assets must not alter the reference page`);
 }
+
+await assert.rejects(access('freeflow-story.html'), 'the retired Free-flow page must not be shipped');
+assert.doesNotMatch(Object.values(pages).join('\n'), /freeflow-story\.html|FREE-FLOW STORY|Free-flow Story|Start Free-flow|Switch to Free-flow/i, 'no visible page may restore the retired route');
 
 assert.match(pages.home, /Before you join,<br \/>hear why people left\./);
 assert.equal((pages.home.match(/class="ref-home-signal-card/g) || []).length, 5, 'home must use five cinematic signal cards');
@@ -52,28 +55,27 @@ assert.equal((pages.home.match(/class="ref-theme-signal-list"[\s\S]*?<\/div>/)?.
 assert.equal((pages.home.match(/<article>/g) || []).length, 4, 'home must keep exactly four trust statements');
 assert.doesNotMatch(pages.home, /class="ref-word-cloud"/, 'the dense word cloud must not return');
 
-assert.match(pages.share, /Choose your way in\./);
-assert.equal((pages.share.match(/class="ref-choice-card/g) || []).length, 2, 'share page must show exactly two story choices');
-assert.equal((pages.share.match(/class="ref-card-emblem"/g) || []).length, 2, 'both story choices need the shared emblem treatment');
+assert.match(pages.share, /Tell the arc\./);
+assert.equal((pages.share.match(/class="ref-choice-card/g) || []).length, 1, 'share page must show one Guided entry only');
+assert.equal((pages.share.match(/class="ref-card-emblem"/g) || []).length, 1, 'the Guided entry needs the shared emblem treatment');
+assert.match(pages.share, /src\/guided-only-aerial\.css/);
 
 assert.match(pages.guided, /data-guided-workflow/);
+assert.match(pages.guided, /src\/guided-only-aerial\.css/);
 assert.equal((pages.guided.match(/<button[^>]+class="ref-journey-card/g) || []).length, 8, 'all guided chapters must be semantic buttons');
 assert.equal((pages.guided.match(/data-guided-chapter=/g) || []).length, 8, 'guided journey must keep eight reusable chapter IDs');
 assert.equal((pages.guided.match(/class="ref-card-icon"/g) || []).length, 8, 'all guided cards need the numbered circular emblem');
+assert.match(pages.guided, /data-guided-company[^>]+required/);
+assert.match(pages.guided, /data-guided-team/);
+assert.match(pages.guided, /data-guided-location[^>]+required/);
+assert.match(pages.guided, /list="guided-location-suggestions"/);
+assert.match(pages.guided, /data-guided-review-context="company"/);
+assert.match(pages.guided, /data-guided-review-context="team"/);
+assert.match(pages.guided, /data-guided-review-context="location"/);
 assert.match(pages.guided, /data-guided-editor/);
 assert.match(pages.guided, /data-guided-review-panel/);
 assert.equal((pages.guided.match(/type="checkbox"/g) || []).length, 1, 'guided review must use one final agreement checkbox');
 assert.equal((pages.guided.match(/public\/story-scenes\.svg#/g) || []).length, 8, 'every guided card must use a stable SVG scene');
-assert.doesNotMatch(pages.guided, /What genuinely worked or stayed valuable\?/, 'long helper copy belongs in the editor, not on the card face');
-
-assert.match(pages.freeflow, /data-freeflow-form/);
-assert.match(pages.freeflow, /name="employer"/);
-assert.match(pages.freeflow, /name="story"/);
-assert.match(pages.freeflow, /data-freeflow-count/);
-assert.match(pages.freeflow, /data-freeflow-review/);
-assert.equal((pages.freeflow.match(/class="ref-route-strip"/g) || []).length, 1, 'free-flow must use one compact route strip');
-assert.doesNotMatch(pages.freeflow, /class="ref-freeflow-features"/, 'decorative feature cards must not compete with the writing field');
-assert.equal((pages.freeflow.match(/type="checkbox"/g) || []).length, 1, 'free-flow review must use one final agreement checkbox');
 
 assert.match(pages.stories, /Northstar Technologies/);
 assert.match(pages.stories, /Atlas Systems/);
@@ -86,8 +88,7 @@ assert.equal((pages.detail.match(/class="story-section/g) || []).length, 5, 'sto
 
 assert.equal((pages.more.match(/<details class="info-card/g) || []).length, 4, 'More page must use four expandable cards');
 assert.equal((pages.privacy.match(/<details class="policy-card/g) || []).length, 6, 'Privacy page must use six expandable cards');
-assert.equal((pages.more.match(/<details class="info-card" open/g) || []).length, 1, 'More page should reveal only one card by default');
-assert.equal((pages.privacy.match(/<details class="policy-card" open/g) || []).length, 1, 'Privacy page should reveal only one card by default');
+assert.match(pages.privacy, /current Guided Story draft/);
 
 for (const symbol of ['growth', 'leadership', 'wellbeing', 'change', 'compensation', 'personal', 'ai']) {
   assert.ok(storyScenes.includes(`id="${symbol}"`), `story scene sprite is missing ${symbol}`);
@@ -96,24 +97,29 @@ for (const symbol of ['growth', 'leadership', 'wellbeing', 'change', 'compensati
 assert.match(referenceCss, /\.ref-nav\{/);
 assert.match(referenceCss, /@media\(max-width:760px\)/);
 assert.match(functionalCss, /\.ref-story-editor/);
-assert.match(functionalCss, /\.ref-freeflow-form/);
 assert.match(functionalCss, /\.site-footer/);
 assert.match(cinematicCss, /\.ref-home-card-stage/);
-assert.match(cinematicCss, /\.ref-home-signal-card/);
-assert.match(cinematicCss, /\.ref-journey-card:nth-child\(8\)/);
-assert.match(cinematicCss, /perspective:1500px/);
 assert.match(cinematicCss, /\.story-thumb/);
-assert.match(cinematicCss, /\.info-card summary/);
-assert.match(cinematicCss, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(guidedCss, /offset-path: path/);
+assert.match(guidedCss, /guided-aerial-curve 96s/);
+assert.match(guidedCss, /min-width: 1280px/);
+assert.match(guidedCss, /hover: hover/);
+assert.match(guidedCss, /animation-play-state: paused/);
+assert.match(guidedCss, /@media \(prefers-reduced-motion: reduce\)/);
 
 assert.match(referenceJs, /story-workflow-model\.js/);
 assert.match(referenceJs, /guidedstoryconfirmed/);
-assert.match(referenceJs, /freeflowstoryconfirmed/);
+assert.match(referenceJs, /validateGuidedContext/);
+assert.match(referenceJs, /buildGuidedSubmission/);
+assert.match(referenceJs, /data-guided-company/);
+assert.match(referenceJs, /data-guided-location/);
 assert.match(referenceJs, /ArrowLeft/);
 assert.match(referenceJs, /ArrowRight/);
 assert.match(referenceJs, /aria-invalid/);
-assert.doesNotMatch(referenceJs, /localStorage|sessionStorage/, 'new story workflows must remain in memory only');
+assert.doesNotMatch(referenceJs, /freeflow|FREEFLOW|free-flow/i, 'retired Free-flow runtime must be removed');
+assert.doesNotMatch(referenceJs, /localStorage|sessionStorage/, 'guided story state must remain in memory only');
+assert.doesNotMatch(workflowModel, /freeflow|FREEFLOW|free-flow/i, 'workflow model must be Guided-only');
 assert.doesNotMatch(workflowModel, /localStorage|sessionStorage/, 'workflow model must remain persistence-neutral');
 assert.equal((workflowModel.match(/id: '/g) || []).length, 8, 'workflow model must define exactly eight guided chapters');
 
-console.log('Site quality checks passed: cinematic card system, lighter copy, usable workflows and consistent navigation.');
+console.log('Site quality checks passed: Guided-only route, required context, calm aerial cards and consistent navigation.');
