@@ -52,3 +52,7 @@ if (location.pathname.endsWith('stories.html')) {
 }
 
 export { allowedTrustLabels, forbiddenVerificationPattern };
+
+import('./visual-polish.js').catch(() => {
+  // Visual enhancements are optional and must not block core content.
+});

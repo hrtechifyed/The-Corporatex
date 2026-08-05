@@ -6,6 +6,8 @@ const htmlFiles = (await readdir('.')).filter((file) => file.endsWith('.html')).
 const upgradeSource = await read('src/site-upgrades.js');
 const disclosureSource = await read('src/progressive-disclosure.js');
 const trustSource = await read('src/trust-guardrails.js');
+const visualSource = await read('src/visual-polish.js');
+const visualCss = await read('src/visual-polish.css');
 const appSource = await read('src/app-v2.js');
 const storiesSource = await read('stories.html');
 
@@ -24,6 +26,17 @@ assert.match(disclosureSource, /trust-guardrails\.js/, 'trust guardrails must lo
 assert.match(trustSource, /allowedTrustLabels/, 'public trust labels must be allow-listed');
 assert.match(trustSource, /forbiddenVerificationPattern/, 'unsupported verification labels must be blocked');
 assert.match(trustSource, /candidate-takeaway/, 'the candidate question must receive visual priority');
+assert.match(trustSource, /visual-polish\.js/, 'visual polish must load after trust guardrails');
+
+assert.match(visualSource, /setAttribute\('width', '50'\)/, 'logo width must be explicit');
+assert.match(visualSource, /setAttribute\('height', '50'\)/, 'logo height must be explicit');
+assert.match(visualSource, /loading', 'lazy'/, 'below-the-fold images must be lazy loaded');
+assert.match(visualCss, /--type-hero:/, 'a shared hero type scale is required');
+assert.match(visualCss, /--type-page:/, 'a shared page-title scale is required');
+assert.match(visualCss, /word-cloud a\{animation:none\}/, 'individual cloud words must not all animate continuously');
+assert.match(visualCss, /animation:story-breathe 16s/, 'story-card motion must be slow paced');
+assert.match(visualCss, /prefers-reduced-motion:reduce/, 'the visual system must respect reduced motion');
+assert.doesNotMatch(visualCss, /filter:blur\([^)]*\).*brand-logo/s, 'the brand logo must never be blurred');
 
 assert.doesNotMatch(storiesSource, /Sony|NVIDIA/i, 'fictional demonstrations must not use real employer names');
 assert.doesNotMatch(storiesSource, /Illustrative preview/i, 'demonstration status should be stated once, not repeated on every row');
