@@ -21,14 +21,17 @@ for (const [name, html] of Object.entries(pages)) {
     positions.every((position, index) => index === 0 || position > positions[index - 1]),
     `${name}: shared navigation order changed`,
   );
+  assert.match(html, /src\/reference-exact\.css/, `${name}: reference stylesheet missing`);
+  assert.match(html, /src\/reference-exact\.js/, `${name}: reference runtime missing`);
+  assert.doesNotMatch(html, /src\/app-v2\.(?:css|js)/, `${name}: incompatible legacy stylesheet or runtime leaked into a reference page`);
 }
 
 assert.match(pages.home, /Before you join,<br \/>learn from those who left\./);
 assert.match(pages.home, /Real exit stories\. Real insights\. Smarter career moves\./);
 assert.match(pages.home, /What others talk about/);
 assert.equal((pages.home.match(/<article>/g) || []).length, 4, 'home must keep exactly four trust statements');
-assert.match(pages.home, /src\/app-v2\.css/);
-assert.match(pages.home, /src\/app-v2\.js/);
+assert.match(pages.home, /public\/story-scenes\.svg#personal/);
+assert.match(pages.home, /class="ref-home-footer"/);
 
 assert.match(pages.share, /How would you like to share your story\?/);
 assert.equal((pages.share.match(/class="ref-choice-card/g) || []).length, 2, 'share page must show exactly two story choices');
@@ -46,9 +49,7 @@ assert.match(pages.freeflow, /Your experience,<br \/>in your own order\./);
 assert.equal((pages.freeflow.match(/<article>/g) || []).length, 4, 'free-flow page must keep exactly four supporting ideas');
 assert.match(pages.freeflow, /public\/story-scenes\.svg#wellbeing/);
 
-for (const [name, html] of Object.entries({ share: pages.share, guided: pages.guided, freeflow: pages.freeflow })) {
-  assert.match(html, /src\/reference-exact\.css/, `${name}: reference stylesheet missing`);
-  assert.match(html, /src\/reference-exact\.js/, `${name}: reference runtime missing`);
+for (const [name, html] of Object.entries(pages)) {
   assert.doesNotMatch(html, /href="#(?:home-hero|share-|guided-|freeflow-hero)/, `${name}: fragile injected artwork reference remains`);
 }
 
@@ -57,6 +58,7 @@ for (const symbol of ['growth', 'leadership', 'wellbeing', 'change', 'compensati
 }
 
 assert.match(referenceCss, /\.ref-nav\{/);
+assert.match(referenceCss, /\.ref-home-main\{/);
 assert.match(referenceCss, /\.ref-choice-grid\{/);
 assert.match(referenceCss, /\.ref-freeflow-features\{/);
 assert.match(referenceCss, /@media\(max-width:760px\)/);
@@ -66,4 +68,4 @@ assert.doesNotMatch(referenceJs, /localStorage|sessionStorage/, 'reference runti
 assert.match(referenceJs, /data-ref-menu/);
 assert.match(referenceJs, /data-ref-signin/);
 
-console.log('Site quality checks passed with stable SVG artwork.');
+console.log('Site quality checks passed with stable SVG artwork and consistent reference assets.');
