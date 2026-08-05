@@ -8,6 +8,7 @@
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="src/reference-exact.css" />
   <link rel="stylesheet" href="src/reference-functional.css" />
+  <link rel="stylesheet" href="src/cinematic-card-system.css" />
   <title>Free-flow Story | The Corporate Ex</title>
 </head>
 <body class="ref-page ref-freeflow" data-ref-page="share">
@@ -20,35 +21,37 @@
 <nav class="ref-mobile-nav" data-ref-mobile-nav hidden aria-label="Mobile navigation"><a href="index.html">Home</a><a href="share-story.html">Share Your Story</a><a href="stories.html">Stories</a><a href="more-info.html">More</a><a href="privacy-safety.html">Privacy &amp; Safety</a><button type="button" data-ref-signin>Sign In</button></nav>
 
 <main id="main" class="ref-freeflow-main">
-  <header class="ref-story-heading ref-free-heading"><p>FREE-FLOW STORY</p><h1>Your experience,<br />in your own order.</h1><span>Write freely. Start anywhere. Share what matters.</span><i aria-hidden="true">↓</i></header>
-  <figure class="ref-freeflow-art"><svg class="ref-art-svg" viewBox="0 0 400 500" role="img" aria-label="Anime-style illustration of a person writing a story at night"><use href="public/story-scenes.svg#wellbeing"></use></svg></figure>
-  <section class="ref-freeflow-features" aria-label="Free-flow story benefits"><article><span>⤨</span><h2>No structure</h2><p>Tell it your way.</p></article><article><span>♟</span><h2>Your voice</h2><p>Your words, your story.</p></article><article><span>⬟</span><h2>What matters</h2><p>Include what is important.</p></article><article><span>⇄</span><h2>Switch anytime</h2><p>Move to Guided Story.</p></article></section>
+  <section class="ref-freeflow-intro">
+    <header class="ref-story-heading ref-free-heading"><p>FREE-FLOW STORY</p><h1>Your words.<br />Your order.</h1><span>Write first. Add context only where useful.</span><i aria-hidden="true">↓</i></header>
+    <figure class="ref-freeflow-art"><svg class="ref-art-svg" viewBox="0 0 400 500" role="img" aria-label="Anime-style illustration of a person writing a story at night"><use href="public/story-scenes.svg#wellbeing"></use></svg></figure>
+  </section>
+  <div class="ref-route-strip" aria-label="Free-flow story features"><span>One open writing space</span><span>Optional context</span><span>Switch anytime</span></div>
 
   <form class="ref-freeflow-form" data-freeflow-form novalidate>
-    <div class="ref-form-intro"><div><p class="ref-editor-kicker">WRITE YOUR STORY</p><h2>Tell the experience in your own flow.</h2></div><p>Add enough context for a reader to understand what happened without identifying another person.</p></div>
+    <div class="ref-form-intro"><div><p class="ref-editor-kicker">WRITE</p><h2>Tell what happened.</h2></div><p>Give enough context to be useful. Remove identifying details.</p></div>
     <div class="ref-form-grid">
       <label class="ref-field-label">Employer or organisation<input name="employer" autocomplete="organization" required placeholder="Company name" /><span class="ref-field-error" data-field-error="employer"></span></label>
       <label class="ref-field-label">Broad job function<input name="role" autocomplete="organization-title" placeholder="Engineering, HR, Sales…" /><span class="ref-field-error"></span></label>
       <label class="ref-field-label">Approximate tenure<select name="tenure"><option value="">Choose a range</option><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>10+ years</option></select><span class="ref-field-error"></span></label>
       <label class="ref-field-label">Region or country<input name="region" autocomplete="country-name" placeholder="Country or broad region" /><span class="ref-field-error"></span></label>
-      <label class="ref-field-label wide">Story title — optional<input name="storyTitle" maxlength="120" placeholder="A short title that captures the experience" /><span class="ref-field-error"></span></label>
-      <label class="ref-field-label wide">Optional primary theme<select name="theme"><option value="">No theme selected</option><option>Growth and opportunity</option><option>Leadership and culture</option><option>Workload and wellbeing</option><option>Change and job security</option><option>Compensation and recognition</option><option>Personal circumstances</option><option>Technology and AI impact</option></select><span class="ref-field-error"></span></label>
-      <label class="ref-field-label wide" for="freeflow-story">Your experience<textarea class="ref-story-textarea" id="freeflow-story" name="story" maxlength="3000" required data-freeflow-story></textarea><span class="ref-field-meta"><span id="freeflow-story-help">Write in first person and remove identifying or confidential details.</span><span><b data-freeflow-count>0</b> / 3000</span></span><span class="ref-field-error" id="freeflow-story-error" data-field-error="story"></span></label>
+      <label class="ref-field-label wide">Story title — optional<input name="storyTitle" maxlength="120" placeholder="A short title" /><span class="ref-field-error"></span></label>
+      <label class="ref-field-label wide">Primary theme — optional<select name="theme"><option value="">No theme selected</option><option>Growth and opportunity</option><option>Leadership and culture</option><option>Workload and wellbeing</option><option>Change and job security</option><option>Compensation and recognition</option><option>Personal circumstances</option><option>Technology and AI impact</option></select><span class="ref-field-error"></span></label>
+      <label class="ref-field-label wide" for="freeflow-story">Your experience<textarea class="ref-story-textarea" id="freeflow-story" name="story" maxlength="3000" required data-freeflow-story></textarea><span class="ref-field-meta"><span id="freeflow-story-help">Write in first person. Remove names and confidential details.</span><span><b data-freeflow-count>0</b> / 3000</span></span><span class="ref-field-error" id="freeflow-story-error" data-field-error="story"></span></label>
     </div>
-    <p class="ref-memory-note">This prototype keeps the draft only in the current open page. Refreshing or leaving clears it.</p>
+    <p class="ref-memory-note">Held only on this open page. Refreshing or leaving clears it.</p>
     <p class="ref-freeflow-error" data-freeflow-error role="alert" aria-live="assertive"></p>
-    <div class="ref-freeflow-actions"><button class="ref-action ghost" type="button" data-freeflow-save>Keep draft for this visit</button><span class="ref-editor-spacer"></span><button class="ref-action purple" type="button" data-freeflow-review-button>Review story</button></div>
+    <div class="ref-freeflow-actions"><button class="ref-action ghost" type="button" data-freeflow-save>Keep for this visit</button><span class="ref-editor-spacer"></span><button class="ref-action purple" type="button" data-freeflow-review-button>Review</button></div>
   </form>
 
   <section class="ref-freeflow-review" data-freeflow-review hidden aria-labelledby="freeflow-review-title">
-    <p class="ref-editor-kicker">REVIEW</p><h2 id="freeflow-review-title">Read the account as a future candidate would.</h2>
+    <p class="ref-editor-kicker">REVIEW</p><h2 id="freeflow-review-title">Read it as a future candidate would.</h2>
     <dl><dt>Employer</dt><dd data-review-value="employer"></dd><dt>Job function</dt><dd data-review-value="role"></dd><dt>Tenure</dt><dd data-review-value="tenure"></dd><dt>Region</dt><dd data-review-value="region"></dd><dt>Title</dt><dd data-review-value="title"></dd><dt>Theme</dt><dd data-review-value="theme"></dd><dt>Your story</dt><dd data-review-value="story"></dd></dl>
-    <div class="ref-responsibility"><h3>Before confirming</h3><ul><li>The account should reflect your genuine first-person experience.</li><li>Do not invent or deliberately exaggerate events.</li><li>Remove names, identifying details and confidential information.</li><li>This is your personal perspective, not a universal statement about the organisation.</li><li>Readers may use this account when considering their next career move.</li></ul></div>
-    <label class="ref-agreement"><input type="checkbox" data-freeflow-agreement /><span>I have read the points above and agree that this account is authentic, responsible and ready for review.</span></label>
-    <div class="ref-review-actions"><button class="ref-action ghost" type="button" data-freeflow-edit>Edit story</button><span class="ref-editor-spacer"></span><button class="ref-action purple" type="button" data-freeflow-confirm disabled>Confirm story for review</button></div>
+    <div class="ref-responsibility"><h3>Before confirming</h3><ul><li>Keep it first-person and authentic.</li><li>Do not invent or exaggerate events.</li><li>Remove names and confidential information.</li><li>Describe your perspective, not the whole organisation.</li><li>Readers may use it for a career decision.</li></ul></div>
+    <label class="ref-agreement"><input type="checkbox" data-freeflow-agreement /><span>I agree that this account is authentic, responsible and ready for review.</span></label>
+    <div class="ref-review-actions"><button class="ref-action ghost" type="button" data-freeflow-edit>Edit</button><span class="ref-editor-spacer"></span><button class="ref-action purple" type="button" data-freeflow-confirm disabled>Confirm for review</button></div>
   </section>
 
-  <a class="ref-mode-note" href="guided-story.html"><span aria-hidden="true">⇄</span> Switch to Guided Story anytime.</a>
+  <a class="ref-mode-note" href="guided-story.html"><span aria-hidden="true">⇄</span> Switch to Guided</a>
 </main>
 <footer class="site-footer"><p class="footer-line">The Corporate Ex - Powered by - HRTechify - People • Technology • Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved.</p></footer>
 <div class="ref-toast" role="status" aria-live="polite"></div><script type="module" src="src/reference-exact.js"></script>
