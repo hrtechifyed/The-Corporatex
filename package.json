@@ -6,9 +6,10 @@
     "dev": "python3 -m http.server 4173",
     "build": "node scripts/build.mjs",
     "preview": "python3 -m http.server 4173 -d dist",
-    "test": "npm run test:site && npm run test:workflow",
+    "test": "npm run test:site && npm run test:workflow && npm run test:alerts",
     "test:site": "node tests/site-quality.mjs",
     "test:workflow": "node --test tests/story-workflow.test.mjs",
-    "check": "node --check src/app-v2.js && node --check src/site-upgrades.js && node --check src/story-workflow-model.js && node --check src/reference-exact.js && node --check tests/site-quality.mjs && npm test && npm run build"
+    "test:alerts": "node --test tests/moderation-alert.test.mjs",
+    "check": "node --check src/app-v2.js && node --check src/site-upgrades.js && node --check src/story-workflow-model.js && node --check src/reference-exact.js && node --check tests/site-quality.mjs && node --check tests/moderation-alert.test.mjs && npm test && npm run build"
   }
 }
