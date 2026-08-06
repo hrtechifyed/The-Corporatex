@@ -35,7 +35,7 @@ const visibleText = (html) => decodeStaticEntities(html)
   .replace(/<[^>]+>/g, ' ')
   .replace(/\s+/g, ' ')
   .trim();
-const classToken = (token) => new RegExp(`class="[^"]*(?:^|\\s)${token}(?:\\s|$)[^"]*"`);
+const classToken = (token) => new RegExp(`class="[^"]*\\b${token}\\b[^"]*"`);
 
 for (const [name, html] of Object.entries(pages)) {
   const nav = html.match(/<nav class="ref-primary-nav"[\s\S]*?<\/nav>/)?.[0] || '';
