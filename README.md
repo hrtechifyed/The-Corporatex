@@ -35,16 +35,39 @@ The product is designed to help candidates ask better questions—not to produce
 The GitHub Pages prototype contains:
 
 - a cinematic Home page;
-- a single Guided Story route;
+- one Guided Story route;
+- a visual Set the Scene stage;
 - required company and broad location context;
 - optional team context;
-- eight reusable story chapters;
+- eight reusable Story Beats;
+- a reversible Final Cut review;
 - fictional employer and story examples;
 - employer-grouped discovery;
-- Privacy & Safety and More pages;
+- visual More and expandable Privacy & Safety pages;
 - consistent CorporateX navigation and footer.
 
-The current writing state is kept only in memory for the open page. Refreshing or leaving clears the draft. Nothing is uploaded or published by the static prototype.
+The current writing state is held only in memory for the open page. Refreshing or leaving clears the draft. Nothing is uploaded or published by the static prototype.
+
+## Guided Story flow
+
+The journey is intentionally staged:
+
+1. **Set the Scene** — illustrated context entry with Company, Location, and optional Team
+2. **Story Beats** — one active beat with adjacent previews and direct numbered navigation
+3. **The Final Cut** — context, all responses, safety-screen explanation, and confirmation
+
+The Story Beats are:
+
+- The Beginning
+- The Promise
+- The Good Part
+- The Shift
+- The Tipping Point
+- The Lesson
+- The AI Turn
+- Who Thrives Here?
+
+Contributors can move back from Story Beats to context, from The Final Cut to Story Beats, or from The Final Cut to context without losing in-memory responses.
 
 ## Safety review boundary
 
@@ -60,12 +83,7 @@ The planned safety screen is limited to:
 
 Contributors may still say that discrimination, harassment, violence, abuse, or self-harm-related workplace impact occurred without reproducing slurs or graphic details.
 
-The safety screen must not:
-
-- protect an employer from criticism;
-- rewrite the contributor's meaning;
-- invent facts;
-- decide whether one perspective represents an entire organisation.
+The safety screen must not protect an employer from criticism, rewrite meaning, invent facts, or treat one story as a company-wide verdict.
 
 ## Trust principles
 
@@ -77,16 +95,6 @@ The safety screen must not:
 | **Safety screening only** | Harmful wording is screened; opinions are not moderated. |
 | **Clear examples** | Fictional demonstrations are labelled and never presented as employee submissions. |
 | **No automatic publishing** | AI or form completion cannot publish a story. |
-
-## Guided Story flow
-
-The current journey is intentionally staged:
-
-1. **Context** — company, optional team, and broad location
-2. **Story chapters** — one active chapter with previous and next previews
-3. **Review** — the complete account, responsibility statement, and safety-screen explanation
-
-Users can answer, skip, revisit, and edit every chapter. Keyboard navigation, touch targets, visible focus states, and reduced-motion behaviour are covered by automated tests.
 
 ## Repository shape
 
