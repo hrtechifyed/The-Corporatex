@@ -1,2 +1,119 @@
-'use client';import {useState} from 'react';import {useRouter} from 'next/navigation';import {SCENES} from '@/lib/types';
-type Saved={question_key:string;answer:string};export function GuidedEditor({id,saved}:{id:string;saved:Saved[]}){const router=useRouter();const [scene,setScene]=useState(0);const initial=Object.fromEntries(saved.map(x=>[x.question_key,x.answer]));const [answers,setAnswers]=useState<Record<string,string>>(initial);const [state,setState]=useState('Saved online');const [error,setError]=useState('');const [key,title,prompt]=SCENES[scene];async function save(){setState('Saving…');setError('');const r=await fetch(`/api/experiences/${id}/answers`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({questionKey:key,answer:answers[key]||'',sortOrder:scene})});if(!r.ok){setError((await r.json()).error||'Save failed');setState('Not saved');return false}setState('Saved online');return true}async function move(n:number){if(await save())setScene(Math.max(0,Math.min(SCENES.length-1,n)))}return <div className="mt-8 grid gap-6 lg:grid-cols-[240px_1fr]"><nav aria-label="Story scenes" className="cinema-card h-fit p-3">{SCENES.map((s,i)=><button key={s[0]} onClick={()=>move(i)} aria-current={i===scene?'step':undefined} className={`block min-h-11 w-full px-3 text-left text-sm ${i===scene?'bg-ember text-white':''}`}>{answers[s[0]]?'✓ ':''}{i+1}. {s[1]}</button>)}</nav><section className="cinema-card p-6 sm:p-9"><p className="scene-tag">Scene {scene+1} of {SCENES.length}</p><h2 className="mt-3 text-3xl font-bold">{title}</h2><label className="label mt-6"><span className="text-lg text-white">{prompt}</span>{key==='alternate_timeline'?<select className="field" value={answers[key]||''} onChange={e=>setAnswers({...answers,[key]:e.target.value})}><option value="">Choose or skip</option><option>Yes</option><option>No</option><option>Maybe</option><option>Only if the entire storyline changed</option></select>:<textarea className="field min-h-56 resize-y" maxLength={12000} value={answers[key]||''} onChange={e=>{setAnswers({...answers,[key]:e.target.value});setState('Unsaved changes')}}/>}</label><div aria-live="polite" className="mt-3 text-sm text-white/60">{state}{error&&<span className="text-red-300"> · {error}</span>}</div><div className="mt-6 flex flex-wrap gap-3"><button onClick={()=>move(scene-1)} disabled={scene===0} className="btn btn-secondary disabled:opacity-30">← Previous</button><button onClick={()=>move(scene+1)} disabled={scene===SCENES.length-1} className="btn btn-secondary">Save & next →</button><button onClick={async()=>{if(await save())router.push(`/submit/${id}/analysis`)}} className="btn btn-primary sm:ml-auto">Continue to AI Story Editor</button></div></section></div>}
+'use client';
+
+import { useState, type CSSProperties } from 'react';
+import { useRouter } from 'next/navigation';
+import { SCENES } from '@/lib/types';
+import type { EndingSlug } from '@/lib/endings';
+import { CareerJarvis } from '@/components/career-jarvis';
+
+type Saved = { question_key: string; answer: string };
+
+const toneGuidance: Record<EndingSlug, string> = {
+  'break-free': 'You can name what made leaving necessary while still preserving any part that was genuinely good.',
+  'next-act': 'A healthy ending is useful. Show what you gained and why the next chapter made sense.',
+  'mixed-ending': 'Keep both truths. The good does not cancel the difficult, and the difficult does not erase the good.',
+  'pass-the-torch': 'Show why you moved on and what could make this a strong fit for someone else.',
+};
+
+export function GuidedEditor({ id, saved, ending }: { id: string; saved: Saved[]; ending: EndingSlug }) {
+  const router = useRouter();
+  const [scene, setScene] = useState(0);
+  const initial = Object.fromEntries(saved.map((item) => [item.question_key, item.answer]));
+  const [answers, setAnswers] = useState<Record<string, string>>(initial);
+  const [state, setState] = useState('Saved online');
+  const [error, setError] = useState('');
+  const [key, title, prompt] = SCENES[scene];
+  const answered = SCENES.filter(([sceneKey]) => Boolean(answers[sceneKey]?.trim())).length;
+  const progress = Math.round((answered / SCENES.length) * 100);
+
+  async function save() {
+    setState('Saving…');
+    setError('');
+    const response = await fetch(`/api/experiences/${id}/answers`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ questionKey: key, answer: answers[key] || '', sortOrder: scene }),
+    });
+    if (!response.ok) {
+      const body = await response.json();
+      setError(body.error || 'Save failed');
+      setState('Not saved');
+      return false;
+    }
+    setState('Saved online');
+    return true;
+  }
+
+  async function move(next: number) {
+    if (next === scene) return;
+    if (await save()) setScene(Math.max(0, Math.min(SCENES.length - 1, next)));
+  }
+
+  async function continueToReview() {
+    if (await save()) router.push(`/submit/${id}/analysis`);
+  }
+
+  return (
+    <div className="cx-editor-layout">
+      <nav className="cx-scene-rail" aria-label="Story Beats">
+        {SCENES.map(([sceneKey, sceneTitle], index) => (
+          <button
+            type="button"
+            className="cx-scene-button"
+            key={sceneKey}
+            onClick={() => move(index)}
+            aria-current={index === scene ? 'step' : undefined}
+          >
+            <span>{index + 1}</span>
+            <b>{sceneTitle}</b>
+            <i>{answers[sceneKey]?.trim() ? '✓' : ''}</i>
+          </button>
+        ))}
+      </nav>
+
+      <section className="cx-editor-stage" aria-labelledby="active-beat-title">
+        <div className="cx-editor-copy">
+          <div className="cx-editor-index">
+            <span>Story Beat {scene + 1} of {SCENES.length}</span>
+            <span>{answered} answered</span>
+          </div>
+          <h2 id="active-beat-title">{title}</h2>
+          <p className="cx-editor-prompt">{prompt}</p>
+          <p className="cx-note">{toneGuidance[ending]}</p>
+          <label className="cx-field" style={{ marginTop: '1.25rem' }}>
+            <span>Your experience</span>
+            <textarea
+              className="cx-textarea"
+              maxLength={1800}
+              value={answers[key] || ''}
+              onChange={(event) => {
+                setAnswers({ ...answers, [key]: event.target.value });
+                setState('Unsaved changes');
+              }}
+              placeholder="Write only what belongs in this moment. Names and confidential records should stay out."
+            />
+            <small>{(answers[key] || '').length} / 1800 · Saved privately to your CorporateX draft</small>
+          </label>
+          <div className="cx-progress" style={{ '--progress': `${progress}%` } as CSSProperties} aria-label={`${progress}% of Story Beats answered`}>
+            <span />
+          </div>
+          <div className="cx-editor-controls">
+            <span className="cx-save-state" data-state={state === 'Saved online' ? 'saved' : 'pending'} aria-live="polite">
+              {state}{error ? ` · ${error}` : ''}
+            </span>
+            <button type="button" className="cx-button cx-button--ghost" onClick={() => router.push(`/submit/${id}/context`)}>Edit the Scene</button>
+            <button type="button" className="cx-button cx-button--ghost" onClick={() => move(scene - 1)} disabled={scene === 0}>← Previous</button>
+            <button type="button" className="cx-button cx-button--ghost" onClick={() => move(scene + 1)} disabled={scene === SCENES.length - 1}>Save &amp; next</button>
+            <button type="button" className="cx-button cx-button--signal" onClick={continueToReview}>Prepare the Final Cut →</button>
+          </div>
+        </div>
+        <CareerJarvis
+          compact
+          pose="listening"
+          tone={ending}
+          dialogue="I’ll stay quiet while you write. Choose any beat, and return whenever you need."
+        />
+      </section>
+    </div>
+  );
+}
