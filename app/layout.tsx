@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './corporatex-cinematic.css';
+import './corporatex-overrides.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 
@@ -33,12 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="cx-body">
-        <a
-          href="#main"
-          className="fixed -top-20 left-4 z-[100] bg-signal p-3 text-black focus:top-4"
-        >
-          Skip to content
-        </a>
+        <a href="#main" className="fixed -top-20 left-4 z-[100] bg-signal p-3 text-black focus:top-4">Skip to content</a>
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
