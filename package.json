@@ -18,7 +18,7 @@
     "@playwright/test": "1.62.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
+    "@types/react-dom": "^19.2.8",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "3.4.17",
@@ -37,6 +37,7 @@
     "test:workflow": "node --test tests/story-workflow.test.mjs",
     "test:alerts": "node --test tests/moderation-alert.test.mjs",
     "test:server-readiness": "node --test tests/server-readiness.test.mjs",
+    "test:e2e": "playwright test",
     "check:static": "node --check src/app-v2.js && node --check src/site-upgrades.js && node --check src/story-workflow-model.js && node --check src/reference-exact.js && node --check tests/site-quality.mjs && node --check tests/moderation-alert.test.mjs && node --check tests/server-readiness.test.mjs && npm test && npm run build:static",
     "check:server": "next build",
     "check": "npm run check:static && npm run check:server"
