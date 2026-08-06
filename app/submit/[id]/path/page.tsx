@@ -1,2 +1,8 @@
-import {ownedExperience} from '@/lib/auth';import {choosePath} from './actions';
-export default async function Path({params}:{params:Promise<{id:string}>}){const {id}=await params;await ownedExperience(id);return <section className="mx-auto max-w-5xl px-5 py-16"><p className="scene-tag">Choose Your Story Path</p><h1 className="mt-3 text-5xl font-black">How should the Archivist help?</h1><form action={choosePath.bind(null,id)} className="chapter-grid mt-9">{[['guided','Guided Story','Let the Archivist guide you through the important scenes.'],['directors-cut','Director’s Cut','No scripts. No HR-approved ending. Tell the complete story in your own words.'],['both','Mix Both','Start with the scenes that matter and add anything the script missed.']].map(([v,t,d])=><button name="path" value={v} className="cinema-card min-h-52 p-7 text-left" key={v}><span className="scene-tag">Select path</span><strong className="mt-3 block text-2xl">{t}</strong><span className="mt-3 block text-white/60">{d}</span></button>)}</form></section>}
+import { redirect } from 'next/navigation';
+import { ownedExperience } from '@/lib/auth';
+
+export default async function Path({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  await ownedExperience(id);
+  redirect(`/submit/${id}/guided`);
+}
