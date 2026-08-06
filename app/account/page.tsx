@@ -1,2 +1,45 @@
-import Link from 'next/link';import {requireProfile} from '@/lib/auth';
-export default async function Account(){const {supabase,profile}=await requireProfile();const {data}=await supabase.from('experiences').select('id,status,approved_headline,created_at,companies(display_name)').eq('profile_id',profile.id).order('updated_at',{ascending:false});return <section className="mx-auto max-w-5xl px-5 py-16"><p className="scene-tag">Contributor archive</p><h1 className="mt-3 text-5xl font-black">Account</h1><p className="mt-3">Anonymous identity: <b>{profile.hrt_id}</b></p><div className="mt-8 grid gap-4">{data?.map((x:any)=><article className="cinema-card p-6" key={x.id}><span className="status">{x.status.replaceAll('_',' ')}</span><h2 className="mt-3 text-xl font-bold">{x.approved_headline||`${x.companies?.display_name||'Company'} private draft`}</h2><Link className="btn btn-secondary mt-4" href={x.status==='awaiting_user_approval'?`/submit/${x.id}/review`:`/submit/${x.id}/path`}>Open record</Link></article>)}</div><Link href="/submit" className="btn btn-primary mt-8">Create another private draft</Link></section>}
+import Link from 'next/link';
+import { requireProfile } from '@/lib/auth';
+import { endingFor } from '@/lib/endings';
+
+export default async function Account() {
+  const { supabase, profile } = await requireProfile();
+  const { data } = await supabase
+    .from('experiences')
+    .select('id,status,approved_headline,main_reason,created_at,companies(display_name)')
+    .eq('profile_id', profile.id)
+    .order('updated_at', { ascending: false });
+
+  return (
+    <div className="cx-page">
+      <section className="cx-section">
+        <div className="cx-shell">
+          <p className="cx-kicker">Private Signal Archive</p>
+          <h1 className="cx-title">Your stories.</h1>
+          <p className="cx-lede">Anonymous identity: <strong>{profile.hrt_id}</strong></p>
+          <div className="cx-record-grid">
+            {data?.length ? data.map((record: any) => {
+              const company = Array.isArray(record.companies) ? record.companies[0]?.display_name : record.companies?.display_name;
+              const ending = endingFor(record.main_reason);
+              const editable = ['draft', 'changes_requested', 'awaiting_ai_analysis', 'awaiting_user_approval'].includes(record.status);
+              const href = record.status === 'awaiting_user_approval'
+                ? `/submit/${record.id}/review`
+                : record.status === 'awaiting_ai_analysis'
+                  ? `/submit/${record.id}/analysis`
+                  : `/submit/${record.id}/guided`;
+              return (
+                <article className="cx-record" key={record.id}>
+                  <span className="cx-ending-badge">{ending.title}</span>
+                  <h2>{record.approved_headline || `${company || 'Company'} private story`}</h2>
+                  <p className="cx-note">Status: {record.status.replaceAll('_', ' ')}</p>
+                  {editable ? <Link className="cx-button cx-button--ghost" href={href}>Continue the journey →</Link> : <span className="cx-note">This record is no longer editable from the contributor journey.</span>}
+                </article>
+              );
+            }) : <div className="cx-record"><h2>No private stories yet.</h2><p className="cx-note">CareerJarvis will guide you from the Opening Signal to the Final Cut.</p></div>}
+          </div>
+          <div className="cx-actions"><Link href="/submit" className="cx-button cx-button--signal">Create another story →</Link></div>
+        </div>
+      </section>
+    </div>
+  );
+}
