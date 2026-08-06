@@ -6,6 +6,7 @@
     "node": ">=22 <23"
   },
   "dependencies": {
+    "@google/genai": "2.13.0",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.0.0",
     "googleapis": "^173.0.0",
