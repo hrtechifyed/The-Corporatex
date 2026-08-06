@@ -35,7 +35,9 @@ The subject excludes employer name, contributor identity, location, story text, 
 
 ## Trigger
 
-An alert is sent only when the contributor-approved AI analysis contains one or more entries in `possibleAbusiveContent`.
+An alert is sent only when the contributor-approved local safety screen contains one or more entries in `possibleAbusiveContent`.
+
+The screen runs on the CorporateX server and does not send story content to an external AI provider. It records category indicators rather than copying the detected expression into the email.
 
 A clear submission does not generate a moderator email. Email is a notification channel only; the database record and protected moderation workspace remain the source of truth.
 
