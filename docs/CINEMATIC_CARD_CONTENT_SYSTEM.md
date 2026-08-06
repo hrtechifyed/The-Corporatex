@@ -5,8 +5,8 @@
 CorporateX should be cinematic while introducing the idea, quiet while someone is writing, and credible while someone is deciding.
 
 - Interface copy stays brief.
+- Every major stage has one visual anchor.
 - Cards communicate one decision or idea at a time.
-- Detailed explanation appears only after selection or expansion.
 - Contributor stories may remain detailed because they are the product content.
 - Motion must never compete with reading, writing, or form completion.
 
@@ -23,86 +23,69 @@ Every card uses the same visual grammar:
 7. One supporting line
 8. One clear action or state
 
-Interactive cards may lift on hover, focus, or selection. Informational cards remain still until expanded.
+Interactive cards may lift after hover, focus, or selection. Informational cards remain still.
 
 ## Motion rules
 
-### Marketing and discovery pages
+- Page sections may use one short entrance reveal.
+- Guided Story cards transition only after a deliberate Story Beat change.
+- No essential element loops, orbits, bounces, crosses, or requires tracking.
+- The writing field and controls remain stationary.
+- `prefers-reduced-motion` removes nonessential transforms and entrance animation.
 
-- Home signal cards may use a slow, low-amplitude drift.
-- Hover and focus may add controlled depth.
-- No element should require tracking or chasing a moving target.
+## Guided Story
 
-### Guided Story
+The three visible stages are:
 
-- Only the active chapter and immediate previous and next previews are visible on desktop.
-- Mobile shows the active chapter only.
-- Chapter changes use one controlled transition.
-- Cards do not orbit, travel along a path, loop, float continuously, cross, or reorder.
-- The writing field and its surrounding controls remain stationary.
-- `prefers-reduced-motion` removes transform-based transitions without removing functionality.
+1. **Set the Scene**
+2. **Story Beats**
+3. **The Final Cut**
 
-## Content limits
+### Set the Scene
 
-### Home
+- One supporting workplace illustration
+- Company and Location aligned on the first desktop row
+- Optional Team across the second row
+- Equal input heights and reserved error space
+- One primary action: **Enter the Story Beats**
 
-- One headline
-- One supporting sentence
-- Two actions
-- Five visual theme cards
-- Seven theme links
-- Four compact trust statements
-- One visible fictional-example note
+### Story Beats
 
-### Guided Story
+- Exactly eight reusable Story Beat cards
+- One active card and adjacent previews on desktop
+- One active card on mobile
+- One numbered navigator for direct access
+- Longer guidance only inside the active editor
+- Explicit **Back to context** control
 
-- Three visible stages: Context, Story chapters, Review
-- Company and location required
-- Team optional
-- One active chapter question
-- Previous and next previews on desktop only
-- One eight-button chapter navigator
-- Longer prompt and helper text in the active editor
-- One final safety-screen explanation and agreement
+### The Final Cut
 
-### Employer Stories
+- Context summary
+- All Story Beat responses
+- Edit action for each beat
+- Separate **Edit context** and **Back to Story Beats** controls
+- One safety-screen explanation and agreement
 
-- Employer groups remain collapsible.
-- Each story card includes one visual, one theme, one headline, and one metadata line.
-- Demonstration stories use fictional employer names.
-- The page labels all current examples before the list begins.
+## More page
 
-### Story Detail
+The More page is image-led rather than an accordion stack.
 
-The narrative may remain detailed. Platform framing stays brief.
+- One split cinematic hero
+- Three visual distinction cards: Not Ratings, Not Rumours, Better Questions
+- One illustrated AI-era feature panel
+- Three compact trust cards
+- Short copy and visible actions
 
-The page must show:
-
-- whether the story is fictional or genuine;
-- that it represents one perspective;
-- the safety-screen boundary;
-- a clear next action.
-
-### More and Privacy & Safety
-
-Cards use native `<details>` and `<summary>` elements.
-
-Only one card is open by default. All other explanation remains available without appearing as a wall of text.
-
-## Navigation guardrails
+## Navigation and brand guardrails
 
 - Home, Share Your Story, Stories, More, and Privacy & Safety remain visible in the same order.
 - Share Your Story points directly to `guided-story.html`.
-- `share-story.html` is a redirect only.
-- Search remains available from the shared glass navigation.
-- The product does not display a non-functional Sign In control.
+- CorporateX is the only visible product name.
+- The HRTechify logo remains the powering-brand asset.
+- No non-functional Sign In control appears.
 - No essential action is available only through animation, hover, or colour.
 
-## Brand guardrails
-
-- Visible product naming uses **CorporateX**.
-- The HRTechify logo remains the powering-brand asset.
-- The exact footer is:
+The exact footer is:
 
 ```text
 CorporateX - Powered by - HRTechify - People • Technology • Growth
@@ -113,37 +96,16 @@ CorporateX - Powered by - HRTechify - People • Technology • Growth
 
 CorporateX screens direct racial slurs, abusive slang or targeted attacks, threats or graphic violence, self-harm content, and targeted abuse.
 
-The language must also state that:
-
-- experiences of discrimination, harassment, violence, abuse, or self-harm-related workplace impact may still be described without reproducing slurs or graphic details;
-- opinions are not moderated;
-- employers are not protected from criticism;
-- contributor meaning is not rewritten.
-
-## Accessibility requirements
-
-- Interactive cards are semantic links or buttons.
-- Focus states are visible.
-- Selected, answered, and skipped states use text as well as colour.
-- Touch targets remain at least 44px high.
-- Hidden chapter cards are removed from keyboard navigation.
-- The chapter navigator provides direct access to all eight chapters.
-- Mobile layouts avoid page-level horizontal overflow.
-- Information disclosure uses native keyboard-accessible `<details>` controls.
-- Required company and location fields expose linked errors and `aria-invalid`.
+The language must also state that opinions are not moderated, employers are not protected from criticism, and contributor meaning is not rewritten.
 
 ## Acceptance criteria
 
-- Every public page loads `src/cinematic-card-system.css`.
-- CorporateX is the only visible product name.
-- Every visible Share action opens Guided Story directly.
-- Free-flow is not shipped.
-- Guided contains exactly eight reusable chapter cards.
-- Guided shows at most three full cards on desktop and one on mobile.
+- `src/cinematic-story-experience.css` is loaded on Guided Story and More.
+- Guided public copy uses **Story Beat**, not “chapter.”
+- The AI beat is titled **The AI Turn**.
+- Context fields stay visually aligned.
+- Reverse navigation exists between all three Guided stages.
 - Guided cards do not use looping animation.
-- Company and location are required; team remains optional.
-- Every story listing includes a relevant illustration.
-- More uses four disclosure cards.
-- Privacy & Safety uses six disclosure cards.
-- All pages retain the exact shared navigation and two-line footer.
-- No workflow uses `localStorage` or `sessionStorage`.
+- More uses three image-led distinction cards and three trust cards.
+- All pages retain the exact shared navigation and footer.
+- No story workflow uses `localStorage` or `sessionStorage`.
