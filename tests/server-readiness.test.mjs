@@ -11,6 +11,11 @@ const analysisRunner = await read('components/analysis-runner.tsx');
 const envExample = await read('.env.example');
 const siteWorkflow = await read('.github/workflows/site-quality.yml');
 const pagesWorkflow = await read('.github/workflows/deploy-pages.yml');
+const rootLayout = await read('app/layout.tsx');
+const submitPage = await read('app/submit/page.tsx');
+const siteHeader = await read('components/site-header.tsx');
+const openingSignalSelector = await read('components/opening-signal-selector.tsx');
+const performanceCss = await read('app/corporatex-performance.css');
 
 const requiredRuntimeDependencies = [
   'next',
@@ -28,6 +33,7 @@ test('Next.js production commands are available without removing static commands
   assert.match(packageJson.scripts.start, /next start/);
   assert.equal(packageJson.scripts['build:static'], 'node scripts/build.mjs');
   assert.equal(packageJson.scripts['check:server'], 'next build');
+  assert.equal(packageJson.scripts['test:e2e'], 'playwright test');
   assert.match(packageJson.scripts.check, /check:static/);
   assert.match(packageJson.scripts.check, /check:server/);
 });
@@ -78,6 +84,31 @@ test('health endpoint is independent from Supabase and returns no-store JSON', (
   assert.match(healthRoute, /status: 'ok'/);
   assert.match(healthRoute, /Cache-Control': 'no-store'/);
   assert.doesNotMatch(healthRoute, /supabase|GMAIL|GOOGLE_/i);
+});
+
+test('Opening Signal selection stays actionable, visible and keyboard accessible', () => {
+  assert.match(submitPage, /OpeningSignalSelector/);
+  assert.match(submitPage, /id="set-the-scene"/);
+  assert.match(openingSignalSelector, /type="radio"/);
+  assert.match(openingSignalSelector, /checked=\{isSelected\}/);
+  assert.match(openingSignalSelector, /onChange=\{\(\) => setSelected\(ending\)\}/);
+  assert.match(openingSignalSelector, /Continue to Set the Scene/);
+  assert.match(openingSignalSelector, /aria-live="polite"/);
+  assert.match(openingSignalSelector, /scrollIntoView/);
+  assert.match(openingSignalSelector, /focus\(\{ preventScroll: true \}\)/);
+  assert.match(openingSignalSelector, /pose=\{selected \? 'pointing' : 'inviting'\}/);
+});
+
+test('route rendering avoids the previous global dynamic and transition lag regressions', () => {
+  assert.doesNotMatch(rootLayout, /force-dynamic/);
+  assert.match(rootLayout, /corporatex-performance\.css/);
+  assert.match(siteHeader, /router\.prefetch/);
+  assert.match(siteHeader, /data-route-pending/);
+  assert.match(siteHeader, /onPointerEnter=\{\(\) => warm\(href\)\}/);
+  assert.match(performanceCss, /content-visibility:\s*auto/);
+  assert.match(performanceCss, /contain:\s*layout paint/);
+  assert.match(performanceCss, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.doesNotMatch(performanceCss, /transition:\s*all/);
 });
 
 test('environment and CI do not require an external story-analysis key', () => {
