@@ -1,1 +1,16 @@
-export default function Page(){return <article className="mx-auto max-w-3xl px-5 py-16"><p className="scene-tag">End Credits</p><h1 className="mt-3 text-5xl font-black capitalize">terms</h1><div className="prose-story mt-8"><p>The Corporate Ex collects only the information needed to authenticate contributors, preserve private drafts, moderate approved accounts, and present published experiences responsibly.</p><p className="mt-5">Do not submit names, confidential records, threats, harassment, or content you do not have the right to share. Publication is discretionary and every public account remains a contributor perspective rather than a verified company fact.</p><p className="mt-5">Contact the platform operator to request access, correction, withdrawal, or deletion. Deployment-specific contact information must be configured before accepting production submissions.</p></div></article>}
+export default function Terms() {
+  return (
+    <div className="cx-page">
+      <article className="cx-system-shell">
+        <p className="cx-kicker">Terms</p>
+        <h1 className="cx-title">Use the signal responsibly.</h1>
+        <div className="cx-info-stack">
+          <details open><summary>Your account</summary><p>Use an email address you control. Your public contributor identity is anonymous, but your private account remains responsible for the stories it submits.</p></details>
+          <details open><summary>Your story</summary><p>Submit only your own experience and material you have the right to share. Do not include individual names, confidential records or information intended to identify another person.</p></details>
+          <details open><summary>Publication</summary><p>Submission does not guarantee publication. CorporateX may hold, request changes to, remove or withdraw content under its safety and community rules. Every public story remains a contributor perspective rather than a verified company-wide fact.</p></details>
+          <details open><summary>Platform limits</summary><p>CorporateX provides workplace context, not legal, financial, medical or career-placement advice. Readers should compare stories, ask questions and conduct their own research.</p></details>
+        </div>
+      </article>
+    </div>
+  );
+}
