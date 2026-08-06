@@ -34,7 +34,14 @@
 }
 
 /* Required story context before review */
+.ref-guided-main {
+  overflow-x: hidden;
+}
+
 .ref-guided-context {
+  position: relative;
+  z-index: 4;
+  isolation: isolate;
   width: min(980px, calc(100% - 32px));
   margin: 14px auto 18px;
   padding: 18px;
@@ -92,18 +99,38 @@
   font-size: .72rem;
 }
 
-/* Better card scale and calm edge-to-edge aerial path on wide pointer screens only. */
-@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
-  .ref-guided-main {
-    overflow-x: clip;
-  }
+.ref-guided-progress {
+  position: relative;
+  z-index: 3;
+  margin-top: 24px;
+}
 
+/* Cards are stationary outside the wide desktop aerial presentation. */
+.ref-journey-card,
+.ref-journey-card:nth-child(n) {
+  animation: none;
+  offset-path: none;
+}
+
+/*
+ * Wide desktop aerial formation.
+ * Cards stay at eight fixed points on one curve so they never cross,
+ * collide with the context form, or create page-level overflow.
+ */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
   .ref-journey-deck {
-    width: min(1280px, 100%);
-    min-height: 470px;
-    margin-inline: auto;
-    overflow: visible;
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: min(1480px, calc(100vw - 56px));
+    min-height: 450px;
+    margin: 26px auto 34px;
+    padding: 18px 0 20px;
+    overflow: hidden;
+    contain: layout paint;
+    isolation: isolate;
     perspective: 1600px;
+    box-sizing: border-box;
   }
 
   .ref-journey-deck::before {
@@ -115,44 +142,49 @@
 
   .ref-journey-card,
   .ref-journey-card:nth-child(n) {
-    --order: 0;
+    --card-left: 50%;
+    --card-top: 20px;
+    --card-tilt: 0deg;
+    --card-scale: 1;
+    --float-x: 0px;
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 156px;
-    height: 318px;
+    left: var(--card-left);
+    top: var(--card-top);
+    width: 146px;
+    height: 300px;
     padding: 8px 9px 13px;
-    offset-path: path("M 100 360 C 340 42 940 42 1180 360");
-    offset-rotate: 0deg;
-    transform: translate(-50%, -50%);
-    transform-origin: center;
-    animation: guided-aerial-curve 96s linear infinite alternate;
-    animation-delay: calc(var(--order) * -12s);
-    will-change: offset-distance;
+    offset-path: none;
+    transform: translateX(-50%) rotateZ(var(--card-tilt));
+    transform-origin: 50% 100%;
+    scale: var(--card-scale);
+    translate: 0 0;
+    animation: guided-calm-float 18s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    will-change: translate;
   }
 
-  .ref-journey-card:nth-child(1) { --order: 0; }
-  .ref-journey-card:nth-child(2) { --order: 1; }
-  .ref-journey-card:nth-child(3) { --order: 2; }
-  .ref-journey-card:nth-child(4) { --order: 3; }
-  .ref-journey-card:nth-child(5) { --order: 4; }
-  .ref-journey-card:nth-child(6) { --order: 5; }
-  .ref-journey-card:nth-child(7) { --order: 6; }
-  .ref-journey-card:nth-child(8) { --order: 7; }
+  .ref-journey-card:nth-child(1) { --card-left: 8%; --card-top: 108px; --card-tilt: -6deg; --card-scale: .9; --float-x: 4px; --float-delay: -2s; }
+  .ref-journey-card:nth-child(2) { --card-left: 20%; --card-top: 68px; --card-tilt: -4deg; --card-scale: .94; --float-x: -3px; --float-delay: -7s; }
+  .ref-journey-card:nth-child(3) { --card-left: 32%; --card-top: 38px; --card-tilt: -2deg; --card-scale: .98; --float-x: 3px; --float-delay: -11s; }
+  .ref-journey-card:nth-child(4) { --card-left: 44%; --card-top: 20px; --card-tilt: -1deg; --card-scale: 1.02; --float-x: -2px; --float-delay: -5s; }
+  .ref-journey-card:nth-child(5) { --card-left: 56%; --card-top: 20px; --card-tilt: 1deg; --card-scale: 1.02; --float-x: 2px; --float-delay: -13s; }
+  .ref-journey-card:nth-child(6) { --card-left: 68%; --card-top: 38px; --card-tilt: 2deg; --card-scale: .98; --float-x: -3px; --float-delay: -9s; }
+  .ref-journey-card:nth-child(7) { --card-left: 80%; --card-top: 68px; --card-tilt: 4deg; --card-scale: .94; --float-x: 3px; --float-delay: -15s; }
+  .ref-journey-card:nth-child(8) { --card-left: 92%; --card-top: 108px; --card-tilt: 6deg; --card-scale: .9; --float-x: -4px; --float-delay: -4s; }
 
   .ref-journey-card .ref-art-svg {
-    height: 164px;
+    height: 154px;
   }
 
   .ref-card-icon {
-    top: 147px;
+    top: 137px;
     width: 38px;
     height: 38px;
   }
 
   .ref-journey-card h2 {
-    margin-top: 28px;
-    font-size: .8rem;
+    margin-top: 27px;
+    font-size: .79rem;
   }
 
   .ref-journey-card p {
@@ -163,7 +195,9 @@
   .ref-journey-card:focus-visible,
   .ref-journey-card.is-active {
     z-index: 40;
-    transform: translate(-50%, -50%) scale(1.07);
+    transform: translateX(-50%) rotateZ(0deg);
+    scale: 1.04;
+    translate: 0 -8px;
   }
 
   .ref-journey-deck:hover .ref-journey-card,
@@ -172,9 +206,40 @@
   }
 }
 
-@keyframes guided-aerial-curve {
-  from { offset-distance: 0%; }
-  to { offset-distance: 100%; }
+@keyframes guided-calm-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: var(--float-x) -9px; }
+}
+
+/* Stable grid for laptop and tablet widths. */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .ref-journey-deck {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    width: min(1100px, calc(100% - 32px));
+    min-height: auto !important;
+    margin: 22px auto 30px;
+    padding: 14px 16px 24px;
+    overflow: hidden;
+  }
+
+  .ref-journey-deck::before,
+  .ref-journey-deck::after {
+    display: none !important;
+  }
+
+  .ref-journey-card,
+  .ref-journey-card:nth-child(n) {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: 330px !important;
+    transform: none !important;
+    translate: none !important;
+    scale: 1 !important;
+  }
 }
 
 @media (max-width: 900px) {
@@ -198,6 +263,12 @@
   .ref-guided-context-grid {
     grid-template-columns: 1fr;
   }
+
+  .ref-journey-card,
+  .ref-journey-card:nth-child(n) {
+    animation: none !important;
+    offset-path: none !important;
+  }
 }
 
 @media (max-width: 760px) {
@@ -211,6 +282,7 @@
   .ref-journey-card,
   .ref-journey-card:nth-child(n) {
     animation: none !important;
+    translate: none !important;
   }
 }
 
@@ -218,9 +290,11 @@
   .ref-journey-deck {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 10px;
+    gap: 12px;
     min-height: auto !important;
     padding: 14px 16px 24px;
+    overflow: hidden;
+    contain: layout paint;
   }
 
   .ref-journey-deck::before,
@@ -234,8 +308,8 @@
     left: auto !important;
     top: auto !important;
     width: auto !important;
-    height: 345px !important;
-    offset-path: none !important;
+    height: 330px !important;
     transform: none !important;
+    scale: 1 !important;
   }
 }

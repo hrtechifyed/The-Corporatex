@@ -100,11 +100,17 @@ assert.match(functionalCss, /\.ref-story-editor/);
 assert.match(functionalCss, /\.site-footer/);
 assert.match(cinematicCss, /\.ref-home-card-stage/);
 assert.match(cinematicCss, /\.story-thumb/);
-assert.match(guidedCss, /offset-path: path/);
-assert.match(guidedCss, /guided-aerial-curve 96s/);
+assert.doesNotMatch(guidedCss, /offset-path:\s*path/i, 'guided cards must not use collision-prone motion paths');
+assert.doesNotMatch(guidedCss, /translate\(-50%,\s*-50%\)/, 'guided cards must not be negatively anchored into the preceding form');
+assert.match(guidedCss, /contain:\s*layout paint/);
+assert.match(guidedCss, /overflow:\s*hidden/);
+assert.match(guidedCss, /guided-calm-float 18s/);
+assert.match(guidedCss, /--card-left:\s*8%/);
+assert.match(guidedCss, /--card-left:\s*92%/);
 assert.match(guidedCss, /min-width: 1280px/);
 assert.match(guidedCss, /hover: hover/);
 assert.match(guidedCss, /animation-play-state: paused/);
+assert.match(guidedCss, /grid-template-columns:\s*repeat\(4/);
 assert.match(guidedCss, /@media \(prefers-reduced-motion: reduce\)/);
 
 assert.match(referenceJs, /story-workflow-model\.js/);
@@ -122,4 +128,4 @@ assert.doesNotMatch(workflowModel, /freeflow|FREEFLOW|free-flow/i, 'workflow mod
 assert.doesNotMatch(workflowModel, /localStorage|sessionStorage/, 'workflow model must remain persistence-neutral');
 assert.equal((workflowModel.match(/id: '/g) || []).length, 8, 'workflow model must define exactly eight guided chapters');
 
-console.log('Site quality checks passed: Guided-only route, required context, calm aerial cards and consistent navigation.');
+console.log('Site quality checks passed: Guided-only route, contained aerial cards, required context and consistent navigation.');

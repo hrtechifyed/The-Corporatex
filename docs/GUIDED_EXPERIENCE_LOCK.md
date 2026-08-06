@@ -2,7 +2,7 @@
 
 ## Source of truth
 
-The public story-submission experience now contains one route:
+The public story-submission experience contains one route:
 
 1. `share-story.html`
 2. `guided-story.html`
@@ -54,17 +54,30 @@ The journey contains exactly eight semantic chapter buttons:
 
 Each card face uses an illustration, number, short title, one question and a text status.
 
-### Aerial motion
+### Aerial formation
 
 On wide desktop screens with hover and a precise pointer:
 
-- cards move slowly along one shallow edge-to-edge curve;
-- the journey takes 96 seconds before reversing;
-- staggered delays distribute all eight cards across the curve;
-- hovering or focusing the deck pauses all cards;
-- the active card moves visually forward.
+- the eight cards occupy fixed points along one shallow edge-to-edge curve;
+- cards never cross, reorder or travel through another card;
+- each card uses a slow nine-pixel vertical float with a very small horizontal drift;
+- hovering or focusing the deck pauses all card motion;
+- the active card moves visually forward;
+- the deck clips and contains its own paint so it cannot overlap the context form or create page-level overflow.
 
-Tablet, touch, mobile and reduced-motion experiences must remain stationary and fully functional.
+Laptop and tablet widths use a stable four-column grid. Mobile uses the existing focused horizontal journey. Touch-only and reduced-motion experiences remain stationary and fully functional.
+
+### Layout containment
+
+The context form, progress toolbar, card stage, editor and review panel must remain separate document-flow sections.
+
+The card stage must:
+
+- have positive vertical spacing after the progress toolbar;
+- use fixed card coordinates inside its own containing block;
+- keep the first and eighth cards fully inside the viewport;
+- use `overflow: hidden` and `contain: layout paint` on wide desktop;
+- avoid `offset-path` motion and negative vertical centring transforms.
 
 ## Review and confirmation
 
@@ -80,7 +93,7 @@ The event contains context, chapter review data and progress. It does not repres
 
 ## Change control
 
-Changes that restore a second submission route, remove required company/location context, or apply moving card animation to touch or reduced-motion users should fail `tests/site-quality.mjs`.
+Changes that restore a second submission route, remove required company/location context, allow the card stage to overlap another section, or apply moving card animation to touch or reduced-motion users should fail `tests/site-quality.mjs`.
 
 Run:
 
