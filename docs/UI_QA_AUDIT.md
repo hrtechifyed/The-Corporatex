@@ -2,104 +2,94 @@
 
 ## Scope
 
-Audited the public experience across:
-
-- Home
-- Guided Story
-- Employer Stories
-- Story Detail
-- More
-- Privacy & Safety
+Audited the public experience across Home, Guided Story, Employer Stories, Story Detail, More, and Privacy & Safety.
 
 ## Decisions implemented
 
-### 1. Product name
+### 1. Product and entry
 
-The public product name is **CorporateX**.
+The public product name is **CorporateX**. Every visible **Share Your Story** action opens `guided-story.html` directly. The compatibility Share page redirects immediately and Free-flow remains retired.
 
-The HRTechify logo remains the powering-brand asset. The product name beside it, browser titles, visible copy, and shared footer use CorporateX.
-
-### 2. Direct story entry
-
-Every visible **Share Your Story** action points directly to `guided-story.html`.
-
-`share-story.html` is a compatibility redirect only. It must not add another card, question, or start button.
-
-### 3. Staged Guided journey
+### 2. Cinematic but calm Guided journey
 
 The page exposes one stage at a time:
 
-1. Context
-2. Story chapters
-3. Review
+1. Set the Scene
+2. Story Beats
+3. The Final Cut
 
-This prevents the company fields, eight chapters, editor, and review controls from competing on one crowded page.
+The context form, beat selector, editor, and Final Cut never compete in the same viewport by default.
 
-### 4. Focused chapter presentation
+### 3. Set the Scene redesign
 
-Only the active chapter and immediate previous and next previews are visible on desktop. Mobile displays only the active chapter.
+The context stage now uses an illustration and a split cinematic layout. Company and Location share the first desktop row; optional Team uses the full second row. Inputs have equal heights, aligned labels, and reserved error space.
 
-An eight-button chapter navigator supports direct revisiting. Cards transition only when the user changes chapters. There is no continuous orbit, curve travel, looping float, or movement while writing.
+Required:
 
-### 5. Required context
+- company or organisation;
+- broad location.
 
-Before the chapter journey begins, contributors provide:
+Optional:
 
-- company or organisation — required;
-- team — optional;
-- broad location — required.
+- broad team.
 
-Street addresses and another person’s identity are not requested.
+### 4. Story Beat language and presentation
 
-### 6. Safety screening only
+User-facing “chapter” language has been replaced by **Story Beat**. The eight beats are:
 
-CorporateX does not moderate whether a contributor’s opinion is positive, negative, fair, or favourable to an employer.
+1. The Beginning
+2. The Promise
+3. The Good Part
+4. The Shift
+5. The Tipping Point
+6. The Lesson
+7. The AI Turn
+8. Who Thrives Here?
 
-The safety screen is limited to:
+Only the active beat and immediate previews appear on desktop. Mobile shows one active beat. Motion occurs only after deliberate user action.
 
-- direct racial slurs;
-- abusive slang or targeted attacks;
-- threats or graphic violence;
-- self-harm content;
-- targeted abuse.
+### 5. Reversible navigation
 
-A contributor may still describe that discrimination, harassment, violence, abuse, or self-harm-related workplace impact occurred without reproducing slurs or graphic details.
+Contributors can:
 
-### 7. Demonstration clarity
+- return from Story Beats to context;
+- return from The Final Cut to Story Beats;
+- return from The Final Cut to context;
+- revisit any beat through the numbered navigator;
+- edit an individual beat from The Final Cut.
 
-Northstar Technologies, Atlas Systems, Meridian Works, and all displayed accounts remain fictional demonstrations.
+No entered context or response is discarded while moving between these stages.
 
-Home and Stories state this before readers encounter the examples. The story detail page repeats that it is not an employee submission.
+### 6. More page visual optimisation
 
-### 8. Account UI
+The previous text-first accordion stack was replaced by:
 
-The non-functional Sign In control is removed until accounts and saved drafts exist.
+- an illustrated hero;
+- three image-led distinction cards;
+- one AI-era visual feature;
+- three compact trust cards.
 
-### 9. Prototype state
+The page now communicates with visuals and short statements rather than large default text blocks.
 
-Writing remains only in memory for the current page visit. Confirmation emits `guidedstoryconfirmed` but does not upload, publish, or claim that a reviewer received the story.
+### 7. Safety screening only
 
-### 10. Shared shell
+CorporateX does not moderate opinions or protect employers from criticism. The safety screen is limited to direct racial slurs, abusive slang or targeted attacks, threats or graphic violence, self-harm content, and targeted abuse.
 
-Every public page uses the same navigation order and footer:
+### 8. Shared shell and prototype state
 
-```text
-CorporateX - Powered by - HRTechify - People • Technology • Growth
-© 2026 All Rights Reserved.
-```
+Every public page uses the same navigation and exact footer. Writing remains in memory for the current page visit. Confirmation emits `guidedstoryconfirmed` but does not upload or publish the story.
 
 ## Acceptance criteria
 
 - CorporateX is the only visible product name.
-- Every visible Share action opens Guided Story directly.
-- Free-flow remains retired.
-- The compatibility Share page redirects immediately.
-- Context, chapters, and review are separate stages.
-- Only the active and adjacent chapter cards are visible on desktop.
+- Guided public copy uses Story Beat rather than chapter.
+- Context includes a supporting illustration and aligned fields.
+- The AI card is titled The AI Turn.
+- Context, Story Beats, and The Final Cut are separate stages.
+- Reverse navigation is available from Story Beats and The Final Cut.
 - No Guided card uses continuous animation.
+- More is image-led and has no text-first accordion stack.
 - Company and location are required; team remains optional.
 - Safety screening is not presented as opinion moderation.
-- Fictional examples are unmistakable.
-- No non-functional Sign In control appears.
 - No story workflow uses `localStorage` or `sessionStorage`.
 - `npm run check` passes before deployment.
