@@ -132,7 +132,7 @@ assert.equal((pages.more.match(/class="more-visual-card/g) || []).length, 3, 'Mo
 assert.equal((pages.more.match(/class="more-card-art"/g) || []).length, 3, 'every distinction card needs an illustration');
 assert.match(pages.more, /class="page-shell more-feature-split"/);
 assert.match(pages.more, /class="page-shell more-trust-panel"/);
-assert.equal((pages.more.match(/<article>/g) || []).length, 6, 'More must keep three distinction and three trust cards');
+assert.equal((pages.more.match(/<article>/g) || []).length, 3, 'More must keep three compact trust cards');
 assert.doesNotMatch(pages.more, /<details class="info-card/, 'More must not return to a text-first accordion stack');
 assert.match(pages.more, /Safety screening only/);
 assert.equal((pages.privacy.match(/<details class="policy-card/g) || []).length, 6, 'Privacy page must use six expandable cards');
