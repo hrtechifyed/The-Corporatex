@@ -1,80 +1,149 @@
 import Link from 'next/link';
-import { CinematicHeroArt, FilmStrip } from '@/components/cinematic-hero-art';
-import { SceneIcon } from '@/components/scene-icons';
+import { CareerJarvis } from '@/components/career-jarvis';
 import { createClient } from '@/lib/supabase/server';
+import { ENDINGS, endingFor } from '@/lib/endings';
 
-const paths = [
-  { key: 'guide' as const, number: '01', title: 'Guided Story', copy: 'Let the Archivist guide you through the important scenes.' },
-  { key: 'write' as const, number: '02', title: 'Director’s Cut', copy: 'No scripts. No HR-approved ending. Tell the complete story in your own words.' },
-  { key: 'mix' as const, number: '03', title: 'Mix Both', copy: 'Start with the scenes that matter and add anything the script missed.' },
-];
+const fallbackSignals = [
+  ['Career growth', 4],
+  ['Leadership', 4],
+  ['Work-life balance', 3],
+  ['Learning', 3],
+  ['Compensation', 2],
+  ['Culture', 3],
+  ['Job security', 2],
+  ['Strong teams', 2],
+  ['AI pressure', 1],
+  ['Healthy transition', 2],
+] as const;
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: stories } = await supabase
-    .from('published_experiences')
-    .select('*')
-    .order('published_at', { ascending: false })
-    .limit(3);
+  const [{ data: stories }, { data: labels }] = await Promise.all([
+    supabase.from('published_experiences').select('*').order('published_at', { ascending: false }).limit(6),
+    supabase.from('experience_labels').select('label').limit(250),
+  ]);
 
-  return <>
-    <section className="opening-scene grain">
-      <div className="aurora aurora-one" aria-hidden="true" />
-      <div className="aurora aurora-two" aria-hidden="true" />
-      <div className="opening-grid">
-        <div className="opening-copy">
-          <p className="scene-tag"><span>01</span> Opening Scene</p>
-          <p className="hero-kicker">ANONYMOUS · HUMAN · UNFILTERED</p>
-          <h1>Why You Shouldn’t Meet My <em>“eX” Employer</em></h1>
-          <p className="hero-trailer">Your recruiter showed you the trailer. Your ex-employer’s former employees lived through the entire season.</p>
-          <p className="hero-description">An anonymous, AI-assisted workplace storytelling platform where former employees explain why they left and future candidates learn what to ask before joining.</p>
-          <div className="hero-actions">
-            <Link href="/submit" className="btn btn-primary">Tell Your Story <span>→</span></Link>
-            <Link href="/browse" className="btn btn-secondary"><span className="play-dot">▶</span> Meet the Ex</Link>
+  const counts = new Map<string, number>();
+  for (const row of labels || []) counts.set(row.label, (counts.get(row.label) || 0) + 1);
+  const signals = counts.size
+    ? [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([label, count]) => [label, Math.min(4, Math.max(1, count))] as const)
+    : fallbackSignals;
+
+  return (
+    <div className="cx-page">
+      <section className="cx-hero">
+        <div className="cx-shell cx-hero-grid">
+          <div className="cx-hero-copy">
+            <p className="cx-kicker">Workplace signals from people who were there</p>
+            <h1 className="cx-display">Every exit leaves a <em>signal.</em></h1>
+            <p className="cx-lede">Some warn. Some reassure. All can help someone choose better.</p>
+            <div className="cx-actions">
+              <Link className="cx-button cx-button--signal" href="/submit">Share Your Story <span aria-hidden="true">→</span></Link>
+              <Link className="cx-button cx-button--ghost" href="/browse">Explore Stories</Link>
+            </div>
+            <ul className="cx-trust-line" aria-label="CorporateX commitments">
+              <li><b>◇</b> Anonymous by design</li>
+              <li><b>✓</b> You control every word</li>
+              <li><b>⌁</b> Safety screen, not opinion control</li>
+            </ul>
           </div>
-          <ul className="trust-line" aria-label="Platform commitments">
-            <li><b>◇</b> Anonymous by design</li><li><b>✓</b> You approve every word</li><li><b>⌁</b> Human moderated</li>
-          </ul>
+          <div className="cx-hero-visual">
+            <span className="cx-signal-path" aria-hidden="true" />
+            <CareerJarvis
+              pose="releasing"
+              dialogue="I’m CareerJarvis. I’ll help turn your experience into a signal someone else can use."
+            />
+          </div>
         </div>
-        <CinematicHeroArt />
-      </div>
-    </section>
+      </section>
 
-    <FilmStrip />
-
-    <section className="premiere-section">
-      <div className="section-shell">
-        <p className="scene-tag dark-tag"><span>02</span> Public Premiere</p>
-        <div className="section-title-row">
-          <h2>Meet the <em>Ex</em></h2>
-          <p>Contributor-approved experiences, organised for clarity and reviewed by a human before publication.</p>
-          <Link href="/browse" className="text-link">Browse all stories →</Link>
+      <section className="cx-section" aria-labelledby="ending-title">
+        <div className="cx-shell">
+          <p className="cx-kicker">Four honest endings</p>
+          <h2 className="cx-title" id="ending-title">An exit is not always a warning.</h2>
+          <p className="cx-lede">Relief, progress, mixed truth and genuine recommendation all carry useful information.</p>
+          <div className="cx-ending-grid">
+            {ENDINGS.map((ending, index) => (
+              <Link className="cx-ending-card" data-ending={ending.slug} href={`/browse?ending=${encodeURIComponent(ending.value)}`} key={ending.value}>
+                <span className="cx-ending-card__scene" aria-hidden="true">
+                  <span className="cx-ending-card__sun" />
+                  <span className="cx-ending-card__door" />
+                  <span className="cx-ending-card__person" />
+                </span>
+                <span className="cx-ending-card__copy">
+                  <span>Ending {String(index + 1).padStart(2, '0')}</span>
+                  <h3>{ending.title}</h3>
+                  <p>{ending.description}</p>
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
-        {stories?.length ? <div className="story-poster-grid">
-          {stories.map((story:any, index:number) => <Link key={story.public_slug} href={`/experience/${story.company_slug}/${story.public_slug}`} className="story-poster">
-            <div className={`poster-art poster-art-${index + 1}`} aria-hidden="true"><span className="poster-sun"/><span className="poster-city"/><span className="poster-figure"/><b>0{index + 1}</b></div>
-            <div className="poster-copy"><span className="status status-published">Published · moderated</span><h3>{story.approved_headline}</h3><p>{story.approved_summary}</p><footer><span>Anonymous contributor</span><b>{story.hrt_id}</b></footer></div>
-          </Link>)}
-        </div> : <div className="empty-premiere">
-          <div className="empty-frame" aria-hidden="true"><span>NO. 00</span><i/><i/><i/></div>
-          <div><h3>The premiere slate is empty.</h3><p>Published, human-moderated stories will appear here. No demonstration stories are presented as real.</p><Link href="/submit" className="text-link">Be the first to tell a story →</Link></div>
-        </div>}
-      </div>
-    </section>
+      </section>
 
-    <section className="path-section grain">
-      <div className="section-shell">
-        <p className="scene-tag"><span>03</span> Choose Your Story Path</p>
-        <div className="path-heading"><h2>One story.<br/><em>Three ways in.</em></h2><p>The format changes. Your meaning does not. Every route saves privately to your account.</p></div>
-        <div className="path-grid">{paths.map(path => <Link href="/submit" className="path-panel" key={path.key}>
-          <span className="path-number">PATH {path.number}</span><div className="path-icon"><SceneIcon kind={path.key}/></div><h3>{path.title}</h3><p>{path.copy}</p><span className="path-arrow">→</span>
-        </Link>)}</div>
-      </div>
-    </section>
+      <section className="cx-section cx-light-section" aria-labelledby="stories-title">
+        <div className="cx-shell">
+          <div className="cx-section-heading">
+            <div>
+              <p className="cx-kicker">Signals from people who were there</p>
+              <h2 className="cx-title" id="stories-title">Stories for the decision ahead.</h2>
+            </div>
+            <Link className="cx-button cx-button--quiet" href="/browse">Explore all stories →</Link>
+          </div>
+          {stories?.length ? (
+            <div className="cx-story-grid">
+              {stories.slice(0, 6).map((story: any) => {
+                const ending = endingFor(story.main_reason);
+                return (
+                  <Link className="cx-story-card" href={`/experience/${story.company_slug}/${story.public_slug}`} key={story.id}>
+                    <div>
+                      <div className="cx-story-card__art" aria-hidden="true" />
+                      <span className="cx-ending-badge">{ending.title}</span>
+                      <h3>{story.approved_headline}</h3>
+                      <p>{story.approved_summary}</p>
+                    </div>
+                    <footer>
+                      <span>{story.company_display_name}</span>
+                      <span>{story.broad_function || 'Workplace story'} · {story.broad_region || 'Broad location'}</span>
+                    </footer>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="cx-empty">
+              <h3>The archive is waiting for its first confirmed signal.</h3>
+              <p>No demonstration story is presented as a real employee account.</p>
+              <Link className="cx-button cx-button--signal" href="/submit">Share the first story</Link>
+            </div>
+          )}
+        </div>
+      </section>
 
-    <section className="curtain-section">
-      <div className="curtain-art" aria-hidden="true"><div className="curtain-moon"/><div className="archivist-bust"/><span className="light-beam"/></div>
-      <div className="curtain-copy"><p className="scene-tag"><span>04</span> Behind the Curtain</p><h2>Care before <em>cinema.</em></h2><p>AI organises; it does not judge. You approve; a human moderates. Nothing becomes public at the end of analysis.</p><div className="safety-list"><span><b>01</b> Meaning stays yours</span><span><b>02</b> Privacy in every scene</span><span><b>03</b> Humans review the final cut</span></div></div>
-    </section>
-  </>;
+      <section className="cx-section" aria-labelledby="signal-map-title">
+        <div className="cx-shell">
+          <p className="cx-kicker">Shared intelligence</p>
+          <h2 className="cx-title" id="signal-map-title">What people notice before they move on.</h2>
+          <p className="cx-lede">Themes grow only when they repeat across separate confirmed stories.</p>
+          <div className="cx-signal-map" aria-label="Common story themes">
+            {signals.map(([label, weight]) => (
+              <Link className="cx-signal-word" data-weight={weight} href={`/browse?q=${encodeURIComponent(label)}`} key={label}>{label}</Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="cx-section cx-section--compact">
+        <div className="cx-shell cx-journey-panel">
+          <div className="cx-section-heading">
+            <div>
+              <p className="cx-kicker">Pass it forward</p>
+              <h2 className="cx-title">Your ending could improve someone else’s beginning.</h2>
+            </div>
+            <Link className="cx-button cx-button--signal" href="/submit">Begin with CareerJarvis →</Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }
