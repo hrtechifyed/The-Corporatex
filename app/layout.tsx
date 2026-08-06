@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './corporatex-cinematic.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 
@@ -13,25 +14,25 @@ export const metadata: Metadata = {
     default: 'CorporateX',
     template: '%s | CorporateX',
   },
-  description: 'Structured workplace exit stories for better employer decisions.',
+  description: 'Every exit leaves a signal. Real workplace stories that help people choose better.',
   alternates: { canonical: '/' },
   openGraph: {
     title: 'CorporateX',
-    description: 'Before you join, hear why people left.',
+    description: 'Some stories warn. Some reassure. All can help someone choose better.',
     type: 'website',
     url: site,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'CorporateX',
-    description: 'Structured workplace exit stories for better employer decisions.',
+    description: 'Every exit leaves a signal.',
   },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className="cx-body">
         <a
           href="#main"
           className="fixed -top-20 left-4 z-[100] bg-signal p-3 text-black focus:top-4"
