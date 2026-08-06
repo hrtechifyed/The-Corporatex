@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -11,7 +11,7 @@ const links = [
   ['Privacy & Safety', '/privacy'],
 ] as const;
 
-const warmRoutes = [...links.map(([, href]) => href), '/submit', '/account'];
+const idleWarmRoutes = ['/', '/more', '/privacy', '/submit'] as const;
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -24,11 +24,17 @@ export function SiteHeader() {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      warmRoutes.forEach((href) => router.prefetch(href));
-    }, 120);
+      idleWarmRoutes.forEach((href) => router.prefetch(href));
+    }, 650);
 
     return () => window.clearTimeout(timer);
   }, [router]);
+
+  useEffect(() => {
+    if (!pendingHref) return;
+    const safetyTimer = window.setTimeout(() => setPendingHref(null), 5000);
+    return () => window.clearTimeout(safetyTimer);
+  }, [pendingHref]);
 
   function isCurrent(href: string) {
     if (href === '/') return pathname === '/';
@@ -40,7 +46,7 @@ export function SiteHeader() {
     router.prefetch(href);
   }
 
-  function startNavigation(href: string, event: React.MouseEvent<HTMLAnchorElement>) {
+  function startNavigation(href: string, event: MouseEvent<HTMLAnchorElement>) {
     if (
       href === pathname ||
       event.defaultPrevented ||
@@ -71,7 +77,7 @@ export function SiteHeader() {
         onPointerEnter={() => warm(href)}
         onFocus={() => warm(href)}
         onTouchStart={() => warm(href)}
-        onClick={(event) => startNavigation(href, event)}
+        onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation(href, event)}
       >
         {label}
       </Link>
@@ -87,7 +93,7 @@ export function SiteHeader() {
           aria-label="CorporateX home"
           prefetch
           onPointerEnter={() => warm('/')}
-          onClick={(event) => startNavigation('/', event)}
+          onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation('/', event)}
         >
           <img src="/hrtechify-logo.svg" alt="" width="38" height="38" />
           <span>CorporateX</span>
