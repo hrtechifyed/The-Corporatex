@@ -16,7 +16,6 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-anon-key
       SUPABASE_SERVICE_ROLE_KEY: ci-service-role-key
-      GEMINI_API_KEY: ci-gemini-key
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
     steps:
       - name: Checkout repository
