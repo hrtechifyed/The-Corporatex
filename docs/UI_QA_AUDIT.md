@@ -1,117 +1,105 @@
-# UI and Product QA Audit
+# CorporateX UI and Product QA Audit
 
 ## Scope
 
-Audited the current public experience across:
+Audited the public experience across:
 
 - Home
-- Share Your Story
 - Guided Story
 - Employer Stories
 - Story Detail
 - More
 - Privacy & Safety
 
-## Current product decisions
+## Decisions implemented
 
-### 1. One submission route
+### 1. Product name
 
-**Decision:** Free-flow Story is retired. Share Your Story now presents one Guided entry and `freeflow-story.html` is not shipped.
+The public product name is **CorporateX**.
 
-**Reasoning:** One route reduces decision friction, simplifies moderation inputs and keeps the product focused on structured, useful exit accounts.
+The HRTechify logo remains the powering-brand asset. The product name beside it, browser titles, visible copy, and shared footer use CorporateX.
 
-### 2. Required context before review
+### 2. Direct story entry
 
-**Problem:** Chapter responses alone did not reliably identify the employer context readers need.
+Every visible **Share Your Story** action points directly to `guided-story.html`.
 
-**Resolution:** Guided Story now asks for:
+`share-story.html` is a compatibility redirect only. It must not add another card, question, or start button.
+
+### 3. Staged Guided journey
+
+The page exposes one stage at a time:
+
+1. Context
+2. Story chapters
+3. Review
+
+This prevents the company fields, eight chapters, editor, and review controls from competing on one crowded page.
+
+### 4. Focused chapter presentation
+
+Only the active chapter and immediate previous and next previews are visible on desktop. Mobile displays only the active chapter.
+
+An eight-button chapter navigator supports direct revisiting. Cards transition only when the user changes chapters. There is no continuous orbit, curve travel, looping float, or movement while writing.
+
+### 5. Required context
+
+Before the chapter journey begins, contributors provide:
 
 - company or organisation — required;
 - team — optional;
-- location — required, with broad city, country, remote-region and hybrid examples.
+- broad location — required.
 
-Review is blocked until company and location are valid. The context is included in the `guidedstoryconfirmed` integration event.
+Street addresses and another person’s identity are not requested.
 
-### 3. Guided card sizing and motion
+### 6. Safety screening only
 
-**Problem:** Eight equal cards in a dense row made the page feel full and visually static.
+CorporateX does not moderate whether a contributor’s opinion is positive, negative, fair, or favourable to an employer.
 
-**Resolution:**
+The safety screen is limited to:
 
-- Cards use a smaller, more readable footprint.
-- On wide desktop screens with hover and a precise pointer, cards travel slowly along a shallow edge-to-edge curve.
-- The full journey lasts 96 seconds and reverses rather than jumping.
-- Hover and focus pause the entire formation.
-- Tablet uses a stable grid.
-- Mobile uses a horizontal snap journey.
-- Touch-only and reduced-motion environments receive no moving formation.
+- direct racial slurs;
+- abusive slang or targeted attacks;
+- threats or graphic violence;
+- self-harm content;
+- targeted abuse.
 
-### 4. Guided interaction
+A contributor may still describe that discrimination, harassment, violence, abuse, or self-harm-related workplace impact occurred without reproducing slurs or graphic details.
 
-- Each chapter is a semantic button.
-- Selecting a card opens the chapter editor.
-- Responses remain in memory for the current page visit.
-- Answered and skipped states are visible in text as well as colour.
-- Previous, next, skip and direct-card navigation are supported.
-- Left and Right Arrow keys move between cards.
-- A progress bar reports answered and skipped chapters.
-- Review mode groups context and all chapters and supports editing.
+### 7. Demonstration clarity
 
-### 5. Footer and navigation consistency
+Northstar Technologies, Atlas Systems, Meridian Works, and all displayed accounts remain fictional demonstrations.
 
-Every public page uses the same compact HRTechify glass navigation and exactly:
+Home and Stories state this before readers encounter the examples. The story detail page repeats that it is not an employee submission.
 
-1. `The Corporate Ex - Powered by - HRTechify - People • Technology • Growth`
-2. `© 2026 All Rights Reserved.`
+### 8. Account UI
 
-Both footer lines use the same type size, weight and alignment.
+The non-functional Sign In control is removed until accounts and saved drafts exist.
 
-### 6. Demonstration content
+### 9. Prototype state
 
-Fictional employer examples remain:
+Writing remains only in memory for the current page visit. Confirmation emits `guidedstoryconfirmed` but does not upload, publish, or claim that a reviewer received the story.
 
-- Northstar Technologies
-- Atlas Systems
-- Meridian Works
+### 10. Shared shell
 
-A page-level notice explains that these are demonstration accounts rather than employee submissions.
-
-### 7. Prototype persistence
-
-Guided Story states that context and writing remain only in the open page. Confirmation dispatches an integration event but does not claim publication or database storage.
-
-### 8. Accessibility and motion
-
-- Semantic buttons and labels
-- Visible focus states
-- `aria-pressed`, `aria-live`, `aria-invalid` and progress semantics
-- Linked errors for company and location
-- Arrow-key chapter navigation
-- 44px+ touch targets
-- Text labels for answered and skipped states
-- Interaction pauses desktop motion
-- Reduced-motion rules remove animation without removing functionality
-
-## Product behaviour boundary
-
-This remains a front-end prototype. The confirmation action emits:
+Every public page uses the same navigation order and footer:
 
 ```text
-guidedstoryconfirmed
+CorporateX - Powered by - HRTechify - People • Technology • Growth
+© 2026 All Rights Reserved.
 ```
 
-No story is published or sent to a server until a moderated database workflow is connected.
+## Acceptance criteria
 
-## Release acceptance criteria
-
-- Share Your Story presents one Guided route only.
-- The retired Free-flow HTML page is absent from the production build.
-- All eight Guided chapters can be selected, answered, skipped, revisited and reviewed.
+- CorporateX is the only visible product name.
+- Every visible Share action opens Guided Story directly.
+- Free-flow remains retired.
+- The compatibility Share page redirects immediately.
+- Context, chapters, and review are separate stages.
+- Only the active and adjacent chapter cards are visible on desktop.
+- No Guided card uses continuous animation.
 - Company and location are required; team remains optional.
-- Wide desktop card movement is slow, curved and pausable.
-- Tablet, touch, mobile and reduced-motion experiences remain stable.
-- One final agreement checkbox is used.
-- All public pages share the same navigation and exact footer.
-- Demonstration employers are fictional.
+- Safety screening is not presented as opinion moderation.
+- Fictional examples are unmistakable.
+- No non-functional Sign In control appears.
 - No story workflow uses `localStorage` or `sessionStorage`.
 - `npm run check` passes before deployment.

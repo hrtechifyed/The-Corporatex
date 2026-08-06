@@ -4,25 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050505" />
-  <meta name="description" content="A guided story journey through the moments that matter." />
+  <meta name="description" content="Share a structured workplace exit story with CorporateX." />
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="src/reference-exact.css" />
   <link rel="stylesheet" href="src/reference-functional.css" />
   <link rel="stylesheet" href="src/cinematic-card-system.css" />
   <link rel="stylesheet" href="src/guided-only-aerial.css" />
-  <title>Guided Story | The Corporate Ex</title>
+  <title>Share Your Story | CorporateX</title>
 </head>
 <body class="ref-page ref-guided" data-ref-page="share">
 <a class="skip-link" href="#main">Skip to main content</a>
 <header class="ref-nav">
-  <a class="ref-brand" href="index.html" aria-label="HRTechify home"><img src="public/hrtechify-logo.svg" alt="" width="34" height="34" /><strong>HRTechify</strong></a>
-  <nav class="ref-primary-nav" aria-label="Primary navigation"><a data-ref-nav="home" href="index.html">Home</a><a data-ref-nav="share" class="ref-share-link" href="share-story.html">Share Your Story</a><a data-ref-nav="stories" href="stories.html">Stories</a><a data-ref-nav="more" href="more-info.html">More</a><a data-ref-nav="privacy" href="privacy-safety.html">Privacy &amp; Safety</a></nav>
-  <div class="ref-nav-actions"><a class="ref-search" href="stories.html#story-search" aria-label="Search stories"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg></a><button class="ref-signin" type="button" data-ref-signin>Sign In</button><button class="ref-menu" type="button" data-ref-menu aria-expanded="false" aria-label="Open navigation"><span></span><span></span></button></div>
+  <a class="ref-brand" href="index.html" aria-label="CorporateX home"><img src="public/hrtechify-logo.svg" alt="" width="34" height="34" /><strong>CorporateX</strong></a>
+  <nav class="ref-primary-nav" aria-label="Primary navigation"><a data-ref-nav="home" href="index.html">Home</a><a data-ref-nav="share" class="ref-share-link" href="guided-story.html">Share Your Story</a><a data-ref-nav="stories" href="stories.html">Stories</a><a data-ref-nav="more" href="more-info.html">More</a><a data-ref-nav="privacy" href="privacy-safety.html">Privacy &amp; Safety</a></nav>
+  <div class="ref-nav-actions"><a class="ref-search" href="stories.html#story-search" aria-label="Search stories"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg></a><button class="ref-menu" type="button" data-ref-menu aria-expanded="false" aria-label="Open navigation"><span></span><span></span></button></div>
 </header>
-<nav class="ref-mobile-nav" data-ref-mobile-nav hidden aria-label="Mobile navigation"><a href="index.html">Home</a><a href="share-story.html">Share Your Story</a><a href="stories.html">Stories</a><a href="more-info.html">More</a><a href="privacy-safety.html">Privacy &amp; Safety</a><button type="button" data-ref-signin>Sign In</button></nav>
+<nav class="ref-mobile-nav" data-ref-mobile-nav hidden aria-label="Mobile navigation"><a href="index.html">Home</a><a href="guided-story.html">Share Your Story</a><a href="stories.html">Stories</a><a href="more-info.html">More</a><a href="privacy-safety.html">Privacy &amp; Safety</a></nav>
 
-<main id="main" class="ref-guided-main" data-guided-workflow>
-  <header class="ref-story-heading"><p>GUIDED STORY</p><h1>Tell the arc.</h1><span>Set the scene, choose a chapter, and return anytime.</span><i aria-hidden="true">↓</i></header>
+<main id="main" class="ref-guided-main" data-guided-workflow data-guided-step="context">
+  <header class="ref-story-heading"><p>GUIDED STORY</p><h1>Tell the arc.</h1><span>One calm step at a time.</span></header>
+
+  <ol class="ref-guided-steps" aria-label="Story journey">
+    <li data-guided-step-marker="context" aria-current="step"><span>1</span>Context</li>
+    <li data-guided-step-marker="story"><span>2</span>Story chapters</li>
+    <li data-guided-step-marker="review"><span>3</span>Review</li>
+  </ol>
 
   <section class="ref-guided-context" data-guided-context aria-labelledby="guided-context-title">
     <div class="ref-guided-context-head"><div><p class="ref-editor-kicker">SET THE SCENE</p><h2 id="guided-context-title">Where did this experience happen?</h2></div><p>Use broad details only. Do not name individual people or include confidential information.</p></div>
@@ -33,33 +39,41 @@
     </div>
     <datalist id="guided-location-suggestions"><option value="Bengaluru, India"></option><option value="London, United Kingdom"></option><option value="New York, United States"></option><option value="Singapore"></option><option value="Remote — Asia-Pacific"></option><option value="Remote — Europe"></option><option value="Remote — North America"></option><option value="Hybrid — city and country"></option></datalist>
     <p class="ref-guided-context-status" data-guided-context-status role="status" aria-live="polite"></p>
+    <div class="ref-context-actions"><a class="ref-action ghost" href="privacy-safety.html">How your story is handled</a><button class="ref-action primary" type="button" data-guided-context-next>Continue to chapters</button></div>
   </section>
 
-  <section class="ref-guided-progress" aria-label="Guided story progress"><p class="ref-progress-label" data-guided-progress-label>Chapter 1 of 8</p><div class="ref-progress-track" role="progressbar" aria-label="Story completion" aria-valuemin="0" aria-valuemax="100"><span class="ref-progress-fill" data-guided-progress-fill></span></div><p class="ref-progress-counts" data-guided-progress-counts>0 answered · 0 skipped</p></section>
-  <section class="ref-journey-deck" aria-label="Guided story chapters">
-    <button type="button" class="ref-journey-card orange is-active" data-guided-chapter="beginning" aria-pressed="true" aria-label="The Beginning. Why did you join?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#growth"></use></svg><span class="ref-card-icon" aria-hidden="true">1</span><h2>The Beginning</h2><p>Why did you join?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
-    <button type="button" class="ref-journey-card orange" data-guided-chapter="promise" aria-pressed="false" aria-label="The Promise. What were you told?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#personal"></use></svg><span class="ref-card-icon" aria-hidden="true">2</span><h2>The Promise</h2><p>What were you told?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
-    <button type="button" class="ref-journey-card orange" data-guided-chapter="good" aria-pressed="false" aria-label="The Good Part. What worked?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#leadership"></use></svg><span class="ref-card-icon" aria-hidden="true">3</span><h2>The Good Part</h2><p>What worked?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
-    <button type="button" class="ref-journey-card purple" data-guided-chapter="shift" aria-pressed="false" aria-label="The Shift. What changed?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#change"></use></svg><span class="ref-card-icon" aria-hidden="true">4</span><h2>The Shift</h2><p>What changed?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
-    <button type="button" class="ref-journey-card orange" data-guided-chapter="tipping" aria-pressed="false" aria-label="The Tipping Point. Why leave?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#wellbeing"></use></svg><span class="ref-card-icon" aria-hidden="true">5</span><h2>The Tipping Point</h2><p>Why leave?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
-    <button type="button" class="ref-journey-card orange" data-guided-chapter="lesson" aria-pressed="false" aria-label="The Lesson. What should candidates ask?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#compensation"></use></svg><span class="ref-card-icon" aria-hidden="true">6</span><h2>The Lesson</h2><p>What should they ask?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
-    <button type="button" class="ref-journey-card purple" data-guided-chapter="ai" aria-pressed="false" aria-label="The AI Chapter. Did technology reshape the role?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#ai"></use></svg><span class="ref-card-icon" aria-hidden="true">7</span><h2>The AI Chapter</h2><p>Did technology reshape it?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
-    <button type="button" class="ref-journey-card orange" data-guided-chapter="fit" aria-pressed="false" aria-label="Who Thrives Here. Who could still thrive?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#personal"></use></svg><span class="ref-card-icon" aria-hidden="true">8</span><h2>Who Thrives Here?</h2><p>Who could still thrive?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+  <section class="ref-guided-progress" data-guided-story-ui hidden aria-label="Guided story progress"><p class="ref-progress-label" data-guided-progress-label>Chapter 1 of 8</p><div class="ref-progress-track" role="progressbar" aria-label="Story completion" aria-valuemin="0" aria-valuemax="100"><span class="ref-progress-fill" data-guided-progress-fill></span></div><p class="ref-progress-counts" data-guided-progress-counts>0 answered · 0 skipped</p><button class="ref-progress-edit" type="button" data-guided-edit-context>Edit context</button></section>
+
+  <section class="ref-journey-stage" data-guided-story-ui hidden aria-label="Choose a story chapter">
+    <div class="ref-journey-deck" aria-label="Current and nearby story chapters">
+      <button type="button" class="ref-journey-card orange is-active" data-guided-chapter="beginning" aria-pressed="true" aria-label="The Beginning. Why did you join?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#growth"></use></svg><span class="ref-card-icon" aria-hidden="true">1</span><h2>The Beginning</h2><p>Why did you join?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+      <button type="button" class="ref-journey-card orange" data-guided-chapter="promise" aria-pressed="false" aria-label="The Promise. What were you told?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#personal"></use></svg><span class="ref-card-icon" aria-hidden="true">2</span><h2>The Promise</h2><p>What were you told?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+      <button type="button" class="ref-journey-card orange" data-guided-chapter="good" aria-pressed="false" aria-label="The Good Part. What worked?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#leadership"></use></svg><span class="ref-card-icon" aria-hidden="true">3</span><h2>The Good Part</h2><p>What worked?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+      <button type="button" class="ref-journey-card purple" data-guided-chapter="shift" aria-pressed="false" aria-label="The Shift. What changed?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#change"></use></svg><span class="ref-card-icon" aria-hidden="true">4</span><h2>The Shift</h2><p>What changed?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+      <button type="button" class="ref-journey-card orange" data-guided-chapter="tipping" aria-pressed="false" aria-label="The Tipping Point. Why leave?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#wellbeing"></use></svg><span class="ref-card-icon" aria-hidden="true">5</span><h2>The Tipping Point</h2><p>Why leave?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+      <button type="button" class="ref-journey-card orange" data-guided-chapter="lesson" aria-pressed="false" aria-label="The Lesson. What should candidates ask?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#compensation"></use></svg><span class="ref-card-icon" aria-hidden="true">6</span><h2>The Lesson</h2><p>What should they ask?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+      <button type="button" class="ref-journey-card purple" data-guided-chapter="ai" aria-pressed="false" aria-label="The AI Chapter. Did technology reshape the role?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#ai"></use></svg><span class="ref-card-icon" aria-hidden="true">7</span><h2>The AI Chapter</h2><p>Did technology reshape it?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+      <button type="button" class="ref-journey-card orange" data-guided-chapter="fit" aria-pressed="false" aria-label="Who Thrives Here. Who could still thrive?"><svg class="ref-art-svg" viewBox="0 0 400 500" aria-hidden="true" focusable="false"><use href="public/story-scenes.svg#personal"></use></svg><span class="ref-card-icon" aria-hidden="true">8</span><h2>Who Thrives Here?</h2><p>Who could still thrive?</p><span class="ref-card-status" data-card-status>Open chapter</span></button>
+    </div>
+    <div class="ref-chapter-dots" data-guided-dots aria-label="Choose any chapter"></div>
   </section>
-  <section class="ref-story-editor" data-guided-editor aria-labelledby="guided-editor-title">
+
+  <section class="ref-story-editor" data-guided-story-ui data-guided-editor hidden aria-labelledby="guided-editor-title">
     <div class="ref-editor-head"><div><p class="ref-editor-kicker">ACTIVE CHAPTER</p><h2 id="guided-editor-title" data-guided-title>The Beginning</h2><p class="ref-editor-prompt" data-guided-prompt></p><p class="ref-editor-helper" data-guided-helper></p></div><span class="ref-editor-position" data-guided-position>1 / 8</span></div>
     <label class="ref-field-label" for="guided-response">Your experience<textarea id="guided-response" maxlength="1800" data-guided-text></textarea><span class="ref-field-meta"><span>Held only on this open page.</span><span><b data-guided-count>0</b> / 1800</span></span></label>
-    <div class="ref-editor-actions"><button class="ref-action ghost" type="button" data-guided-previous>Previous</button><button class="ref-action ghost" type="button" data-guided-skip>Skip</button><span class="ref-editor-spacer"></span><button class="ref-action" type="button" data-guided-next>Next</button><button class="ref-action primary" type="button" data-guided-review disabled>Review</button></div><p class="ref-status-live" data-guided-live role="status" aria-live="polite"></p>
+    <div class="ref-editor-actions"><button class="ref-action ghost" type="button" data-guided-previous>Previous</button><button class="ref-action ghost" type="button" data-guided-skip>Skip</button><span class="ref-editor-spacer"></span><button class="ref-action" type="button" data-guided-next>Next</button><button class="ref-action primary" type="button" data-guided-review disabled>Review story</button></div><p class="ref-status-live" data-guided-live role="status" aria-live="polite"></p>
   </section>
+
   <section class="ref-story-review" data-guided-review-panel hidden aria-labelledby="guided-review-title">
     <p class="ref-editor-kicker">REVIEW</p><h2 id="guided-review-title">Read the complete arc.</h2>
     <dl class="ref-context-review" aria-label="Story context"><div><dt>Company</dt><dd data-guided-review-context="company"></dd></div><div><dt>Team</dt><dd data-guided-review-context="team"></dd></div><div><dt>Location</dt><dd data-guided-review-context="location"></dd></div></dl>
     <div class="ref-review-list" data-guided-review-list></div>
     <div class="ref-responsibility"><h3>Before confirming</h3><ul><li>Keep it first-person and authentic.</li><li>Remove names and confidential details.</li><li>Describe your perspective, not the whole organisation.</li><li>Remember that readers may use it for a career decision.</li></ul></div>
-    <label class="ref-agreement"><input type="checkbox" data-guided-agreement /><span>I agree that this account is authentic, responsible and ready for review.</span></label>
-    <div class="ref-review-actions"><button class="ref-action ghost" type="button" data-guided-edit-choices>Edit story</button><span class="ref-editor-spacer"></span><button class="ref-action primary" type="button" data-guided-confirm disabled>Confirm for review</button></div>
+    <div class="ref-safety-scope"><h3>What the safety screen checks</h3><p>CorporateX checks only for direct racial slurs, abusive slang or targeted attacks, threats or graphic violence, and self-harm content. You may still describe that discrimination, harassment, violence or abuse occurred without reproducing slurs or graphic details. The screen does not judge your opinion, protect an employer from criticism, or rewrite your experience.</p><p><strong>Prototype note:</strong> nothing is uploaded or published from this page.</p></div>
+    <label class="ref-agreement"><input type="checkbox" data-guided-agreement /><span>I agree that this account is authentic, responsible and ready for the safety review described above.</span></label>
+    <div class="ref-review-actions"><button class="ref-action ghost" type="button" data-guided-edit-choices>Edit story</button><span class="ref-editor-spacer"></span><button class="ref-action primary" type="button" data-guided-confirm disabled>Confirm for safety review</button></div>
   </section>
 </main>
-<footer class="site-footer"><p class="footer-line">The Corporate Ex - Powered by - HRTechify - People • Technology • Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved.</p></footer>
+<footer class="site-footer"><p class="footer-line">CorporateX - Powered by - HRTechify - People • Technology • Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved.</p></footer>
 <div class="ref-toast" role="status" aria-live="polite"></div><script type="module" src="src/reference-exact.js"></script>
 </body></html>

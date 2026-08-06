@@ -1,7 +1,6 @@
 import {
   GUIDED_CHAPTERS,
   adjacentChapterId,
-  buildGuidedReview,
   buildGuidedSubmission,
   chapterStatus,
   createGuidedState,
@@ -37,32 +36,26 @@ function initialiseShell() {
 
   const menuButton = document.querySelector('[data-ref-menu]');
   const mobileNav = document.querySelector('[data-ref-mobile-nav]');
-  if (menuButton && mobileNav) {
-    if (!mobileNav.id) mobileNav.id = 'mobile-navigation';
-    menuButton.setAttribute('aria-controls', mobileNav.id);
-    menuButton.addEventListener('click', () => {
-      const open = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', String(!open));
-      mobileNav.hidden = open;
-    });
-    mobileNav.addEventListener('click', (event) => {
-      if (!event.target.closest('a,button')) return;
+  if (!menuButton || !mobileNav) return;
+
+  if (!mobileNav.id) mobileNav.id = 'mobile-navigation';
+  menuButton.setAttribute('aria-controls', mobileNav.id);
+  menuButton.addEventListener('click', () => {
+    const open = menuButton.getAttribute('aria-expanded') === 'true';
+    menuButton.setAttribute('aria-expanded', String(!open));
+    mobileNav.hidden = open;
+  });
+  mobileNav.addEventListener('click', (event) => {
+    if (!event.target.closest('a,button')) return;
+    mobileNav.hidden = true;
+    menuButton.setAttribute('aria-expanded', 'false');
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !mobileNav.hidden) {
       mobileNav.hidden = true;
       menuButton.setAttribute('aria-expanded', 'false');
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !mobileNav.hidden) {
-        mobileNav.hidden = true;
-        menuButton.setAttribute('aria-expanded', 'false');
-        menuButton.focus();
-      }
-    });
-  }
-
-  document.querySelectorAll('[data-ref-signin]').forEach((button) => {
-    button.addEventListener('click', () => {
-      showToast('Sign in will be added later. The current experience is open to everyone.');
-    });
+      menuButton.focus();
+    }
   });
 }
 
@@ -71,11 +64,16 @@ function initialiseGuidedWorkflow() {
   if (!root) return;
 
   const cards = [...root.querySelectorAll('[data-guided-chapter]')];
+  const storyUi = [...root.querySelectorAll('[data-guided-story-ui]')];
+  const stepMarkers = [...root.querySelectorAll('[data-guided-step-marker]')];
   const contextPanel = root.querySelector('[data-guided-context]');
+  const contextNextButton = root.querySelector('[data-guided-context-next]');
+  const editContextButton = root.querySelector('[data-guided-edit-context]');
   const companyField = root.querySelector('[data-guided-company]');
   const teamField = root.querySelector('[data-guided-team]');
   const locationField = root.querySelector('[data-guided-location]');
   const contextStatus = root.querySelector('[data-guided-context-status]');
+  const dots = root.querySelector('[data-guided-dots]');
   const editor = root.querySelector('[data-guided-editor]');
   const review = root.querySelector('[data-guided-review-panel]');
   const textarea = root.querySelector('[data-guided-text]');
@@ -97,6 +95,27 @@ function initialiseGuidedWorkflow() {
   const agreement = root.querySelector('[data-guided-agreement]');
   const confirmButton = root.querySelector('[data-guided-confirm]');
   let state = createGuidedState();
+  let dotButtons = [];
+
+  function setStep(step, { focus = false } = {}) {
+    root.dataset.guidedStep = step;
+    if (contextPanel) contextPanel.hidden = step !== 'context';
+    storyUi.forEach((element) => { element.hidden = step !== 'story'; });
+    if (review) review.hidden = step !== 'review';
+    stepMarkers.forEach((marker) => {
+      if (marker.dataset.guidedStepMarker === step) marker.setAttribute('aria-current', 'step');
+      else marker.removeAttribute('aria-current');
+    });
+    const destination = step === 'context' ? contextPanel : step === 'review' ? review : root.querySelector('[data-guided-story-ui]');
+    scrollToElement(destination);
+    if (focus) {
+      window.setTimeout(() => {
+        if (step === 'context') companyField?.focus();
+        else if (step === 'story') cards.find((card) => card.dataset.guidedChapter === state.activeId)?.focus();
+        else review?.querySelector('h2')?.focus?.();
+      }, reducedMotion ? 0 : 220);
+    }
+  }
 
   function clearContextValidation() {
     [companyField, locationField].forEach((field) => field?.removeAttribute('aria-invalid'));
@@ -111,18 +130,17 @@ function initialiseGuidedWorkflow() {
       const error = root.querySelector(`[data-guided-error="${name}"]`);
       if (error) error.textContent = message;
     });
-    if (contextStatus) contextStatus.textContent = 'Add the highlighted story context before review.';
-    scrollToElement(contextPanel);
+    if (contextStatus) contextStatus.textContent = 'Add the highlighted story context before continuing.';
+    setStep('context');
     (companyField?.matches('[aria-invalid="true"]') ? companyField : locationField)?.focus();
   }
 
   function updateContextStatus() {
     const validation = validateGuidedContext(state.context);
-    if (contextStatus) {
-      contextStatus.textContent = validation.valid
-        ? `Context ready: ${validation.context.company} · ${validation.context.location}`
-        : '';
-    }
+    if (!contextStatus) return;
+    contextStatus.textContent = validation.valid
+      ? `Context ready: ${validation.context.company} · ${validation.context.location}`
+      : '';
   }
 
   [
@@ -139,9 +157,27 @@ function initialiseGuidedWorkflow() {
     });
   });
 
+  function createChapterDots() {
+    if (!dots) return;
+    dotButtons = GUIDED_CHAPTERS.map((chapter) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'ref-chapter-dot';
+      button.dataset.guidedDot = chapter.id;
+      button.textContent = String(chapter.number);
+      button.setAttribute('aria-label', `Open chapter ${chapter.number}: ${chapter.title}`);
+      button.addEventListener('click', () => activateChapter(chapter.id, { focusEditor: true }));
+      return button;
+    });
+    dots.replaceChildren(...dotButtons);
+  }
+
   function renderProgressAndCards() {
     const progress = guidedProgress(state);
     const activeIndex = GUIDED_CHAPTERS.findIndex((chapter) => chapter.id === state.activeId);
+    const previousId = activeIndex > 0 ? GUIDED_CHAPTERS[activeIndex - 1].id : null;
+    const nextId = activeIndex < GUIDED_CHAPTERS.length - 1 ? GUIDED_CHAPTERS[activeIndex + 1].id : null;
+
     if (progressLabel) progressLabel.textContent = `Chapter ${activeIndex + 1} of ${progress.total}`;
     if (progressCounts) progressCounts.textContent = `${progress.answered} answered · ${progress.skipped} skipped`;
     if (progressFill) progressFill.style.width = `${progress.percent}%`;
@@ -151,13 +187,26 @@ function initialiseGuidedWorkflow() {
       const id = card.dataset.guidedChapter;
       const status = chapterStatus(state, id);
       const active = id === state.activeId;
+      const previous = id === previousId;
+      const next = id === nextId;
+      const visible = active || previous || next;
+      card.hidden = !visible;
+      card.tabIndex = visible ? 0 : -1;
       card.classList.toggle('is-active', active);
+      card.classList.toggle('is-prev', previous);
+      card.classList.toggle('is-next', next);
       card.classList.toggle('is-answered', status === 'answered');
       card.classList.toggle('is-skipped', status === 'skipped');
       card.setAttribute('aria-pressed', String(active));
       card.dataset.status = status;
       const statusLabel = card.querySelector('[data-card-status]');
       if (statusLabel) statusLabel.textContent = status === 'answered' ? 'Answered' : status === 'skipped' ? 'Skipped' : 'Open chapter';
+    });
+
+    dotButtons.forEach((button) => {
+      const id = button.dataset.guidedDot;
+      button.setAttribute('aria-pressed', String(id === state.activeId));
+      button.dataset.status = chapterStatus(state, id);
     });
   }
 
@@ -180,27 +229,23 @@ function initialiseGuidedWorkflow() {
     renderProgressAndCards();
   }
 
-  function activateChapter(id, { focusEditor = false, centreCard = true } = {}) {
+  function activateChapter(id, { focusEditor = false } = {}) {
     state = setActiveChapter(state, id);
     renderEditor();
-    const activeCard = cards.find((card) => card.dataset.guidedChapter === id);
-    if (centreCard && window.innerWidth < 1280) {
-      activeCard?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
-    }
     if (focusEditor) {
       scrollToElement(editor);
-      window.setTimeout(() => textarea?.focus(), reducedMotion ? 0 : 260);
+      window.setTimeout(() => textarea?.focus(), reducedMotion ? 0 : 220);
     }
   }
 
-  cards.forEach((card, index) => {
+  cards.forEach((card) => {
     card.addEventListener('click', () => activateChapter(card.dataset.guidedChapter, { focusEditor: true }));
     card.addEventListener('keydown', (event) => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
-      const targetIndex = Math.min(cards.length - 1, Math.max(0, index + (event.key === 'ArrowRight' ? 1 : -1)));
-      cards[targetIndex].focus();
-      activateChapter(cards[targetIndex].dataset.guidedChapter, { centreCard: true });
+      const id = adjacentChapterId(state.activeId, event.key === 'ArrowRight' ? 1 : -1);
+      activateChapter(id);
+      window.setTimeout(() => cards.find((item) => item.dataset.guidedChapter === id)?.focus(), 0);
     });
   });
 
@@ -211,6 +256,18 @@ function initialiseGuidedWorkflow() {
     renderProgressAndCards();
   });
 
+  contextNextButton?.addEventListener('click', () => {
+    const result = validateGuidedContext(state.context);
+    if (!result.valid) {
+      showContextValidation(result);
+      return;
+    }
+    clearContextValidation();
+    setStep('story', { focus: true });
+    renderEditor();
+  });
+
+  editContextButton?.addEventListener('click', () => setStep('context', { focus: true }));
   previousButton?.addEventListener('click', () => activateChapter(adjacentChapterId(state.activeId, -1), { focusEditor: true }));
   nextButton?.addEventListener('click', () => activateChapter(adjacentChapterId(state.activeId, 1), { focusEditor: true }));
   skipButton?.addEventListener('click', () => {
@@ -254,28 +311,20 @@ function initialiseGuidedWorkflow() {
     }
     clearContextValidation();
     renderReview();
-    if (editor) editor.hidden = true;
-    if (contextPanel) contextPanel.hidden = true;
-    if (review) review.hidden = false;
     if (agreement) agreement.checked = false;
     if (confirmButton) confirmButton.disabled = true;
-    scrollToElement(review);
+    setStep('review');
   });
 
   reviewList?.addEventListener('click', (event) => {
     const edit = event.target.closest('[data-edit-chapter]');
     if (!edit) return;
-    if (review) review.hidden = true;
-    if (contextPanel) contextPanel.hidden = false;
-    if (editor) editor.hidden = false;
+    setStep('story');
     activateChapter(edit.dataset.editChapter, { focusEditor: true });
   });
 
   editChoicesButton?.addEventListener('click', () => {
-    if (review) review.hidden = true;
-    if (contextPanel) contextPanel.hidden = false;
-    if (editor) editor.hidden = false;
-    scrollToElement(contextPanel);
+    setStep('story', { focus: true });
   });
 
   agreement?.addEventListener('change', () => {
@@ -286,10 +335,13 @@ function initialiseGuidedWorkflow() {
     const submission = buildGuidedSubmission(state);
     if (!agreement?.checked || !submission.valid || submission.progress.answered === 0) return;
     root.dispatchEvent(new CustomEvent('guidedstoryconfirmed', { bubbles: true, detail: submission }));
-    showToast('Your guided story is ready for the future moderation workflow. Nothing has been published.');
+    showToast('Your CorporateX story is ready for the future safety review. Nothing has been uploaded or published.');
   });
 
+  createChapterDots();
   renderEditor();
+  updateContextStatus();
+  setStep('context');
 }
 
 initialiseShell();
