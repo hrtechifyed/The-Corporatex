@@ -1,47 +1,41 @@
-# Guided Experience Lock
+# CorporateX Guided Experience Lock
 
-## Source of truth
+## Public route
 
-The public story-submission experience contains one route:
+The story-submission experience has one public destination:
 
-1. `share-story.html`
-2. `guided-story.html`
+- `guided-story.html`
 
-`freeflow-story.html` is retired and must not be included in the production build.
+Every visible **Share Your Story** link must point directly to that page.
 
-The Guided experience uses:
+`share-story.html` exists only as a compatibility redirect. It must not present another decision or start screen. `freeflow-story.html` remains retired.
 
-- `src/reference-exact.css`
-- `src/reference-functional.css`
-- `src/cinematic-card-system.css`
-- `src/guided-only-aerial.css`
-- `src/reference-exact.js`
-- `src/story-workflow-model.js`
+## Journey stages
 
-## Share Your Story
+The page exposes one stage at a time:
 
-- One Guided Story entry only
-- One image-led cinematic card
-- One primary action: `Start Guided Story`
-- One brief explanation of the eight-chapter journey
-- One open-beta note
-- No route comparison or switch language
+1. **Context**
+2. **Story chapters**
+3. **Review**
 
-## Guided Story
+The context form, chapter stage, editor, and review panel must not compete in the same viewport by default.
 
 ### Context
 
-Before review, the contributor must provide:
+Required:
 
 - company or organisation;
-- optional broad team;
-- location expressed as city and country, broad region, remote region, or hybrid location.
+- broad location such as city and country, remote region, or hybrid location.
+
+Optional:
+
+- broad team or function.
 
 The interface must not request a street address or the identity of another person.
 
-### Chapters
+### Story chapters
 
-The journey contains exactly eight semantic chapter buttons:
+The journey contains exactly eight reusable chapters:
 
 1. The Beginning
 2. The Promise
@@ -52,48 +46,85 @@ The journey contains exactly eight semantic chapter buttons:
 7. The AI Chapter
 8. Who Thrives Here?
 
-Each card face uses an illustration, number, short title, one question and a text status.
+Only the active chapter and its immediate previous and next chapters are visible on desktop. Mobile shows only the active chapter. An eight-button chapter navigator allows direct revisiting without exposing all full cards at once.
 
-### Aerial formation
+Cards do not loop, orbit, cross, or float continuously. Motion is limited to a controlled transition when the active chapter changes. Reduced-motion users receive the same workflow without transforms.
 
-On wide desktop screens with hover and a precise pointer:
+### Editor
 
-- the eight cards occupy fixed points along one shallow edge-to-edge curve;
-- cards never cross, reorder or travel through another card;
-- each card uses a slow nine-pixel vertical float with a very small horizontal drift;
-- hovering or focusing the deck pauses all card motion;
-- the active card moves visually forward;
-- the deck clips and contains its own paint so it cannot overlap the context form or create page-level overflow.
+The editor displays the active prompt, helper, response field, character count, previous, next, skip, and review actions.
 
-Laptop and tablet widths use a stable four-column grid. Mobile uses the existing focused horizontal journey. Touch-only and reduced-motion experiences remain stationary and fully functional.
+State remains in memory for the current page visit only. The interface must clearly state that refreshing or leaving clears the draft.
 
-### Layout containment
+### Review
 
-The context form, progress toolbar, card stage, editor and review panel must remain separate document-flow sections.
+Review displays:
 
-The card stage must:
+- company;
+- optional team;
+- location;
+- all eight chapter states and responses;
+- one final responsibility agreement;
+- the exact safety-screen boundary.
 
-- have positive vertical spacing after the progress toolbar;
-- use fixed card coordinates inside its own containing block;
-- keep the first and eighth cards fully inside the viewport;
-- use `overflow: hidden` and `contain: layout paint` on wide desktop;
-- avoid `offset-path` motion and negative vertical centring transforms.
+## Safety-screen boundary
 
-## Review and confirmation
+CorporateX does not moderate opinions or protect employers from criticism.
 
-Review displays validated company, optional team, location, all eight chapters and one final agreement checkbox.
+The planned safety screen is limited to:
 
-The confirmation event is:
+- direct racial slurs;
+- abusive slang or targeted attacks;
+- threats or graphic violence;
+- self-harm content;
+- targeted abuse.
+
+Contributors may still describe that discrimination, harassment, violence, abuse, or self-harm-related workplace impact occurred without reproducing slurs or graphic details.
+
+The screen must not:
+
+- rewrite meaning;
+- decide whether criticism is fair;
+- remove a story because it is negative;
+- invent facts;
+- treat one story as a company-wide verdict.
+
+## Confirmation event
+
+The prototype emits:
 
 ```text
 guidedstoryconfirmed
 ```
 
-The event contains context, chapter review data and progress. It does not represent publication or server persistence.
+The event contains validated context, chapter review data, and progress. It does not represent upload, publication, or server persistence.
+
+## Brand contract
+
+Visible product naming uses **CorporateX**.
+
+The shared footer is:
+
+```text
+CorporateX - Powered by - HRTechify - People • Technology • Growth
+© 2026 All Rights Reserved.
+```
+
+The HRTechify logo may remain as the powering brand asset, but the product name shown beside it is CorporateX.
 
 ## Change control
 
-Changes that restore a second submission route, remove required company/location context, allow the card stage to overlap another section, or apply moving card animation to touch or reduced-motion users should fail `tests/site-quality.mjs`.
+`tests/site-quality.mjs` must fail if a change:
+
+- restores the old product name on a public page;
+- restores an intermediate Share route;
+- restores Free-flow;
+- restores a functional Sign In control before accounts exist;
+- shows all eight full chapter cards at once;
+- adds continuous card animation;
+- removes required company or location context;
+- broadens safety screening into opinion moderation;
+- changes the exact shared footer.
 
 Run:
 
