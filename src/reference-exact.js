@@ -69,6 +69,9 @@ function initialiseGuidedWorkflow() {
   const contextPanel = root.querySelector('[data-guided-context]');
   const contextNextButton = root.querySelector('[data-guided-context-next]');
   const editContextButton = root.querySelector('[data-guided-edit-context]');
+  const editorContextButton = root.querySelector('[data-guided-editor-context]');
+  const reviewContextButton = root.querySelector('[data-guided-review-context-edit]');
+  const reviewStoryButton = root.querySelector('[data-guided-review-story-edit]');
   const companyField = root.querySelector('[data-guided-company]');
   const teamField = root.querySelector('[data-guided-team]');
   const locationField = root.querySelector('[data-guided-location]');
@@ -84,6 +87,7 @@ function initialiseGuidedWorkflow() {
   const counter = root.querySelector('[data-guided-count]');
   const progressLabel = root.querySelector('[data-guided-progress-label]');
   const progressCounts = root.querySelector('[data-guided-progress-counts]');
+  const progressTrack = root.querySelector('.ref-progress-track');
   const progressFill = root.querySelector('[data-guided-progress-fill]');
   const live = root.querySelector('[data-guided-live]');
   const previousButton = root.querySelector('[data-guided-previous]');
@@ -91,7 +95,6 @@ function initialiseGuidedWorkflow() {
   const skipButton = root.querySelector('[data-guided-skip]');
   const reviewButton = root.querySelector('[data-guided-review]');
   const reviewList = root.querySelector('[data-guided-review-list]');
-  const editChoicesButton = root.querySelector('[data-guided-edit-choices]');
   const agreement = root.querySelector('[data-guided-agreement]');
   const confirmButton = root.querySelector('[data-guided-confirm]');
   let state = createGuidedState();
@@ -106,13 +109,19 @@ function initialiseGuidedWorkflow() {
       if (marker.dataset.guidedStepMarker === step) marker.setAttribute('aria-current', 'step');
       else marker.removeAttribute('aria-current');
     });
-    const destination = step === 'context' ? contextPanel : step === 'review' ? review : root.querySelector('[data-guided-story-ui]');
+
+    const destination = step === 'context'
+      ? contextPanel
+      : step === 'review'
+        ? review
+        : root.querySelector('.ref-beats-heading') || root.querySelector('[data-guided-story-ui]');
     scrollToElement(destination);
+
     if (focus) {
       window.setTimeout(() => {
         if (step === 'context') companyField?.focus();
         else if (step === 'story') cards.find((card) => card.dataset.guidedChapter === state.activeId)?.focus();
-        else review?.querySelector('h2')?.focus?.();
+        else review?.querySelector('h2')?.focus();
       }, reducedMotion ? 0 : 220);
     }
   }
@@ -130,7 +139,7 @@ function initialiseGuidedWorkflow() {
       const error = root.querySelector(`[data-guided-error="${name}"]`);
       if (error) error.textContent = message;
     });
-    if (contextStatus) contextStatus.textContent = 'Add the highlighted story context before continuing.';
+    if (contextStatus) contextStatus.textContent = 'Add the highlighted setting before entering the Story Beats.';
     setStep('context');
     (companyField?.matches('[aria-invalid="true"]') ? companyField : locationField)?.focus();
   }
@@ -139,7 +148,7 @@ function initialiseGuidedWorkflow() {
     const validation = validateGuidedContext(state.context);
     if (!contextStatus) return;
     contextStatus.textContent = validation.valid
-      ? `Context ready: ${validation.context.company} · ${validation.context.location}`
+      ? `Scene ready: ${validation.context.company} · ${validation.context.location}`
       : '';
   }
 
@@ -157,7 +166,7 @@ function initialiseGuidedWorkflow() {
     });
   });
 
-  function createChapterDots() {
+  function createStoryBeatDots() {
     if (!dots) return;
     dotButtons = GUIDED_CHAPTERS.map((chapter) => {
       const button = document.createElement('button');
@@ -165,8 +174,8 @@ function initialiseGuidedWorkflow() {
       button.className = 'ref-chapter-dot';
       button.dataset.guidedDot = chapter.id;
       button.textContent = String(chapter.number);
-      button.setAttribute('aria-label', `Open chapter ${chapter.number}: ${chapter.title}`);
-      button.addEventListener('click', () => activateChapter(chapter.id, { focusEditor: true }));
+      button.setAttribute('aria-label', `Open Story Beat ${chapter.number}: ${chapter.title}`);
+      button.addEventListener('click', () => activateStoryBeat(chapter.id, { focusEditor: true }));
       return button;
     });
     dots.replaceChildren(...dotButtons);
@@ -178,8 +187,9 @@ function initialiseGuidedWorkflow() {
     const previousId = activeIndex > 0 ? GUIDED_CHAPTERS[activeIndex - 1].id : null;
     const nextId = activeIndex < GUIDED_CHAPTERS.length - 1 ? GUIDED_CHAPTERS[activeIndex + 1].id : null;
 
-    if (progressLabel) progressLabel.textContent = `Chapter ${activeIndex + 1} of ${progress.total}`;
+    if (progressLabel) progressLabel.textContent = `Story Beat ${activeIndex + 1} of ${progress.total}`;
     if (progressCounts) progressCounts.textContent = `${progress.answered} answered · ${progress.skipped} skipped`;
+    if (progressTrack) progressTrack.setAttribute('aria-valuenow', String(progress.percent));
     if (progressFill) progressFill.style.width = `${progress.percent}%`;
     if (reviewButton) reviewButton.disabled = progress.answered === 0;
 
@@ -200,7 +210,7 @@ function initialiseGuidedWorkflow() {
       card.setAttribute('aria-pressed', String(active));
       card.dataset.status = status;
       const statusLabel = card.querySelector('[data-card-status]');
-      if (statusLabel) statusLabel.textContent = status === 'answered' ? 'Answered' : status === 'skipped' ? 'Skipped' : 'Open chapter';
+      if (statusLabel) statusLabel.textContent = status === 'answered' ? 'Answered' : status === 'skipped' ? 'Skipped' : 'Open story beat';
     });
 
     dotButtons.forEach((button) => {
@@ -211,25 +221,25 @@ function initialiseGuidedWorkflow() {
   }
 
   function renderEditor() {
-    const chapter = getChapter(state.activeId);
-    if (!chapter) return;
-    if (title) title.textContent = chapter.title;
-    if (prompt) prompt.textContent = chapter.prompt;
-    if (helper) helper.textContent = chapter.helper;
-    if (position) position.textContent = `${chapter.number} / ${GUIDED_CHAPTERS.length}`;
+    const beat = getChapter(state.activeId);
+    if (!beat) return;
+    if (title) title.textContent = beat.title;
+    if (prompt) prompt.textContent = beat.prompt;
+    if (helper) helper.textContent = beat.helper;
+    if (position) position.textContent = `${beat.number} / ${GUIDED_CHAPTERS.length}`;
     if (textarea) {
-      textarea.value = state.responses[chapter.id] || '';
-      textarea.placeholder = chapter.placeholder;
-      textarea.setAttribute('aria-label', `${chapter.title}: ${chapter.prompt}`);
+      textarea.value = state.responses[beat.id] || '';
+      textarea.placeholder = beat.placeholder;
+      textarea.setAttribute('aria-label', `${beat.title}: ${beat.prompt}`);
     }
-    if (counter) counter.textContent = String((state.responses[chapter.id] || '').length);
-    if (previousButton) previousButton.disabled = chapter.number === 1;
-    if (nextButton) nextButton.disabled = chapter.number === GUIDED_CHAPTERS.length;
-    if (skipButton) skipButton.textContent = chapter.number === GUIDED_CHAPTERS.length ? 'Skip chapter' : 'Skip & next';
+    if (counter) counter.textContent = String((state.responses[beat.id] || '').length);
+    if (previousButton) previousButton.disabled = beat.number === 1;
+    if (nextButton) nextButton.disabled = beat.number === GUIDED_CHAPTERS.length;
+    if (skipButton) skipButton.textContent = beat.number === GUIDED_CHAPTERS.length ? 'Skip beat' : 'Skip beat & continue';
     renderProgressAndCards();
   }
 
-  function activateChapter(id, { focusEditor = false } = {}) {
+  function activateStoryBeat(id, { focusEditor = false } = {}) {
     state = setActiveChapter(state, id);
     renderEditor();
     if (focusEditor) {
@@ -239,12 +249,12 @@ function initialiseGuidedWorkflow() {
   }
 
   cards.forEach((card) => {
-    card.addEventListener('click', () => activateChapter(card.dataset.guidedChapter, { focusEditor: true }));
+    card.addEventListener('click', () => activateStoryBeat(card.dataset.guidedChapter, { focusEditor: true }));
     card.addEventListener('keydown', (event) => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
       const id = adjacentChapterId(state.activeId, event.key === 'ArrowRight' ? 1 : -1);
-      activateChapter(id);
+      activateStoryBeat(id);
       window.setTimeout(() => cards.find((item) => item.dataset.guidedChapter === id)?.focus(), 0);
     });
   });
@@ -252,7 +262,7 @@ function initialiseGuidedWorkflow() {
   textarea?.addEventListener('input', () => {
     state = setGuidedResponse(state, state.activeId, textarea.value);
     if (counter) counter.textContent = String(textarea.value.length);
-    if (live) live.textContent = textarea.value.trim() ? 'Response kept for this page visit.' : '';
+    if (live) live.textContent = textarea.value.trim() ? 'This Story Beat is held for the current page visit.' : '';
     renderProgressAndCards();
   });
 
@@ -267,15 +277,19 @@ function initialiseGuidedWorkflow() {
     renderEditor();
   });
 
-  editContextButton?.addEventListener('click', () => setStep('context', { focus: true }));
-  previousButton?.addEventListener('click', () => activateChapter(adjacentChapterId(state.activeId, -1), { focusEditor: true }));
-  nextButton?.addEventListener('click', () => activateChapter(adjacentChapterId(state.activeId, 1), { focusEditor: true }));
+  const returnToContext = () => setStep('context', { focus: true });
+  editContextButton?.addEventListener('click', returnToContext);
+  editorContextButton?.addEventListener('click', returnToContext);
+  reviewContextButton?.addEventListener('click', returnToContext);
+
+  previousButton?.addEventListener('click', () => activateStoryBeat(adjacentChapterId(state.activeId, -1), { focusEditor: true }));
+  nextButton?.addEventListener('click', () => activateStoryBeat(adjacentChapterId(state.activeId, 1), { focusEditor: true }));
   skipButton?.addEventListener('click', () => {
     state = markGuidedSkipped(state, state.activeId);
     renderProgressAndCards();
     const nextId = adjacentChapterId(state.activeId, 1);
-    if (nextId !== state.activeId) activateChapter(nextId, { focusEditor: true });
-    else if (live) live.textContent = 'Chapter marked as skipped. You can return to it at any time.';
+    if (nextId !== state.activeId) activateStoryBeat(nextId, { focusEditor: true });
+    else if (live) live.textContent = 'Story Beat marked as skipped. You can return to it at any time.';
   });
 
   function renderReview() {
@@ -296,8 +310,8 @@ function initialiseGuidedWorkflow() {
       const edit = document.createElement('button');
       edit.type = 'button';
       edit.className = 'ref-review-edit';
-      edit.dataset.editChapter = item.id;
-      edit.textContent = 'Edit';
+      edit.dataset.editBeat = item.id;
+      edit.textContent = 'Edit beat';
       article.append(heading, response, edit);
       return article;
     }));
@@ -317,15 +331,13 @@ function initialiseGuidedWorkflow() {
   });
 
   reviewList?.addEventListener('click', (event) => {
-    const edit = event.target.closest('[data-edit-chapter]');
+    const edit = event.target.closest('[data-edit-beat]');
     if (!edit) return;
     setStep('story');
-    activateChapter(edit.dataset.editChapter, { focusEditor: true });
+    activateStoryBeat(edit.dataset.editBeat, { focusEditor: true });
   });
 
-  editChoicesButton?.addEventListener('click', () => {
-    setStep('story', { focus: true });
-  });
+  reviewStoryButton?.addEventListener('click', () => setStep('story', { focus: true }));
 
   agreement?.addEventListener('change', () => {
     if (confirmButton) confirmButton.disabled = !agreement.checked;
@@ -338,7 +350,7 @@ function initialiseGuidedWorkflow() {
     showToast('Your CorporateX story is ready for the future safety review. Nothing has been uploaded or published.');
   });
 
-  createChapterDots();
+  createStoryBeatDots();
   renderEditor();
   updateContextStatus();
   setStep('context');

@@ -15,20 +15,21 @@ import {
   validateGuidedContext,
 } from '../src/story-workflow-model.js';
 
-test('guided journey exposes eight unique, complete chapters', () => {
+test('guided journey exposes eight unique, complete Story Beats', () => {
   assert.equal(GUIDED_CHAPTERS.length, 8);
-  assert.equal(new Set(GUIDED_CHAPTERS.map((chapter) => chapter.id)).size, 8);
-  for (const chapter of GUIDED_CHAPTERS) {
-    assert.ok(chapter.title);
-    assert.ok(chapter.teaser);
-    assert.ok(chapter.prompt);
-    assert.ok(chapter.helper);
-    assert.ok(chapter.placeholder);
-    assert.ok(chapter.scene);
+  assert.equal(new Set(GUIDED_CHAPTERS.map((beat) => beat.id)).size, 8);
+  for (const beat of GUIDED_CHAPTERS) {
+    assert.ok(beat.title);
+    assert.ok(beat.teaser);
+    assert.ok(beat.prompt);
+    assert.ok(beat.helper);
+    assert.ok(beat.placeholder);
+    assert.ok(beat.scene);
   }
+  assert.equal(GUIDED_CHAPTERS.find((beat) => beat.id === 'ai').title, 'The AI Turn');
 });
 
-test('guided responses, skips and progress remain revisable', () => {
+test('Story Beat responses, skips and progress remain revisable', () => {
   let state = createGuidedState();
   state = setGuidedResponse(state, 'beginning', 'I joined for the learning opportunity.');
   state = markGuidedSkipped(state, 'promise');
@@ -41,21 +42,21 @@ test('guided responses, skips and progress remain revisable', () => {
   assert.deepEqual(guidedProgress(state), { answered: 2, skipped: 0, completed: 2, total: 8, percent: 25 });
 });
 
-test('chapter navigation stops at the first and final cards', () => {
+test('Story Beat navigation stops at the first and final cards', () => {
   assert.equal(adjacentChapterId('beginning', -1), 'beginning');
   assert.equal(adjacentChapterId('beginning', 1), 'promise');
   assert.equal(adjacentChapterId('fit', 1), 'fit');
   assert.equal(adjacentChapterId('ai', 1), 'fit');
 });
 
-test('review output keeps every chapter and its current status', () => {
+test('Final Cut output keeps every Story Beat and its current status', () => {
   let state = createGuidedState();
   state = setActiveChapter(state, 'shift');
   state = setGuidedResponse(state, 'shift', 'The team changed after a reorganisation.');
   const review = buildGuidedReview(state);
   assert.equal(review.length, 8);
-  assert.equal(review.find((chapter) => chapter.id === 'shift').status, 'answered');
-  assert.equal(review.find((chapter) => chapter.id === 'shift').response, 'The team changed after a reorganisation.');
+  assert.equal(review.find((beat) => beat.id === 'shift').status, 'answered');
+  assert.equal(review.find((beat) => beat.id === 'shift').response, 'The team changed after a reorganisation.');
 });
 
 test('company and location are required while team remains optional', () => {
@@ -79,7 +80,7 @@ test('company and location are required while team remains optional', () => {
   });
 });
 
-test('guided submission combines required context, chapters and progress', () => {
+test('guided submission combines required context, Story Beats and progress', () => {
   let state = createGuidedState();
   state = setGuidedContext(state, 'company', 'Northstar Technologies');
   state = setGuidedContext(state, 'team', 'Product');

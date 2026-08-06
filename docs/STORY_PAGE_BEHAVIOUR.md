@@ -2,80 +2,72 @@
 
 ## Single Guided Story route
 
-The website now offers one story-submission route: **Guided Story**. The retired Free-flow page and all visible route-switching controls are removed.
+The website offers one story-submission route: **Guided Story**. Free-flow and route switching remain retired.
 
-## Required story context
+## Set the Scene
 
-Before a story can enter review, the contributor must provide:
+The first stage asks for:
 
-- **Company or organisation** — required.
-- **Team** — optional and deliberately broad.
-- **Location** — required; this may be a city and country, a broad region, or a remote-work region.
+- **Company or organisation** — required
+- **Location** — required
+- **Team** — optional
 
-The location field includes suggestions such as `Bengaluru, India`, `Remote — Europe`, and `Hybrid — city and country`. The interface does not request a street address or another person's identity.
+A supporting illustration establishes tone without requesting names, street addresses, or confidential details. Company and Location align on the first desktop row; Team spans the second row. Mobile stacks all fields.
 
-Context is held in memory for the current page visit and included in the future `guidedstoryconfirmed` integration event.
+Context is held in memory for the current page visit and included in the `guidedstoryconfirmed` event.
 
-## Chapter cards
+## Story Beats
 
-Each of the eight cards represents one reusable chapter from `src/story-workflow-model.js`.
+The eight reusable Story Beats are:
 
-1. **The Beginning** — why the contributor joined.
-2. **The Promise** — what they expected or were told.
-3. **The Good Part** — what genuinely worked.
-4. **The Shift** — when the experience changed.
-5. **The Tipping Point** — why leaving became necessary.
-6. **The Lesson** — what a future candidate should ask.
-7. **The AI Chapter** — how AI or automation affected the work.
-8. **Who Thrives Here?** — the honest right-fit caveat.
+1. **The Beginning** — why the contributor joined
+2. **The Promise** — what they expected or were told
+3. **The Good Part** — what genuinely worked
+4. **The Shift** — when the experience changed
+5. **The Tipping Point** — why leaving became necessary
+6. **The Lesson** — what a future candidate should ask
+7. **The AI Turn** — how AI or automation affected the work
+8. **Who Thrives Here?** — the honest right-fit caveat
 
-Selecting a card:
+Selecting a Story Beat:
 
-- makes it the active chapter;
+- makes it active;
 - updates `aria-pressed`;
-- reveals its full prompt, helper and current response in the editor;
-- keeps the card available for later revision;
+- reveals its prompt, helper, and response in the editor;
+- keeps it available for revision;
 - moves focus to the editor after click or tap.
 
-## Aerial formation and motion
+Only the active beat and adjacent previews appear on desktop. Mobile shows one active beat. The numbered navigator exposes all eight beats without showing all full cards at once.
 
-On wide desktop screens with a precise pointer, the cards travel slowly along one shallow edge-to-edge curve.
+## Beat states
 
-- The complete journey lasts 96 seconds before reversing.
-- Eight staggered delays keep the cards distributed across the curve.
-- Hovering or focusing anywhere in the deck pauses every card.
-- The active card moves forward visually without changing its semantic order.
-- Tablet layouts use a stable grid.
-- Mobile layouts use a horizontal snap journey.
-- Touch-only and reduced-motion environments do not use the aerial animation.
+- **Open story beat** — unanswered
+- **Answered** — contains non-empty text
+- **Skipped** — deliberately skipped and available for later editing
 
-## Card states
+State is communicated by text, border, and icon—not colour alone.
 
-- **Open chapter** — unanswered.
-- **Answered** — contains non-empty text.
-- **Skipped** — deliberately skipped and available for later editing.
+## Reversible navigation
 
-State is communicated by text, border and icon—not colour alone.
+- Back to Context is available from the Story Beat progress area and editor.
+- Previous Beat and Next Beat move through the sequence.
+- Skip Beat marks the active beat as skipped.
+- The numbered navigator opens any beat.
+- The Final Cut provides separate **Edit context** and **Back to Story Beats** actions.
+- Each Final Cut item includes **Edit beat**.
 
-## Navigation
+Moving between stages does not clear entered context or responses.
 
-- Card click or tap activates a chapter.
-- Left and Right Arrow keys move between chapter cards.
-- Previous and Next move through the sequence.
-- Skip & Next marks the active chapter as skipped.
-- Review becomes available after at least one answered chapter.
-- Review is blocked until company and location are valid.
-- Edit returns from review to the context and chapter editor.
+## The Final Cut
 
-## Review and confirmation
-
-Review mode displays:
+The Final Cut displays:
 
 - company;
 - optional team;
 - location;
-- all eight chapter responses and their current states;
+- all eight Story Beat responses and states;
 - one responsibility checklist;
+- one safety-screen explanation;
 - one final agreement checkbox.
 
 The confirmation action emits:
@@ -84,18 +76,15 @@ The confirmation action emits:
 guidedstoryconfirmed
 ```
 
-Its event detail contains validated context, all chapters and progress. The prototype does not publish, email or upload the story.
-
-## Prototype state
-
-Context and writing remain in memory only for the current page visit. The interface does not use `localStorage` or `sessionStorage`.
+The prototype does not publish, email, or upload the story.
 
 ## Accessibility contract
 
-- All cards and actions are semantic buttons.
+- Cards and actions are semantic buttons.
 - Interactive targets are at least 44px high.
 - Focus indicators remain visible.
-- Status changes use live regions.
-- Invalid required context fields receive `aria-invalid` and linked error text.
-- The mobile navigation exposes `aria-controls` and closes with Escape.
-- Reduced-motion users receive the same workflow without animation.
+- Hidden cards are removed from keyboard navigation.
+- Left and Right Arrow keys move between visible Story Beats.
+- Invalid required fields receive `aria-invalid` and linked error text.
+- Reduced-motion users receive the same workflow without nonessential transitions.
+- No workflow uses `localStorage` or `sessionStorage`.

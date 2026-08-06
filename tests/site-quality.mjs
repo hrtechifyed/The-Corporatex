@@ -15,6 +15,7 @@ const referenceCss = await read('src/reference-exact.css');
 const functionalCss = await read('src/reference-functional.css');
 const cinematicCss = await read('src/cinematic-card-system.css');
 const guidedCss = await read('src/guided-only-aerial.css');
+const experienceCss = await read('src/cinematic-story-experience.css');
 const referenceJs = await read('src/reference-exact.js');
 const workflowModel = await read('src/story-workflow-model.js');
 const storyScenes = await read('public/story-scenes.svg');
@@ -28,6 +29,13 @@ const decodeStaticEntities = (html) => html
   .replaceAll('&bull;', '•')
   .replaceAll('&copy;', '©')
   .replaceAll('&amp;', '&');
+const visibleText = (html) => decodeStaticEntities(html)
+  .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+  .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+const classToken = (token) => new RegExp(`class="[^"]*\\b${token}\\b[^"]*"`);
 
 for (const [name, html] of Object.entries(pages)) {
   const nav = html.match(/<nav class="ref-primary-nav"[\s\S]*?<\/nav>/)?.[0] || '';
@@ -68,13 +76,28 @@ assert.doesNotMatch(pages.home, /class="ref-word-cloud"/, 'the dense word cloud 
 
 assert.match(pages.guided, /data-guided-workflow/);
 assert.match(pages.guided, /data-guided-step="context"/);
-assert.equal((pages.guided.match(/data-guided-step-marker=/g) || []).length, 3, 'guided flow must show Context, Story chapters and Review');
+assert.match(pages.guided, /src\/cinematic-story-experience\.css/);
+assert.equal((pages.guided.match(/data-guided-step-marker=/g) || []).length, 3, 'guided flow must show Set the Scene, Story Beats and The Final Cut');
+assert.match(visibleText(pages.guided), /Set the Scene/);
+assert.match(visibleText(pages.guided), /Story Beats/);
+assert.match(visibleText(pages.guided), /The Final Cut/);
+assert.doesNotMatch(visibleText(pages.guided), /\bchapter\b/i, 'public Guided copy must use Story Beat rather than chapter');
+assert.match(pages.guided, /class="ref-context-visual"/);
+assert.match(pages.guided, /story-scenes\.svg#personal/);
+assert.match(pages.guided, classToken('ref-context-company'));
+assert.match(pages.guided, classToken('ref-context-location'));
+assert.match(pages.guided, classToken('ref-context-team'));
 assert.match(pages.guided, /data-guided-context-next/);
 assert.match(pages.guided, /data-guided-edit-context/);
+assert.match(pages.guided, /data-guided-editor-context/);
+assert.match(pages.guided, /data-guided-review-context-edit/);
+assert.match(pages.guided, /data-guided-review-story-edit/);
 assert.match(pages.guided, /data-guided-dots/);
-assert.equal((pages.guided.match(/<button[^>]+class="ref-journey-card/g) || []).length, 8, 'all guided chapters must be semantic buttons');
-assert.equal((pages.guided.match(/data-guided-chapter=/g) || []).length, 8, 'guided journey must keep eight reusable chapter IDs');
-assert.equal((pages.guided.match(/class="ref-card-icon"/g) || []).length, 8, 'all guided cards need the numbered emblem');
+assert.equal((pages.guided.match(/<button[^>]+class="ref-journey-card/g) || []).length, 8, 'all Story Beats must be semantic buttons');
+assert.equal((pages.guided.match(/data-guided-chapter=/g) || []).length, 8, 'guided journey must keep eight reusable Story Beat IDs');
+assert.equal((pages.guided.match(/class="ref-card-icon"/g) || []).length, 8, 'all Story Beat cards need the numbered emblem');
+assert.match(pages.guided, /The AI Turn/);
+assert.doesNotMatch(visibleText(pages.guided), /The AI Chapter/);
 assert.match(pages.guided, /data-guided-company[^>]+required/);
 assert.match(pages.guided, /data-guided-team/);
 assert.match(pages.guided, /data-guided-location[^>]+required/);
@@ -85,7 +108,7 @@ assert.match(pages.guided, /data-guided-review-context="location"/);
 assert.match(pages.guided, /data-guided-editor[^>]+hidden/);
 assert.match(pages.guided, /data-guided-review-panel hidden/);
 assert.equal((pages.guided.match(/type="checkbox"/g) || []).length, 1, 'guided review must use one final agreement checkbox');
-assert.equal((pages.guided.match(/public\/story-scenes\.svg#/g) || []).length, 8, 'every guided card must use a stable SVG scene');
+assert.equal((pages.guided.match(/public\/story-scenes\.svg#/g) || []).length, 9, 'context plus all eight Story Beats must use stable SVG scenes');
 assert.match(pages.guided, /direct racial slurs/);
 assert.match(pages.guided, /does not judge your opinion/);
 assert.match(pages.guided, /nothing is uploaded or published/i);
@@ -100,10 +123,18 @@ assert.equal((pages.stories.match(/class="story-thumb"/g) || []).length, 10, 'ev
 assert.match(pages.detail, /class="story-hero-visual"/);
 assert.match(pages.detail, /not an employee submission/i);
 assert.match(pages.detail, /Opinions are not moderated/);
-assert.equal((pages.detail.match(/class="story-section/g) || []).length, 5, 'story detail must preserve five readable narrative chapters');
+assert.equal((pages.detail.match(/class="story-section/g) || []).length, 5, 'story detail must preserve five readable narrative moments');
 
-assert.equal((pages.more.match(/<details class="info-card/g) || []).length, 4, 'More page must use four expandable cards');
-assert.match(pages.more, /Safety screening does not moderate opinions/);
+assert.match(pages.more, /src\/cinematic-story-experience\.css/);
+assert.match(pages.more, /class="page-shell more-cinematic-hero"/);
+assert.match(pages.more, /class="more-hero-visual"/);
+assert.equal((pages.more.match(/class="more-visual-card/g) || []).length, 3, 'More must use three image-led distinction cards');
+assert.equal((pages.more.match(/class="more-card-art"/g) || []).length, 3, 'every distinction card needs an illustration');
+assert.match(pages.more, /class="page-shell more-feature-split"/);
+assert.match(pages.more, /class="page-shell more-trust-panel"/);
+assert.equal((pages.more.match(/<article>/g) || []).length, 3, 'More must keep three compact trust cards');
+assert.doesNotMatch(pages.more, /<details class="info-card/, 'More must not return to a text-first accordion stack');
+assert.match(pages.more, /Safety screening only/);
 assert.equal((pages.privacy.match(/<details class="policy-card/g) || []).length, 6, 'Privacy page must use six expandable cards');
 assert.match(pages.privacy, /SAFETY SCREEN ONLY/);
 assert.match(pages.privacy, /does not defend employers from criticism/);
@@ -119,7 +150,7 @@ assert.match(functionalCss, /\.ref-story-editor/);
 assert.match(functionalCss, /\.site-footer/);
 assert.match(cinematicCss, /\.ref-home-card-stage/);
 assert.match(cinematicCss, /\.story-thumb/);
-assert.doesNotMatch(guidedCss, /@keyframes|offset-path:\s*path|guided-calm-float/i, 'guided cards must not loop or travel continuously');
+assert.doesNotMatch(guidedCss, /@keyframes|offset-path:\s*path|guided-calm-float/i, 'Story Beat cards must not loop or travel continuously');
 assert.match(guidedCss, /\.ref-journey-card\.is-prev/);
 assert.match(guidedCss, /\.ref-journey-card\.is-active/);
 assert.match(guidedCss, /\.ref-journey-card\.is-next/);
@@ -127,17 +158,31 @@ assert.match(guidedCss, /contain:\s*layout paint/);
 assert.match(guidedCss, /overflow:\s*hidden/);
 assert.match(guidedCss, /\.ref-chapter-dot/);
 assert.match(guidedCss, /@media \(prefers-reduced-motion:reduce\)/);
+assert.match(experienceCss, /\.ref-context-cinematic/);
+assert.match(experienceCss, /grid-template-areas:\s*\n\s*"company location"\s*\n\s*"team team"/);
+assert.match(experienceCss, /\.ref-context-visual/);
+assert.match(experienceCss, /\.more-cinematic-hero/);
+assert.match(experienceCss, /\.more-visual-grid/);
+assert.match(experienceCss, /\.more-feature-split/);
+assert.match(experienceCss, /@media\(prefers-reduced-motion:reduce\)/);
+assert.doesNotMatch(experienceCss, /infinite/, 'cinematic page motion must not loop continuously');
 
 assert.match(referenceJs, /story-workflow-model\.js/);
 assert.match(referenceJs, /guidedstoryconfirmed/);
 assert.match(referenceJs, /validateGuidedContext/);
 assert.match(referenceJs, /buildGuidedSubmission/);
 assert.match(referenceJs, /function setStep/);
-assert.match(referenceJs, /function createChapterDots/);
+assert.match(referenceJs, /function createStoryBeatDots/);
+assert.match(referenceJs, /function activateStoryBeat/);
 assert.match(referenceJs, /card\.hidden = !visible/);
 assert.match(referenceJs, /is-prev/);
 assert.match(referenceJs, /is-next/);
 assert.match(referenceJs, /data-guided-context-next/);
+assert.match(referenceJs, /data-guided-editor-context/);
+assert.match(referenceJs, /data-guided-review-context-edit/);
+assert.match(referenceJs, /data-guided-review-story-edit/);
+assert.match(referenceJs, /data-edit-beat/);
+assert.match(referenceJs, /Open Story Beat/);
 assert.match(referenceJs, /ArrowLeft/);
 assert.match(referenceJs, /ArrowRight/);
 assert.match(referenceJs, /aria-invalid/);
@@ -146,11 +191,13 @@ assert.doesNotMatch(referenceJs, /freeflow|FREEFLOW|free-flow/i, 'retired Free-f
 assert.doesNotMatch(referenceJs, /localStorage|sessionStorage/, 'guided story state must remain in memory only');
 assert.doesNotMatch(workflowModel, /freeflow|FREEFLOW|free-flow/i, 'workflow model must be Guided-only');
 assert.doesNotMatch(workflowModel, /localStorage|sessionStorage/, 'workflow model must remain persistence-neutral');
-assert.equal((workflowModel.match(/id: '/g) || []).length, 8, 'workflow model must define exactly eight guided chapters');
+assert.match(workflowModel, /title: 'The AI Turn'/);
+assert.doesNotMatch(workflowModel, /The AI Chapter/);
+assert.equal((workflowModel.match(/id: '/g) || []).length, 8, 'workflow model must define exactly eight Story Beats');
 
 assert.equal(packageJson.name, 'corporatex');
 assert.match(readme, /^#?\s*CorporateX|<h1 align="center">CorporateX<\/h1>/m);
 assert.doesNotMatch(readme, /The Corporate Ex/);
 assert.match(readme, /does \*\*not\*\* moderate whether a contributor's opinion/);
 
-console.log('Site quality checks passed: CorporateX brand, direct Guided route, focused chapters and safety-only screening.');
+console.log('Site quality checks passed: cinematic context, Story Beats, reversible navigation and visual More page.');
