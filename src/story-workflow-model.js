@@ -68,7 +68,7 @@ export const GUIDED_CHAPTERS = Object.freeze([
   {
     id: 'ai',
     number: 7,
-    title: 'The AI Chapter',
+    title: 'The AI Turn',
     teaser: 'Did technology change the work?',
     prompt: 'Did AI, automation or productivity technology affect your role or expectations?',
     helper: 'It may have helped, increased pressure, redesigned work, created learning—or had no impact.',
