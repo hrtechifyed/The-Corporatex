@@ -37,6 +37,7 @@ test('server runtime and build dependencies are declared', () => {
   }
   for (const dependency of [
     '@playwright/test',
+    'vitest',
     'typescript',
     'tailwindcss',
     'postcss',
