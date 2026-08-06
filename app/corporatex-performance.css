@@ -1,0 +1,598 @@
+/* Focused interaction and performance layer.
+   Imported after the base cinematic styles so it can refine motion without
+   disturbing the established CorporateX design system. */
+
+/* Route responsiveness --------------------------------------------------- */
+.site-header {
+  contain: layout paint;
+  transform: translateZ(0);
+}
+
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -1px;
+  height: 2px;
+  z-index: 2;
+  opacity: 0;
+  background: linear-gradient(90deg, var(--cx-ember), var(--cx-signal), var(--cx-violet));
+  box-shadow: 0 0 14px rgba(255, 215, 106, .65);
+  transition: opacity .12s ease;
+}
+
+.site-header[data-route-pending="true"]::after {
+  opacity: 1;
+  animation: cx-route-progress .75s cubic-bezier(.2, .8, .2, 1) infinite;
+}
+
+.cx-primary-nav > a[aria-current="page"]::after,
+.cx-primary-nav > a[data-pending="true"]::after {
+  right: 0;
+}
+
+.cx-primary-nav > a[data-pending="true"] {
+  color: var(--cx-signal);
+}
+
+@supports (content-visibility: auto) {
+  .cx-page > section:not(:first-child),
+  .site-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: 720px;
+  }
+}
+
+.cx-route-loading {
+  width: var(--cx-shell);
+  min-height: calc(72svh - 70px);
+  margin-inline: auto;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.cx-route-loading__label {
+  color: var(--cx-signal);
+  font-size: .68rem;
+  font-weight: 850;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.cx-route-loading__frame {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 1rem;
+}
+
+.cx-route-loading__panel,
+.cx-route-loading__line {
+  border: 1px solid var(--cx-line);
+  background: rgba(255,255,255,.04);
+  animation: cx-loading-pulse 1.15s ease-in-out infinite alternate;
+}
+
+.cx-route-loading__panel {
+  min-height: 330px;
+  border-radius: 28px;
+}
+
+.cx-route-loading__stack {
+  display: grid;
+  align-content: start;
+  gap: .8rem;
+}
+
+.cx-route-loading__line {
+  height: 54px;
+  border-radius: 16px;
+}
+
+.cx-route-loading__line:nth-child(2) { width: 82%; }
+.cx-route-loading__line:nth-child(3) { width: 64%; }
+
+/* Opening Signal interaction ------------------------------------------- */
+.cx-journey-head--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.cx-opening-signal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 320px);
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+  align-items: center;
+  contain: layout paint;
+}
+
+.cx-opening-signal__content {
+  min-width: 0;
+}
+
+.cx-opening-signal .cx-ending-choice-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cx-ending-choice__card {
+  position: relative;
+  min-height: 215px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cx-ending-choice__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background: radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--ending-accent) 25%, transparent), transparent 55%);
+  transition: opacity .24s ease;
+}
+
+.cx-ending-choice:hover .cx-ending-choice__card {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--ending-accent) 55%, transparent);
+}
+
+.cx-ending-choice[data-selected="true"] .cx-ending-choice__card {
+  transform: translateY(-6px) scale(1.01);
+  border-color: var(--ending-accent);
+  box-shadow:
+    0 20px 50px color-mix(in srgb, var(--ending-accent) 17%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--ending-accent) 30%, transparent);
+}
+
+.cx-ending-choice[data-selected="true"] .cx-ending-choice__card::after {
+  opacity: 1;
+}
+
+.cx-ending-choice__status {
+  position: absolute;
+  top: .85rem;
+  right: .85rem;
+  width: auto !important;
+  margin: 0 !important;
+  padding: .32rem .55rem;
+  border: 1px solid color-mix(in srgb, var(--ending-accent) 45%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--ending-accent) 75%, white) !important;
+  background: rgba(8, 9, 13, .72);
+  font-size: .56rem !important;
+  font-weight: 900;
+  letter-spacing: .1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cx-ending-choice[data-selected="true"] .cx-ending-choice__status::before {
+  content: "✓";
+  margin-right: .3rem;
+}
+
+.cx-ending-choice__card small {
+  display: block;
+  margin-top: .65rem;
+  color: #77747c;
+  font-size: .65rem;
+  line-height: 1.45;
+}
+
+.cx-opening-signal__confirmation {
+  min-height: 92px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--cx-line);
+  border-radius: 20px;
+  background: rgba(255,255,255,.025);
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.cx-opening-signal__confirmation[data-visible="true"] {
+  border-color: rgba(255,215,106,.34);
+  background: linear-gradient(135deg, rgba(255,215,106,.08), rgba(143,124,255,.045));
+  transform: translateY(-2px);
+}
+
+.cx-opening-signal__confirmation strong {
+  display: block;
+  margin-top: .38rem;
+  font-size: 1rem;
+}
+
+.cx-opening-signal__confirmation p {
+  margin: .25rem 0 0;
+  color: var(--cx-muted);
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
+.cx-opening-signal__confirmation .cx-button {
+  flex: 0 0 auto;
+}
+
+.cx-opening-signal__jarvis {
+  align-self: stretch;
+}
+
+.cx-set-the-scene {
+  scroll-margin-top: 100px;
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--cx-line);
+  outline: none;
+}
+
+.cx-set-the-scene:focus-visible {
+  border-top-color: var(--cx-signal);
+}
+
+/* CareerJarvis: original cinematic heroic form ------------------------- */
+.career-jarvis {
+  --jarvis-tone: var(--cx-signal);
+  contain: layout paint;
+}
+
+.career-jarvis__stage {
+  min-height: 500px;
+  overflow: hidden;
+  contain: layout paint;
+}
+
+.career-jarvis--compact .career-jarvis__stage {
+  min-height: 360px;
+}
+
+.career-jarvis__halo {
+  width: min(94%, 430px);
+  top: 4%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--jarvis-tone) 22%, transparent), rgba(143,124,255,.055) 42%, transparent 70%);
+}
+
+.career-jarvis__orbit {
+  border-color: color-mix(in srgb, var(--jarvis-tone) 24%, transparent);
+}
+
+.career-jarvis__figure {
+  width: min(100%, 330px);
+  overflow: visible;
+  filter: drop-shadow(0 28px 30px rgba(0,0,0,.48));
+  transform-origin: 50% 92%;
+}
+
+.career-jarvis--compact .career-jarvis__figure {
+  width: min(100%, 245px);
+}
+
+.career-jarvis__rig,
+.career-jarvis__torso,
+.career-jarvis__head,
+.career-jarvis__arm-group,
+.career-jarvis__leg-group,
+.career-jarvis__signal {
+  transform-box: fill-box;
+}
+
+.career-jarvis__rig {
+  transform-origin: center bottom;
+  animation: cx-jarvis-human-weight 5.2s ease-in-out infinite;
+}
+
+.career-jarvis__torso {
+  transform-origin: center bottom;
+  animation: cx-jarvis-human-breathe 3.8s ease-in-out infinite;
+}
+
+.career-jarvis__head {
+  transform-origin: center bottom;
+  transition: transform .52s cubic-bezier(.2,.8,.2,1);
+}
+
+.career-jarvis__arm-group {
+  transition: transform .58s cubic-bezier(.16,.84,.24,1);
+}
+
+.career-jarvis__arm-group--left {
+  transform-origin: 82% 8%;
+}
+
+.career-jarvis__arm-group--right {
+  transform-origin: 18% 8%;
+}
+
+.career-jarvis__leg-group {
+  transform-origin: center top;
+}
+
+.career-jarvis__body-suit,
+.career-jarvis__leg,
+.career-jarvis__upper-arm,
+.career-jarvis__forearm {
+  fill: url(#career-jarvis-suit);
+  stroke: rgba(255,255,255,.09);
+  stroke-width: 1.2;
+}
+
+.career-jarvis__chest-armor,
+.career-jarvis__shoulder-armor,
+.career-jarvis__leg-panel,
+.career-jarvis__arm-panel,
+.career-jarvis__boot,
+.career-jarvis__waist-armor {
+  fill: url(#career-jarvis-armor);
+}
+
+.career-jarvis__chest-panel {
+  fill: rgba(8,12,20,.9);
+  stroke: rgba(255,226,145,.34);
+  stroke-width: 1.2;
+}
+
+.career-jarvis__rim-line,
+.career-jarvis__neck-light,
+.career-jarvis__jaw-light {
+  fill: none;
+  stroke: color-mix(in srgb, var(--jarvis-tone) 68%, white);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: .62;
+}
+
+.career-jarvis__neck {
+  fill: #111824;
+}
+
+.career-jarvis__head-shape,
+.career-jarvis__hand {
+  fill: url(#career-jarvis-skin);
+}
+
+.career-jarvis__hair {
+  fill: #0a0d14;
+}
+
+.career-jarvis__visor {
+  fill: #151d2e;
+  stroke: color-mix(in srgb, var(--jarvis-tone) 72%, white);
+  stroke-width: 1.5;
+}
+
+.career-jarvis__visor-light {
+  fill: none;
+  stroke: color-mix(in srgb, var(--jarvis-tone) 80%, white);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px var(--jarvis-tone));
+}
+
+.career-jarvis__face-line {
+  fill: none;
+  stroke: rgba(66,29,25,.9);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.career-jarvis__core-glow {
+  fill: var(--jarvis-tone);
+  opacity: .16;
+  filter: url(#career-jarvis-static-glow);
+}
+
+.career-jarvis__core,
+.career-jarvis__signal-core {
+  fill: url(#career-jarvis-core);
+}
+
+.career-jarvis__core {
+  filter: drop-shadow(0 0 9px var(--jarvis-tone));
+}
+
+.career-jarvis__core-ring {
+  fill: color-mix(in srgb, var(--jarvis-tone) 45%, #fff1bb);
+  opacity: .72;
+}
+
+.career-jarvis__signal {
+  transform-origin: center;
+  animation: cx-jarvis-signal-human 2.8s ease-in-out infinite;
+}
+
+.career-jarvis__signal-aura {
+  fill: var(--jarvis-tone);
+  opacity: .18;
+  filter: url(#career-jarvis-static-glow);
+}
+
+.career-jarvis__signal-rays {
+  fill: none;
+  stroke: color-mix(in srgb, var(--jarvis-tone) 72%, white);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.career-jarvis__shadow {
+  fill: rgba(0,0,0,.46);
+}
+
+.career-jarvis[data-pose="arriving"] .career-jarvis__figure {
+  animation: cx-jarvis-hero-arrive .72s cubic-bezier(.16,.84,.24,1) both;
+}
+
+.career-jarvis[data-pose="inviting"] .career-jarvis__arm-group--right {
+  transform: rotate(-43deg) translate(-5px, -10px);
+}
+
+.career-jarvis[data-pose="inviting"] .career-jarvis__head {
+  transform: rotate(2deg) translateX(2px);
+}
+
+.career-jarvis[data-pose="pointing"] .career-jarvis__arm-group--right {
+  transform: rotate(-68deg) translate(-9px, -14px);
+}
+
+.career-jarvis[data-pose="pointing"] .career-jarvis__head {
+  transform: rotate(5deg) translate(4px, 1px);
+}
+
+.career-jarvis[data-pose="protecting"] .career-jarvis__arm-group--left {
+  transform: rotate(-26deg) translate(12px, -6px);
+}
+
+.career-jarvis[data-pose="protecting"] .career-jarvis__arm-group--right {
+  transform: rotate(26deg) translate(-12px, -6px);
+}
+
+.career-jarvis[data-pose="listening"] .career-jarvis__rig,
+.career-jarvis[data-pose="listening"] .career-jarvis__torso,
+.career-jarvis[data-pose="listening"] .career-jarvis__signal {
+  animation: none;
+}
+
+.career-jarvis[data-pose="listening"] .career-jarvis__rig {
+  transform: translateY(6px) rotate(-.4deg);
+}
+
+.career-jarvis[data-pose="listening"] .career-jarvis__head {
+  transform: rotate(-3deg) translateY(3px);
+}
+
+.career-jarvis[data-pose="acknowledging"] .career-jarvis__head {
+  animation: cx-jarvis-human-nod .58s ease both;
+}
+
+.career-jarvis[data-pose="releasing"] .career-jarvis__arm-group--right {
+  transform: rotate(-76deg) translate(-12px, -18px);
+}
+
+.career-jarvis[data-pose="releasing"] .career-jarvis__signal {
+  animation: cx-jarvis-human-release 1.2s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.career-jarvis[data-pose="walking"] .career-jarvis__leg-group--left {
+  animation: cx-jarvis-step-left .7s ease-in-out infinite alternate;
+}
+
+.career-jarvis[data-pose="walking"] .career-jarvis__leg-group--right {
+  animation: cx-jarvis-step-right .7s ease-in-out infinite alternate;
+}
+
+.career-jarvis__dialogue {
+  border-color: color-mix(in srgb, var(--jarvis-tone) 30%, transparent);
+  box-shadow: 0 18px 48px rgba(0,0,0,.3);
+}
+
+/* Motion uses transform and opacity only to avoid route-change jank. */
+@keyframes cx-route-progress {
+  0% { right: 92%; }
+  55% { right: 25%; }
+  100% { right: 4%; opacity: .35; }
+}
+
+@keyframes cx-loading-pulse {
+  from { opacity: .45; transform: translateY(0); }
+  to { opacity: .9; transform: translateY(-2px); }
+}
+
+@keyframes cx-jarvis-hero-arrive {
+  from { opacity: 0; transform: translateY(30px) scale(.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cx-jarvis-human-weight {
+  0%, 100% { transform: translateX(-1px) rotate(-.35deg); }
+  50% { transform: translateX(2px) rotate(.45deg); }
+}
+
+@keyframes cx-jarvis-human-breathe {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  50% { transform: scaleY(1.012) translateY(-1px); }
+}
+
+@keyframes cx-jarvis-signal-human {
+  0%, 100% { transform: scale(.96); opacity: .84; }
+  50% { transform: scale(1.045); opacity: 1; }
+}
+
+@keyframes cx-jarvis-human-nod {
+  0%, 100% { transform: rotate(0) translateY(0); }
+  45% { transform: rotate(3deg) translateY(4px); }
+}
+
+@keyframes cx-jarvis-human-release {
+  0% { transform: translate(0,0) scale(.95); opacity: .85; }
+  70% { transform: translate(36px,-34px) scale(1.12); opacity: 1; }
+  100% { transform: translate(56px,-52px) scale(.82); opacity: 0; }
+}
+
+@keyframes cx-jarvis-step-left {
+  from { transform: rotate(2deg) translateY(0); }
+  to { transform: rotate(-5deg) translateY(-3px); }
+}
+
+@keyframes cx-jarvis-step-right {
+  from { transform: rotate(-3deg) translateY(-2px); }
+  to { transform: rotate(4deg) translateY(1px); }
+}
+
+@media (max-width: 1020px) {
+  .cx-opening-signal {
+    grid-template-columns: minmax(0, 1fr) 250px;
+  }
+
+  .cx-opening-signal .cx-ending-choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .cx-route-loading__frame,
+  .cx-opening-signal {
+    grid-template-columns: 1fr;
+  }
+
+  .cx-opening-signal__jarvis {
+    grid-row: 1;
+    width: min(290px, 100%);
+    margin-inline: auto;
+  }
+
+  .cx-opening-signal__jarvis .career-jarvis__stage {
+    min-height: 310px;
+  }
+
+  .cx-opening-signal .cx-ending-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cx-opening-signal__confirmation {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cx-opening-signal__confirmation .cx-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header::after,
+  .cx-route-loading__panel,
+  .cx-route-loading__line,
+  .career-jarvis__rig,
+  .career-jarvis__torso,
+  .career-jarvis__signal,
+  .career-jarvis__head,
+  .career-jarvis__leg-group {
+    animation: none !important;
+  }
+
+  .career-jarvis__arm-group,
+  .cx-opening-signal__confirmation,
+  .cx-ending-choice__card {
+    transition-duration: .001ms !important;
+  }
+}
