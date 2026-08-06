@@ -26,8 +26,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate and build site
-        run: npm run check
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Validate and build static site
+        run: npm run check:static
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

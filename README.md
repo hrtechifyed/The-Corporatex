@@ -112,45 +112,103 @@ public/
 scripts/build.mjs
 ```
 
-### Production scaffold
+### Production application
 
 ```text
-app/          Next.js routes
+app/          Next.js pages and API routes
 components/   application components
 lib/          domain and server helpers
 supabase/     database migrations and policies
-tests/        workflow and static quality gates
+tests/        workflow, static and server readiness gates
+render.yaml   Render Web Service blueprint
 ```
 
-The static prototype can run on GitHub Pages. Authentication, saved drafts, database-backed submissions, contributor approval, and publishing require the server application.
+GitHub Pages publishes the static prototype from `dist`. The Next.js application provides the server path required for authentication, saved drafts, database-backed submissions, Gmail alerts, contributor approval and publishing.
 
-## Quick start
+## Run the Next.js application
 
 ```bash
 git clone https://github.com/hrtechifyed/The-Corporatex.git
 cd The-Corporatex
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Open `http://localhost:4173`.
+Add the required private values to `.env.local`, then open:
 
-Run the full quality gate:
+```text
+http://localhost:3000
+```
+
+Create the production server build with:
+
+```bash
+npm run build
+npm run start
+```
+
+The health endpoint is:
+
+```text
+/api/health
+```
+
+## Run the static GitHub Pages prototype
+
+```bash
+npm install
+npm run dev:static
+```
+
+Open:
+
+```text
+http://localhost:4173
+```
+
+Build and preview the static site with:
+
+```bash
+npm run build:static
+npm run preview:static
+```
+
+## Validation
+
+Run both the static quality gate and the complete Next.js production build:
 
 ```bash
 npm run check
 ```
 
-Build the static site:
+Run only the static GitHub Pages checks:
 
 ```bash
-npm run build
-npm run preview
+npm run check:static
 ```
+
+Run only the server build:
+
+```bash
+npm run check:server
+```
+
+## Render deployment
+
+The repository includes `render.yaml`. Create a new Render Blueprint from this repository and enter the environment values marked for manual configuration. Render will use:
+
+```text
+Build command: npm install --no-audit --no-fund && npm run build
+Start command: npm run start
+Health check: /api/health
+```
+
+Do not commit `.env.local`, Google OAuth credentials, Supabase secrets, or API keys.
 
 ## Before accepting genuine stories
 
-- add authenticated draft saving and recovery;
+- verify authenticated draft saving and recovery;
 - show a reliable saved-state indicator;
 - separate private draft, confirmed, safety-reviewed, and published states;
 - require contributor approval of the exact public wording;

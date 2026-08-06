@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: corporatex
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install --no-audit --no-fund && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: GMAIL_USER
+        value: hrtechifyed@gmail.com
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REFRESH_TOKEN
+        sync: false
+      - key: MODERATION_ALERT_EMAIL
+        value: hrtechifyed@gmail.com
+      - key: MODERATION_ALERT_SUBJECT_PREFIX
+        value: "[CorporateX Safety Review]"

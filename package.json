@@ -2,17 +2,44 @@
   "name": "corporatex",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22 <23"
+  },
   "dependencies": {
-    "googleapis": "^173.0.0"
+    "@google/genai": "2.13.0",
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.0.0",
+    "googleapis": "^173.0.0",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "3.4.17",
+    "typescript": "^5.9.2",
+    "vitest": "4.1.10"
   },
   "scripts": {
-    "dev": "python3 -m http.server 4173",
-    "build": "node scripts/build.mjs",
-    "preview": "python3 -m http.server 4173 -d dist",
-    "test": "npm run test:site && npm run test:workflow && npm run test:alerts",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p ${PORT:-3000}",
+    "dev:static": "python3 -m http.server 4173",
+    "build:static": "node scripts/build.mjs",
+    "preview:static": "python3 -m http.server 4173 -d dist",
+    "test": "npm run test:site && npm run test:workflow && npm run test:alerts && npm run test:server-readiness",
     "test:site": "node tests/site-quality.mjs",
     "test:workflow": "node --test tests/story-workflow.test.mjs",
     "test:alerts": "node --test tests/moderation-alert.test.mjs",
-    "check": "node --check src/app-v2.js && node --check src/site-upgrades.js && node --check src/story-workflow-model.js && node --check src/reference-exact.js && node --check tests/site-quality.mjs && node --check tests/moderation-alert.test.mjs && npm test && npm run build"
+    "test:server-readiness": "node --test tests/server-readiness.test.mjs",
+    "check:static": "node --check src/app-v2.js && node --check src/site-upgrades.js && node --check src/story-workflow-model.js && node --check src/reference-exact.js && node --check tests/site-quality.mjs && node --check tests/moderation-alert.test.mjs && node --check tests/server-readiness.test.mjs && npm test && npm run build:static",
+    "check:server": "next build",
+    "check": "npm run check:static && npm run check:server"
   }
 }
