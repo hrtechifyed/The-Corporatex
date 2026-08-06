@@ -3,7 +3,7 @@ name: Site quality
 on:
   pull_request:
   push:
-    branches: [main, agent/cinematic-signal-hero-ui]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
