@@ -1,14 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { endingFor } from '@/lib/endings';
 
 type LabelRow = { label: string };
 
-export default async function Company({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function Company({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
   const { data: stories } = await supabase
@@ -18,84 +15,49 @@ export default async function Company({
     .order('published_at', { ascending: false });
 
   if (!stories?.length) {
-    const { data: company } = await supabase
-      .from('companies')
-      .select('display_name')
-      .eq('slug', slug)
-      .maybeSingle();
-
+    const { data: company } = await supabase.from('companies').select('display_name').eq('slug', slug).maybeSingle();
     if (!company) notFound();
-
     return (
-      <section className="light-panel min-h-screen px-5 py-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="scene-tag">Company archive</p>
-          <h1 className="mt-3 text-5xl font-black">{company.display_name}</h1>
-          <p className="mt-8 border border-black/20 p-6">
-            No published experiences for this company.
-          </p>
-        </div>
-      </section>
+      <div className="cx-page"><section className="cx-section"><div className="cx-shell"><p className="cx-kicker">Employer signals</p><h1 className="cx-title">{company.display_name}</h1><div className="cx-journey-panel"><h2>No confirmed stories yet.</h2><p className="cx-note">CorporateX does not fill empty archives with fictional employee submissions.</p></div></div></section></div>
     );
   }
 
   const { data: labelRows } = stories.length >= 3
-    ? await supabase
-        .from('experience_labels')
-        .select('label')
-        .in('experience_id', stories.map((story) => story.id))
+    ? await supabase.from('experience_labels').select('label').in('experience_id', stories.map((story) => story.id))
     : { data: [] as LabelRow[] };
-
-  const themes = (labelRows ?? []).reduce<Record<string, number>>(
-    (counts, row) => {
-      const label = String(row.label || '').trim();
-      if (label) counts[label] = (counts[label] || 0) + 1;
-      return counts;
-    },
-    {},
-  );
-
+  const themes = (labelRows ?? []).reduce<Record<string, number>>((counts, row) => {
+    const label = String(row.label || '').trim();
+    if (label) counts[label] = (counts[label] || 0) + 1;
+    return counts;
+  }, {});
   const repeatedThemes = Object.entries(themes).filter(([, count]) => count >= 2);
 
   return (
-    <section className="light-panel min-h-screen px-5 py-16">
-      <div className="mx-auto max-w-5xl">
-        <p className="scene-tag">Company archive</p>
-        <h1 className="mt-3 text-5xl font-black">
-          {stories[0].company_display_name}
-        </h1>
-
-        {stories.length >= 3 && (
-          <aside className="mt-8 border border-black/20 p-6">
-            <h2 className="font-bold">
-              Contributor-reported patterns—not verified company facts
-            </h2>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {repeatedThemes.map(([theme, count]) => (
-                <span
-                  className="border border-black/20 px-3 py-2 text-sm"
-                  key={theme}
-                >
-                  {theme} · {count} accounts
-                </span>
-              ))}
+    <div className="cx-page">
+      <section className="cx-archive-hero">
+        <div className="cx-shell">
+          <p className="cx-kicker">Employer signals</p>
+          <h1 className="cx-display">{stories[0].company_display_name}</h1>
+          <p className="cx-lede">Separate contributor perspectives. Look for repeated signals, not a single verdict.</p>
+          {stories.length >= 3 && repeatedThemes.length ? (
+            <div className="cx-signal-map" aria-label="Repeated contributor-reported themes">
+              {repeatedThemes.map(([theme, count]) => <span className="cx-signal-word" data-weight={Math.min(4, count)} key={theme}>{theme} · {count}</span>)}
             </div>
-          </aside>
-        )}
-
-        <div className="mt-8 grid gap-4">
-          {stories.map((story) => (
-            <Link
-              href={`/experience/${slug}/${story.public_slug}`}
-              className="border border-black/20 bg-white/60 p-6"
-              key={story.id}
-            >
-              <h2 className="text-2xl font-bold">{story.approved_headline}</h2>
-              <p className="mt-2 text-black/65">{story.approved_summary}</p>
-            </Link>
-          ))}
+          ) : null}
         </div>
-      </div>
-    </section>
+      </section>
+      <section className="cx-shell cx-archive-grid">
+        {stories.map((story) => {
+          const ending = endingFor(story.main_reason);
+          return (
+            <Link href={`/experience/${slug}/${story.public_slug}`} className="cx-archive-card" key={story.id}>
+              <span className="cx-archive-card__art" aria-hidden="true" />
+              <span><span className="cx-ending-badge">{ending.title}</span><h2>{story.approved_headline}</h2><p>{story.approved_summary}</p></span>
+              <span className="cx-card-arrow" aria-hidden="true">→</span>
+            </Link>
+          );
+        })}
+      </section>
+    </div>
   );
 }

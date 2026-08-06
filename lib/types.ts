@@ -1,10 +1,85 @@
 export const EXPERIENCE_STATUSES = ['draft','awaiting_ai_analysis','awaiting_user_approval','pending_moderation','changes_requested','published','rejected','withdrawn'] as const;
 export type ExperienceStatus = typeof EXPERIENCE_STATUSES[number];
-export const CONTRIBUTOR_TRANSITIONS: Record<ExperienceStatus, ExperienceStatus[]> = {draft:['awaiting_ai_analysis','withdrawn'],awaiting_ai_analysis:['awaiting_user_approval','draft','withdrawn'],awaiting_user_approval:['awaiting_ai_analysis','pending_moderation','withdrawn'],pending_moderation:['withdrawn'],changes_requested:['awaiting_ai_analysis','pending_moderation','withdrawn'],published:['withdrawn'],rejected:[],withdrawn:[]};
-export const MODERATOR_TRANSITIONS: Record<ExperienceStatus, ExperienceStatus[]> = {...CONTRIBUTOR_TRANSITIONS,pending_moderation:['published','rejected','changes_requested'],published:['withdrawn']};
-export function canTransition(from:ExperienceStatus,to:ExperienceStatus,moderator=false){return (moderator?MODERATOR_TRANSITIONS:CONTRIBUTOR_TRANSITIONS)[from].includes(to)}
-export type Experience = {id:string;profile_id:string;company_id:string|null;original_text:string|null;approved_headline:string|null;approved_summary:string|null;language:string;broad_function:string|null;broad_region:string|null;approximate_tenure:string|null;work_arrangement:string|null;main_reason:string|null;would_join_again:string|null;status:ExperienceStatus;public_slug:string|null;ai_analysis:Analysis|null;created_at:string;updated_at:string;published_at:string|null;companies?:{display_name:string;slug:string}|null;profiles?:{hrt_id:string}|null};
-export const SCENES=[
- ['casting_call','The Casting Call','What role were you invited to play, and what were you told the story would be?'],['trailer','The Trailer','What did the company show you before you joined that looked better than the full movie?'],['first_plot_twist','The First Plot Twist','When did you realise the job was not following the script you were given?'],['recurring_villain','The Recurring Villain','What problem kept returning every episode, even after people raised it?'],['power_system','The Power System','What did people actually need to do to gain influence, recognition, or promotion?'],['forbidden_dialogue','The Forbidden Dialogue','What happened when someone challenged a manager, questioned a decision, or said no?'],['training_arc','The Training Arc','Did the company help you grow, or were you expected to unlock every skill alone?'],['endless_battle','The Endless Battle','How often did work follow you into evenings, weekends, holidays, or approved leave?'],['council_of_leaders','The Council of Leaders','What did leadership keep announcing but never turn into reality?'],['disappearing_cast','The Disappearing Cast','Why did people around you keep leaving the story?'],['unexpected_hero','The Unexpected Hero','What did the company genuinely do well, even when the rest of the plot went off-script?'],['final_boss','The Final Boss','What was the moment that made you stop trying to repair the story and decide to leave it?'],['alternate_timeline','The Alternate Timeline','Under different leadership, would you return for another season?'],['next_character','Message to the Next Character','What should the next candidate ask before accepting a role here?'],['spoiler_needed','The Spoiler You Needed','What do you wish someone had told you before episode one?']
+
+export const CONTRIBUTOR_TRANSITIONS: Record<ExperienceStatus, ExperienceStatus[]> = {
+  draft: ['awaiting_ai_analysis','withdrawn'],
+  awaiting_ai_analysis: ['awaiting_user_approval','draft','withdrawn'],
+  awaiting_user_approval: ['awaiting_ai_analysis','pending_moderation','withdrawn'],
+  pending_moderation: ['withdrawn'],
+  changes_requested: ['awaiting_ai_analysis','pending_moderation','withdrawn'],
+  published: ['withdrawn'],
+  rejected: [],
+  withdrawn: [],
+};
+
+export const MODERATOR_TRANSITIONS: Record<ExperienceStatus, ExperienceStatus[]> = {
+  ...CONTRIBUTOR_TRANSITIONS,
+  pending_moderation: ['published','rejected','changes_requested'],
+  published: ['withdrawn'],
+};
+
+export function canTransition(from: ExperienceStatus, to: ExperienceStatus, moderator = false) {
+  return (moderator ? MODERATOR_TRANSITIONS : CONTRIBUTOR_TRANSITIONS)[from].includes(to);
+}
+
+export type Experience = {
+  id: string;
+  profile_id: string;
+  company_id: string | null;
+  original_text: string | null;
+  approved_headline: string | null;
+  approved_summary: string | null;
+  language: string;
+  broad_function: string | null;
+  broad_region: string | null;
+  approximate_tenure: string | null;
+  work_arrangement: string | null;
+  main_reason: string | null;
+  would_join_again: string | null;
+  status: ExperienceStatus;
+  public_slug: string | null;
+  ai_analysis: Analysis | null;
+  created_at: string;
+  updated_at: string;
+  published_at: string | null;
+  companies?: { display_name: string; slug: string } | null;
+  profiles?: { hrt_id: string } | null;
+};
+
+export const SCENES = [
+  ['beginning', 'The Beginning', 'What drew you to this role or company in the first place?'],
+  ['promise', 'The Promise', 'What were you told or expecting before you joined?'],
+  ['good_part', 'The Good Part', 'What genuinely worked and deserves to be remembered positively?'],
+  ['shift', 'The Shift', 'When did the experience begin to change, if it changed at all?'],
+  ['tipping_point', 'The Tipping Point', 'What ultimately made moving on the right decision?'],
+  ['lesson', 'The Lesson', 'What should a future candidate ask before deciding?'],
+  ['ai_turn', 'The AI Turn', 'Did technology or AI reshape the role, pressure, learning or security?'],
+  ['who_thrives', 'Who Thrives Here?', 'Who could genuinely succeed in this environment—and why?'],
 ] as const;
-export type Analysis={suggestedHeadline:string;shortSummary:string;openingPromise:string;realityCheck:string;firstPlotTwist:string;recurringConflict:string;managementArc:string;leadershipArc:string;workloadAndBoundaries:string;growthAndPromotion:string;payAndBenefits:string;teamAndCulture:string;positiveMoments:string;finalTrigger:string;warningSigns:string[];whoMayThrive:string;whoMayStruggle:string;candidateQuestions:string[];wouldReturn:string;suggestedLabels:string[];possibleIdentifyingDetails:string[];possibleAbusiveContent:string[];possibleUnsupportedClaims:string[];seriousTopic:boolean};
+
+export type Analysis = {
+  suggestedHeadline: string;
+  shortSummary: string;
+  openingPromise: string;
+  realityCheck: string;
+  firstPlotTwist: string;
+  recurringConflict: string;
+  managementArc: string;
+  leadershipArc: string;
+  workloadAndBoundaries: string;
+  growthAndPromotion: string;
+  payAndBenefits: string;
+  teamAndCulture: string;
+  positiveMoments: string;
+  finalTrigger: string;
+  warningSigns: string[];
+  whoMayThrive: string;
+  whoMayStruggle: string;
+  candidateQuestions: string[];
+  wouldReturn: string;
+  suggestedLabels: string[];
+  possibleIdentifyingDetails: string[];
+  possibleAbusiveContent: string[];
+  possibleUnsupportedClaims: string[];
+  seriousTopic: boolean;
+};

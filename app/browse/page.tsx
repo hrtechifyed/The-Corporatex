@@ -1,2 +1,82 @@
-import Link from 'next/link';import {createClient} from '@/lib/supabase/server';
-export default async function Browse({searchParams}:{searchParams:Promise<Record<string,string>>}){const q=await searchParams;const supabase=await createClient();let query=supabase.from('published_experiences').select('*');if(q.company)query=query.ilike('company_display_name',`%${q.company.replaceAll('%','')}%`);for(const key of ['language','broad_function','broad_region','approximate_tenure','work_arrangement','main_reason','would_join_again'] as const)if(q[key])query=query.eq(key,q[key]);const {data,error}=await query.order('published_at',{ascending:q.date==='oldest'}).limit(50);return <section className="light-panel min-h-screen px-5 py-16"><div className="mx-auto max-w-7xl"><p className="scene-tag">Public Premiere</p><h1 className="mt-3 text-5xl font-black">Browse published stories</h1><form className="mt-8 grid gap-3 border border-black/20 p-5 md:grid-cols-4"><label className="label text-black">Company<input className="field bg-white text-black" name="company" defaultValue={q.company}/></label>{[['language','Language'],['broad_function','Broad function'],['broad_region','Region'],['main_reason','Reason for leaving'],['approximate_tenure','Approximate tenure'],['work_arrangement','Work arrangement'],['would_join_again','Would return']].map(([name,label])=><label key={name} className="label text-black">{label}<input className="field bg-white text-black" name={name} defaultValue={q[name]}/></label>)}<label className="label text-black">Publication date<select className="field bg-white text-black" name="date" defaultValue={q.date}><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></label><button className="btn btn-primary self-end">Search Supabase</button></form>{error?<p role="alert" className="mt-8 border border-red-700 p-5">Unable to load stories: {error.message}</p>:!data?.length?<p className="mt-8 border border-black/20 p-7">No published experiences match those filters.</p>:<div className="chapter-grid mt-8">{data.map((s:any)=><Link className="border border-black/20 bg-white/60 p-6" key={s.id} href={`/experience/${s.company_slug}/${s.public_slug}`}><span className="status status-published">Published · moderated</span><h2 className="mt-4 text-2xl font-bold">{s.approved_headline}</h2><p className="mt-3 text-black/65">{s.approved_summary}</p><p className="mt-5 text-xs font-bold">{s.company_display_name} · {s.broad_region}</p></Link>)}</div>}</div></section>}
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/server';
+import { ENDINGS, endingFor } from '@/lib/endings';
+
+export default async function Browse({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  const q = await searchParams;
+  const supabase = await createClient();
+  let query = supabase.from('published_experiences').select('*');
+
+  const term = (q.q || '').replace(/[,%()]/g, '').slice(0, 80);
+  if (term) query = query.or(`approved_headline.ilike.%${term}%,approved_summary.ilike.%${term}%,company_display_name.ilike.%${term}%`);
+  if (q.ending) query = query.eq('main_reason', q.ending);
+  if (q.company) query = query.ilike('company_display_name', `%${q.company.replaceAll('%', '').slice(0, 80)}%`);
+  if (q.region) query = query.ilike('broad_region', `%${q.region.replaceAll('%', '').slice(0, 80)}%`);
+
+  const { data, error } = await query.order('published_at', { ascending: q.date === 'oldest' }).limit(60);
+
+  return (
+    <div className="cx-page">
+      <section className="cx-archive-hero">
+        <div className="cx-shell">
+          <p className="cx-kicker">Signal Archive</p>
+          <h1 className="cx-display">Stories for the <em>decision ahead.</em></h1>
+          <p className="cx-lede">See what worked, what changed and what future candidates should ask.</p>
+          <form className="cx-filter-panel" aria-label="Filter workplace stories">
+            <label className="cx-field">
+              <span>Search</span>
+              <input className="cx-input" type="search" name="q" defaultValue={q.q} placeholder="Employer, signal or story" />
+            </label>
+            <label className="cx-field">
+              <span>Ending</span>
+              <select className="cx-select" name="ending" defaultValue={q.ending || ''}>
+                <option value="">Every ending</option>
+                {ENDINGS.map((ending) => <option value={ending.value} key={ending.value}>{ending.title}</option>)}
+              </select>
+            </label>
+            <label className="cx-field">
+              <span>Region</span>
+              <input className="cx-input" name="region" defaultValue={q.region} placeholder="Broad location" />
+            </label>
+            <button className="cx-button cx-button--signal" type="submit">Find signals</button>
+          </form>
+        </div>
+      </section>
+
+      <section className="cx-shell cx-archive-grid" aria-label="Published workplace stories">
+        {error ? (
+          <div className="cx-journey-panel" role="alert">
+            <h2>The archive could not load.</h2>
+            <p className="cx-note">{error.message}</p>
+          </div>
+        ) : !data?.length ? (
+          <div className="cx-journey-panel">
+            <p className="cx-kicker">No matching signals</p>
+            <h2 className="cx-title">Try a wider search.</h2>
+            <p className="cx-lede">The archive only displays genuine, published contributor stories.</p>
+            <div className="cx-actions"><Link className="cx-button cx-button--ghost" href="/browse">Clear filters</Link><Link className="cx-button cx-button--signal" href="/submit">Share Your Story</Link></div>
+          </div>
+        ) : data.map((story: any) => {
+          const ending = endingFor(story.main_reason);
+          return (
+            <Link className="cx-archive-card" href={`/experience/${story.company_slug}/${story.public_slug}`} key={story.id}>
+              <span className="cx-archive-card__art" aria-hidden="true" />
+              <span>
+                <span className="cx-ending-badge">{ending.title}</span>
+                <h2>{story.approved_headline}</h2>
+                <p>{story.approved_summary}</p>
+                <span className="cx-archive-card__meta">
+                  <span>{story.company_display_name}</span>
+                  <span>{story.broad_function || 'Function not stated'}</span>
+                  <span>{story.broad_region || 'Broad location not stated'}</span>
+                  <span>{story.approximate_tenure || 'Tenure not stated'}</span>
+                </span>
+              </span>
+              <span className="cx-card-arrow" aria-hidden="true">→</span>
+            </Link>
+          );
+        })}
+      </section>
+    </div>
+  );
+}

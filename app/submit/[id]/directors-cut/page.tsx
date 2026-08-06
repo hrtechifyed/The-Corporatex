@@ -1,2 +1,8 @@
-import {ownedExperience} from '@/lib/auth';import {DirectorsEditor} from '@/components/directors-editor';
-export default async function Directors({params}:{params:Promise<{id:string}>}){const {id}=await params;const {experience}=await ownedExperience(id);return <section className="mx-auto max-w-5xl px-5 py-12"><p className="scene-tag">Director’s Cut · Private draft</p><h1 className="mt-3 text-5xl font-black">Give Us the Director’s Cut</h1><p className="prose-story mt-4 text-lg"><b>No scripts. No HR-approved ending. Tell us what happened between “Welcome aboard” and “Please accept my resignation.”</b></p><DirectorsEditor id={id} initial={experience.original_text||''}/></section>}
+import { redirect } from 'next/navigation';
+import { ownedExperience } from '@/lib/auth';
+
+export default async function Directors({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  await ownedExperience(id);
+  redirect(`/submit/${id}/guided`);
+}

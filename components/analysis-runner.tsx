@@ -1,2 +1,43 @@
-'use client';import {useState} from 'react';import {useRouter} from 'next/navigation';
-export function AnalysisRunner({id,hasAnalysis}:{id:string;hasAnalysis:boolean}){const [state,setState]=useState<'idle'|'loading'|'error'>('idle');const [error,setError]=useState('');const router=useRouter();async function run(){setState('loading');setError('');const r=await fetch(`/api/experiences/${id}/analyse`,{method:'POST'});if(!r.ok){setState('error');setError((await r.json()).error||'The safety screen could not complete.');return}router.push(`/submit/${id}/review`);router.refresh()}return <div className="cinema-card mt-8 p-7"><h2 className="text-2xl font-bold">Ready for the private safety screen?</h2><p className="prose-story mt-3">CorporateX checks the story on its own server for direct slurs, targeted abusive language, threats or graphic violence, self-harm expressions, and basic identifying details. It does not send your story to an external AI service, judge your opinion, or protect an employer from criticism. The structured result remains private until you approve it.</p>{error&&<p role="alert" className="mt-4 text-red-300">{error} Your draft remains saved; you can try again.</p>}<button onClick={run} disabled={state==='loading'} className="btn btn-primary mt-6 disabled:opacity-50">{state==='loading'?'Screening safely…':hasAnalysis?'Run the safety screen again':'Run the safety screen'}</button></div>}
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+export function AnalysisRunner({ id, hasAnalysis }: { id: string; hasAnalysis: boolean }) {
+  const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [error, setError] = useState('');
+  const router = useRouter();
+
+  async function run() {
+    setState('loading');
+    setError('');
+    const response = await fetch(`/api/experiences/${id}/analyse`, { method: 'POST' });
+    if (!response.ok) {
+      const body = await response.json();
+      setState('error');
+      setError(body.error || 'The safety screen could not complete.');
+      return;
+    }
+    router.push(`/submit/${id}/review`);
+    router.refresh();
+  }
+
+  return (
+    <section className="cx-journey-panel">
+      <p className="cx-kicker">Before the Final Cut</p>
+      <h2 className="cx-title">A careful screen. No opinion score.</h2>
+      <p className="cx-lede">The story stays on the CorporateX server and does not send your story to an external AI service. The screen looks for direct slurs, targeted abuse, threats, graphic violence, self-harm expressions and basic identifying details.</p>
+      <div className="cx-feature-grid">
+        <article className="cx-feature-card"><span>01 · PRIVATE</span><h3>Your draft stays private.</h3><p>Nothing is public at this stage.</p></article>
+        <article className="cx-feature-card"><span>02 · NARROW</span><h3>Your criticism is not moderated.</h3><p>The screen is limited to safety and identity indicators.</p></article>
+        <article className="cx-feature-card"><span>03 · YOURS</span><h3>You control the Final Cut.</h3><p>Edit, remove or restore every section before release.</p></article>
+      </div>
+      {error ? <p role="alert" className="cx-note" style={{ color: 'var(--cx-danger)', marginTop: '1rem' }}>{error} Your saved draft is unchanged.</p> : null}
+      <div className="cx-actions">
+        <button type="button" onClick={run} disabled={state === 'loading'} className="cx-button cx-button--signal">
+          {state === 'loading' ? 'Preparing safely…' : hasAnalysis ? 'Prepare the Final Cut again' : 'Prepare the Final Cut'}
+        </button>
+      </div>
+    </section>
+  );
+}

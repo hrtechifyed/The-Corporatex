@@ -1,1 +1,32 @@
-export default function Page(){return <article className="mx-auto max-w-3xl px-5 py-16"><p className="scene-tag">End Credits</p><h1 className="mt-3 text-5xl font-black capitalize">privacy</h1><div className="prose-story mt-8"><p>The Corporate Ex collects only the information needed to authenticate contributors, preserve private drafts, moderate approved accounts, and present published experiences responsibly.</p><p className="mt-5">Do not submit names, confidential records, threats, harassment, or content you do not have the right to share. Publication is discretionary and every public account remains a contributor perspective rather than a verified company fact.</p><p className="mt-5">Contact the platform operator to request access, correction, withdrawal, or deletion. Deployment-specific contact information must be configured before accepting production submissions.</p></div></article>}
+import { CareerJarvis } from '@/components/career-jarvis';
+
+export default function Privacy() {
+  return (
+    <div className="cx-page">
+      <section className="cx-section">
+        <div className="cx-shell cx-story-hero-grid">
+          <div>
+            <p className="cx-kicker">Privacy &amp; Safety</p>
+            <h1 className="cx-display">Protected while you <em>speak.</em></h1>
+            <p className="cx-lede">Private drafts, contributor control and a narrow safety screen. Your opinion is not rewritten to protect an employer.</p>
+          </div>
+          <CareerJarvis compact pose="protecting" dialogue="Your email stays private. Public stories use an anonymous contributor identity." />
+        </div>
+      </section>
+
+      <section className="cx-section cx-light-section">
+        <div className="cx-shell">
+          <p className="cx-kicker">Five clear answers</p>
+          <h2 className="cx-title">Know what happens to your story.</h2>
+          <div className="cx-info-stack">
+            <details open><summary>What is stored?</summary><p>Your private account email, broad workplace context, saved Story Beats, contributor-approved Final Cut and moderation history. Do not submit names, confidential records or information you do not have the right to share.</p></details>
+            <details><summary>What becomes public?</summary><p>Only the contributor-approved headline, summary, broad context, Ending, approved Story Beats, themes and anonymous HRT identity. Private email and original drafting data are excluded from the public view.</p></details>
+            <details><summary>What does the safety screen check?</summary><p>Direct racial or identity slurs, targeted abusive language, threats or graphic violence, self-harm expressions and basic identifying details such as email addresses, phone numbers and web links.</p></details>
+            <details><summary>What does CorporateX not moderate?</summary><p>Employer criticism, uncomfortable opinions, dissatisfaction, praise or a contributor’s decision to leave. One story remains one perspective rather than a verified company-wide fact.</p></details>
+            <details><summary>How can a story be changed or withdrawn?</summary><p>Contributors can return to their private archive while the record remains editable and can request withdrawal or deletion from the platform operator. Public reports are reviewed in the protected moderator workspace.</p></details>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -1,16 +1,17 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { requireProfile } from '@/lib/auth';
+import { ownedExperience } from '@/lib/auth';
 import { draftSchema } from '@/lib/schemas';
 import { slugify } from '@/lib/slug';
 
-export async function createDraft(form: FormData) {
-  const { supabase, profile } = await requireProfile();
+export async function updateContext(id: string, form: FormData) {
   const input = draftSchema.parse(Object.fromEntries(form));
+  const { supabase, experience } = await ownedExperience(id);
+  if (!['draft', 'changes_requested'].includes(experience.status)) throw new Error('This story can no longer return to context editing.');
+
   const normalized = input.companyName.trim().toLowerCase();
   let { data: company } = await supabase.from('companies').select('id').eq('normalized_name', normalized).maybeSingle();
-
   if (!company) {
     const created = await supabase
       .from('companies')
@@ -21,21 +22,17 @@ export async function createDraft(form: FormData) {
     company = created.data;
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('experiences')
-    .insert({
-      profile_id: profile.id,
+    .update({
       company_id: company.id,
       broad_function: input.broadFunction || null,
       broad_region: input.broadRegion,
       approximate_tenure: input.approximateTenure,
       work_arrangement: input.workArrangement,
       main_reason: input.mainReason,
-      story_path: 'guided',
-      status: 'draft',
     })
-    .select('id')
-    .single();
+    .eq('id', id);
   if (error) throw error;
-  redirect(`/submit/${data.id}/guided`);
+  redirect(`/submit/${id}/guided`);
 }
