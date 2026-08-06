@@ -18,13 +18,26 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: ci-service-role-key
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout repository without marketplace actions
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${HEAD_SHA}"
+          git checkout --detach FETCH_HEAD
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Select Node.js 22
+        shell: bash
+        run: |
+          if [ -s "${NVM_DIR}/nvm.sh" ]; then
+            . "${NVM_DIR}/nvm.sh"
+            nvm use 22
+          fi
+          node --version
+          npm --version
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
