@@ -3,25 +3,12 @@ import { CareerJarvis } from '@/components/career-jarvis';
 import { createClient } from '@/lib/supabase/server';
 import { ENDINGS, endingFor } from '@/lib/endings';
 
-const fallbackSignals = [
-  ['Career growth', 4],
-  ['Leadership', 4],
-  ['Work-life balance', 3],
-  ['Learning', 3],
-  ['Compensation', 2],
-  ['Culture', 3],
-  ['Job security', 2],
-  ['Strong teams', 2],
-  ['AI pressure', 1],
-  ['Healthy transition', 2],
-] as const;
-
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
   const q = await searchParams;
   const supabase = await createClient();
   const [{ data: stories }, { data: labels }] = await Promise.all([
     supabase.from('published_experiences').select('*').order('published_at', { ascending: false }).limit(6),
-    supabase.from('experience_labels').select('label').limit(250),
+    supabase.from('experience_labels').select('experience_id,label').limit(1000),
   ]);
 
   let receipt: any = null;
@@ -34,11 +21,21 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
     receipt = data;
   }
 
-  const counts = new Map<string, number>();
-  for (const row of labels || []) counts.set(row.label, (counts.get(row.label) || 0) + 1);
-  const signals = counts.size
-    ? [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([label, count]) => [label, Math.min(4, Math.max(1, count))] as const)
-    : fallbackSignals;
+  const storyIdsByLabel = new Map<string, Set<string>>();
+  for (const row of labels || []) {
+    const label = String(row.label || '').trim();
+    const experienceId = String(row.experience_id || '').trim();
+    if (!label || !experienceId) continue;
+    const storyIds = storyIdsByLabel.get(label) || new Set<string>();
+    storyIds.add(experienceId);
+    storyIdsByLabel.set(label, storyIds);
+  }
+  const signals = [...storyIdsByLabel.entries()]
+    .map(([label, storyIds]) => [label, storyIds.size] as const)
+    .filter(([, storyCount]) => storyCount >= 5)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 14)
+    .map(([label, storyCount]) => [label, Math.min(4, Math.max(1, storyCount - 3))] as const);
 
   return (
     <div className="cx-page">
@@ -121,10 +118,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         <div className="cx-shell">
           <p className="cx-kicker">Shared intelligence</p>
           <h2 className="cx-title" id="signal-map-title">What people notice before they move on.</h2>
-          <p className="cx-lede">Themes grow only when they repeat across separate confirmed stories.</p>
-          <div className="cx-signal-map" aria-label="Common story themes">
-            {signals.map(([label, weight]) => <Link className="cx-signal-word" data-weight={weight} href={`/browse?q=${encodeURIComponent(label)}`} key={label}>{label}</Link>)}
-          </div>
+          <p className="cx-lede">A theme appears only after at least five separate confirmed stories share it.</p>
+          {signals.length ? (
+            <div className="cx-signal-map" aria-label="Common story themes">
+              {signals.map(([label, weight]) => <Link className="cx-signal-word" data-weight={weight} href={`/browse?q=${encodeURIComponent(label)}`} key={label}>{label}</Link>)}
+            </div>
+          ) : (
+            <div className="cx-empty">
+              <h3>The collective Signal Map is still forming.</h3>
+              <p>Individual stories can be explored now. Shared themes will appear only when enough separate published experiences support them.</p>
+            </div>
+          )}
         </div>
       </section>
 
