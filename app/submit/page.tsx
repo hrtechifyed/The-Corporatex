@@ -1,12 +1,12 @@
 import { createDraft } from './actions';
-import { CareerJarvis } from '@/components/career-jarvis';
+import { OpeningSignalSelector } from '@/components/opening-signal-selector';
 import { ENDINGS } from '@/lib/endings';
 
 export default function Submit() {
   return (
     <div className="cx-page cx-journey">
       <div className="cx-shell">
-        <div className="cx-journey-head">
+        <div className="cx-journey-head cx-journey-head--solo">
           <div>
             <p className="cx-kicker">Share Your Story · Private draft</p>
             <h1 className="cx-title">Begin with the <em>ending.</em></h1>
@@ -18,34 +18,12 @@ export default function Submit() {
               <li><span>4</span>Final Cut</li>
             </ol>
           </div>
-          <CareerJarvis
-            compact
-            pose="inviting"
-            dialogue="Start with how the ending felt. You can keep both the good and difficult truths."
-          />
         </div>
 
         <form action={createDraft} className="cx-journey-panel">
-          <fieldset>
-            <legend>
-              <span className="cx-kicker">Opening Signal</span>
-              <span className="cx-title" style={{ display: 'block' }}>How did this ending feel?</span>
-            </legend>
-            <p className="cx-note">There is no correct choice. Pick the one closest to your experience.</p>
-            <div className="cx-ending-choice-grid">
-              {ENDINGS.map((ending) => (
-                <label className="cx-ending-choice" data-ending={ending.slug} key={ending.value}>
-                  <input type="radio" name="mainReason" value={ending.value} required />
-                  <span className="cx-ending-choice__card">
-                    <strong>{ending.title}</strong>
-                    <span>{ending.description}</span>
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
+          <OpeningSignalSelector endings={ENDINGS} />
 
-          <div style={{ marginTop: '2.5rem' }}>
+          <section id="set-the-scene" className="cx-set-the-scene" tabIndex={-1}>
             <p className="cx-kicker">Set the Scene</p>
             <h2 className="cx-title">Where did this story unfold?</h2>
             <p className="cx-note">Give readers the setting—not anyone’s identity. Do not name colleagues or include confidential records.</p>
@@ -81,7 +59,7 @@ export default function Submit() {
                 </select>
               </label>
             </div>
-          </div>
+          </section>
 
           <div className="cx-actions" style={{ justifyContent: 'flex-end' }}>
             <button className="cx-button cx-button--signal" type="submit">Enter the Story Beats <span aria-hidden="true">→</span></button>
