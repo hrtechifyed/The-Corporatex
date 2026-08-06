@@ -2,6 +2,9 @@
   "name": "corporatex",
   "version": "1.0.0",
   "private": true,
+  "dependencies": {
+    "googleapis": "^173.0.0"
+  },
   "scripts": {
     "dev": "python3 -m http.server 4173",
     "build": "node scripts/build.mjs",
