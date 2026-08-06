@@ -6,6 +6,7 @@ const read = (path) => readFile(path, 'utf8');
 const packageJson = JSON.parse(await read('package.json'));
 const renderBlueprint = await read('render.yaml');
 const healthRoute = await read('app/api/health/route.ts');
+const geminiModule = await read('lib/gemini.ts');
 const siteWorkflow = await read('.github/workflows/site-quality.yml');
 const pagesWorkflow = await read('.github/workflows/deploy-pages.yml');
 
@@ -13,6 +14,7 @@ const requiredRuntimeDependencies = [
   'next',
   'react',
   'react-dom',
+  '@google/genai',
   '@supabase/ssr',
   '@supabase/supabase-js',
   'googleapis',
@@ -37,6 +39,13 @@ test('server runtime and build dependencies are declared', () => {
     assert.ok(packageJson.devDependencies?.[dependency], `${dependency} must be a build dependency`);
   }
   assert.match(packageJson.engines.node, />=22/);
+});
+
+test('Gemini analysis uses the current server-side SDK', () => {
+  assert.match(geminiModule, /from '@google\/genai'/);
+  assert.match(geminiModule, /new GoogleGenAI\(\{ apiKey \}\)/);
+  assert.match(geminiModule, /responseMimeType: 'application\/json'/);
+  assert.doesNotMatch(geminiModule, /@google\/generative-ai|gemini-1\.5-flash/);
 });
 
 test('Render blueprint creates a Node web service with a health check', () => {
