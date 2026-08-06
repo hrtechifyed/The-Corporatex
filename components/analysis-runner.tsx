@@ -26,7 +26,7 @@ export function AnalysisRunner({ id, hasAnalysis }: { id: string; hasAnalysis: b
     <section className="cx-journey-panel">
       <p className="cx-kicker">Before the Final Cut</p>
       <h2 className="cx-title">A careful screen. No opinion score.</h2>
-      <p className="cx-lede">The story stays on the CorporateX server. The screen looks for direct slurs, targeted abuse, threats, graphic violence, self-harm expressions and basic identifying details.</p>
+      <p className="cx-lede">The story stays on the CorporateX server and does not send your story to an external AI service. The screen looks for direct slurs, targeted abuse, threats, graphic violence, self-harm expressions and basic identifying details.</p>
       <div className="cx-feature-grid">
         <article className="cx-feature-card"><span>01 · PRIVATE</span><h3>Your draft stays private.</h3><p>Nothing is public at this stage.</p></article>
         <article className="cx-feature-card"><span>02 · NARROW</span><h3>Your criticism is not moderated.</h3><p>The screen is limited to safety and identity indicators.</p></article>
