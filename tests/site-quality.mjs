@@ -35,6 +35,7 @@ const visibleText = (html) => decodeStaticEntities(html)
   .replace(/<[^>]+>/g, ' ')
   .replace(/\s+/g, ' ')
   .trim();
+const classToken = (token) => new RegExp(`class="[^"]*(?:^|\\s)${token}(?:\\s|$)[^"]*"`);
 
 for (const [name, html] of Object.entries(pages)) {
   const nav = html.match(/<nav class="ref-primary-nav"[\s\S]*?<\/nav>/)?.[0] || '';
@@ -83,9 +84,9 @@ assert.match(visibleText(pages.guided), /The Final Cut/);
 assert.doesNotMatch(visibleText(pages.guided), /\bchapter\b/i, 'public Guided copy must use Story Beat rather than chapter');
 assert.match(pages.guided, /class="ref-context-visual"/);
 assert.match(pages.guided, /story-scenes\.svg#personal/);
-assert.match(pages.guided, /class="ref-context-company"/);
-assert.match(pages.guided, /class="ref-context-location"/);
-assert.match(pages.guided, /class="ref-context-team"/);
+assert.match(pages.guided, classToken('ref-context-company'));
+assert.match(pages.guided, classToken('ref-context-location'));
+assert.match(pages.guided, classToken('ref-context-team'));
 assert.match(pages.guided, /data-guided-context-next/);
 assert.match(pages.guided, /data-guided-edit-context/);
 assert.match(pages.guided, /data-guided-editor-context/);
