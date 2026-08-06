@@ -35,7 +35,13 @@ test('server runtime and build dependencies are declared', () => {
   for (const dependency of requiredRuntimeDependencies) {
     assert.ok(packageJson.dependencies?.[dependency], `${dependency} must be a runtime dependency`);
   }
-  for (const dependency of ['typescript', 'tailwindcss', 'postcss', 'autoprefixer']) {
+  for (const dependency of [
+    '@playwright/test',
+    'typescript',
+    'tailwindcss',
+    'postcss',
+    'autoprefixer',
+  ]) {
     assert.ok(packageJson.devDependencies?.[dependency], `${dependency} must be a build dependency`);
   }
   assert.match(packageJson.engines.node, />=22/);
