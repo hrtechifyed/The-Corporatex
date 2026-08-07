@@ -11,7 +11,7 @@ export default function More() {
             <p className="cx-lede">A rating gives you a reaction. A story shows what was promised, what changed and what to ask before joining.</p>
             <div className="cx-actions"><Link className="cx-button cx-button--signal" href="/browse">Explore Stories</Link><Link className="cx-button cx-button--ghost" href="/submit">Share Your Story</Link></div>
           </div>
-          <div className="cx-signal-visual cx-signal-visual--compact" aria-hidden="true"><span className="cx-signal-visual__ring cx-signal-visual__ring--one" /><span className="cx-signal-visual__ring cx-signal-visual__ring--two" /><span className="cx-signal-visual__core" /><span className="cx-signal-visual__trail" /></div>
+          <div className="cx-frozen-mini-art" aria-hidden="true" />
         </div>
       </section>
 
