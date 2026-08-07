@@ -32,10 +32,10 @@ export default async function Account() {
                   <span className="cx-ending-badge">{ending.title}</span>
                   <h2>{record.approved_headline || `${company || 'Company'} private story`}</h2>
                   <p className="cx-note">Status: {record.status.replaceAll('_', ' ')}</p>
-                  {editable ? <Link className="cx-button cx-button--ghost" href={href}>Continue the journey →</Link> : <span className="cx-note">This record is no longer editable from the contributor journey.</span>}
+                  {editable ? <Link className="cx-button cx-button--ghost" href={href}>Continue this saved story →</Link> : <span className="cx-note">This record is no longer editable from the contributor journey.</span>}
                 </article>
               );
-            }) : <div className="cx-record"><h2>No private stories yet.</h2><p className="cx-note">CareerJarvis will guide you from the Opening Signal to the Final Cut.</p></div>}
+            }) : <div className="cx-record"><h2>No private stories yet.</h2><p className="cx-note">A new contribution begins with an Opening Signal and asks for email verification only at the final submission step.</p></div>}
           </div>
           <div className="cx-actions"><Link href="/submit" className="cx-button cx-button--signal">Create another story →</Link></div>
         </div>
