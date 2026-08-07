@@ -4,7 +4,6 @@ import { useState, type CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import { SCENES } from '@/lib/types';
 import type { EndingSlug } from '@/lib/endings';
-import { CareerJarvis } from '@/components/career-jarvis';
 
 type Saved = { question_key: string; answer: string };
 
@@ -71,7 +70,7 @@ export function GuidedEditor({ id, saved, ending }: { id: string; saved: Saved[]
         ))}
       </nav>
 
-      <section className="cx-editor-stage" aria-labelledby="active-beat-title">
+      <section className="cx-editor-stage cx-editor-stage--no-guide" aria-labelledby="active-beat-title">
         <div className="cx-editor-copy">
           <div className="cx-editor-index">
             <span>Story Beat {scene + 1} of {SCENES.length}</span>
@@ -103,16 +102,9 @@ export function GuidedEditor({ id, saved, ending }: { id: string; saved: Saved[]
             </span>
             <button type="button" className="cx-button cx-button--ghost" onClick={() => router.push(`/submit/${id}/context`)}>Edit the Scene</button>
             <button type="button" className="cx-button cx-button--ghost" onClick={() => move(scene - 1)} disabled={scene === 0}>← Previous</button>
-            <button type="button" className="cx-button cx-button--ghost" onClick={() => move(scene + 1)} disabled={scene === SCENES.length - 1}>Save &amp; next</button>
-            <button type="button" className="cx-button cx-button--signal" onClick={continueToReview}>Prepare the Final Cut →</button>
+            {scene < SCENES.length - 1 ? <button type="button" className="cx-button cx-button--signal" onClick={() => move(scene + 1)}>Save &amp; next →</button> : <button type="button" className="cx-button cx-button--signal" onClick={continueToReview}>Prepare the Final Cut →</button>}
           </div>
         </div>
-        <CareerJarvis
-          compact
-          pose="listening"
-          tone={ending}
-          dialogue="I’ll stay quiet while you write. Choose any beat, and return whenever you need."
-        />
       </section>
     </div>
   );
