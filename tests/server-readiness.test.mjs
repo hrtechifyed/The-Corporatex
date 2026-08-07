@@ -22,8 +22,10 @@ const safetyRoute = await read('app/api/submission/safety/route.ts');
 const authModule = await read('lib/auth.ts');
 const profileMigration = await read('supabase/migrations/202608070001_resilient_profile_creation.sql');
 const siteHeader = await read('components/site-header.tsx');
+const siteFooter = await read('components/site-footer.tsx');
 const performanceCss = await read('app/corporatex-performance.css');
 const frozenHomepageCss = await read('app/frozen-homepage.css');
+const frozenGlobalCss = await read('app/frozen-global.css');
 const frozenAssetCss = await read('app/frozen-assets.css');
 const frozenAssetRoute = await read('app/frozen-assets/[asset]/route.ts');
 const frozenAssetIndex = await read('lib/frozen-home-assets/index.ts');
@@ -165,12 +167,31 @@ test('frozen homepage artwork is cacheable and uses the five approved anime stor
   assert.match(frozenAssetRoute, /max-age=31536000, immutable/);
 });
 
+test('the frozen black-gold design system is global from header through footer', () => {
+  assert.match(rootLayout, /frozen-global\.css/);
+  assert.match(frozenGlobalCss, /body\.cx-body/);
+  assert.match(frozenGlobalCss, /\.site-header/);
+  assert.match(frozenGlobalCss, /\.site-footer/);
+  assert.match(frozenGlobalCss, /\.cx-flow-card/);
+  assert.match(frozenGlobalCss, /\.cx-system-card/);
+  assert.match(frozenGlobalCss, /\.cx-archive-card/);
+  assert.match(frozenGlobalCss, /\/frozen-assets\/hero\.webp/);
+  assert.match(frozenGlobalCss, /\/frozen-assets\/card-5\.webp/);
+  assert.match(siteHeader, /const primaryLinks/);
+  assert.doesNotMatch(siteHeader, /innerLinks|desktopLinks/);
+  assert.match(siteFooter, /HRTechify/);
+  assert.match(siteFooter, /Corporate<span className="cx-brand-x">X<\/span>/);
+  assert.match(siteFooter, /How It Works/);
+  for (const [name, source] of Object.entries({ morePage, privacyPage, storyPage })) {
+    assert.match(source, /cx-frozen-mini-art/, `${name} should use the approved anime/city visual language`);
+    assert.doesNotMatch(source, /cx-signal-visual/, `${name} should not fall back to the old abstract signal visual`);
+  }
+});
+
 test('CareerJarvis is removed from live public and contribution surfaces', () => {
   for (const [name, source] of Object.entries({ homePage, morePage, privacyPage, loginPage, storyPage, contributorJourney })) {
     assert.doesNotMatch(source, /CareerJarvis|career-jarvis/, `${name} must not render CareerJarvis`);
   }
-  assert.match(morePage, /cx-signal-visual/);
-  assert.match(privacyPage, /cx-signal-visual/);
 });
 
 test('route rendering keeps the previous transition-lag safeguards', () => {

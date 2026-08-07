@@ -12,8 +12,8 @@ test.describe('Frozen homepage', () => {
     await expect(page.locator('.cx-frozen-card')).toHaveCount(5);
     await expect(page.locator('.cx-signal-visual')).toHaveCount(0);
     await expect(page.locator('.site-header')).toHaveAttribute('data-home', 'true');
-    await expect(page.locator('.cx-brand')).toContainText('HRTechify');
-    await expect(page.locator('.cx-brand')).toContainText('CorporateX');
+    await expect(page.locator('.cx-brand').first()).toContainText('HRTechify');
+    await expect(page.locator('.cx-brand').first()).toContainText('CorporateX');
   });
 
   test('serves the frozen artwork as cached WebP resources', async ({ request }) => {
@@ -23,6 +23,36 @@ test.describe('Frozen homepage', () => {
       expect(response.headers()['content-type']).toContain('image/webp');
       expect(response.headers()['cache-control']).toContain('immutable');
       expect((await response.body()).byteLength).toBeGreaterThan(1000);
+    }
+  });
+});
+
+test.describe('Global frozen design system', () => {
+  for (const route of ['/browse', '/more', '/privacy', '/submit', '/login']) {
+    test(`${route} keeps the same CorporateX header and footer language`, async ({ page }) => {
+      await page.goto(route);
+      const header = page.locator('.site-header');
+      await expect(header).toBeVisible();
+      await expect(header.locator('.cx-brand')).toContainText('HRTechify');
+      await expect(header.locator('.cx-brand')).toContainText('CorporateX');
+      await expect(header.getByRole('link', { name: 'Stories' })).toBeVisible();
+      await expect(header.getByRole('link', { name: 'How It Works' })).toBeVisible();
+      await expect(header.getByRole('link', { name: 'About' })).toBeVisible();
+      await expect(header.getByRole('link', { name: 'Sign In' })).toBeVisible();
+
+      const footer = page.locator('.site-footer');
+      await expect(footer).toBeVisible();
+      await expect(footer.locator('.cx-brand')).toContainText('HRTechify');
+      await expect(footer.locator('.cx-brand')).toContainText('CorporateX');
+      await expect(footer.getByRole('link', { name: 'Privacy & Safety' })).toBeVisible();
+    });
+  }
+
+  test('More and Privacy use the approved anime art instead of the old abstract signal visual', async ({ page }) => {
+    for (const route of ['/more', '/privacy']) {
+      await page.goto(route);
+      await expect(page.locator('.cx-frozen-mini-art')).toBeVisible();
+      await expect(page.locator('.cx-signal-visual')).toHaveCount(0);
     }
   });
 });
@@ -96,10 +126,10 @@ test('primary navigation reaches the next page without a blank state', async ({ 
   await expect(page.getByRole('heading', { name: /Not a score\. A sequence\./i })).toBeVisible();
   await expect(page.locator('.career-jarvis')).toHaveCount(0);
 
-  const privacyLink = page.locator('.cx-primary-nav').getByRole('link', { name: 'Privacy & Safety' });
-  await privacyLink.click();
+  const storiesLink = page.locator('.cx-primary-nav').getByRole('link', { name: 'Stories' });
+  await storiesLink.click();
 
-  await expect(page).toHaveURL(/\/privacy$/);
-  await expect(page.getByRole('heading', { name: /Protected while you speak/i })).toBeVisible();
+  await expect(page).toHaveURL(/\/browse$/);
+  await expect(page.getByRole('heading', { name: /Stories for the decision ahead/i })).toBeVisible();
   await expect(page.locator('.site-header')).toHaveAttribute('data-route-pending', 'false');
 });

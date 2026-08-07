@@ -65,7 +65,7 @@ export default async function Story({ params }: P) {
               ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || 'Not stated'}</dd></div>)}
             </dl>
           </div>
-          <div className="cx-signal-visual cx-signal-visual--compact" aria-hidden="true"><span className="cx-signal-visual__ring cx-signal-visual__ring--one" /><span className="cx-signal-visual__ring cx-signal-visual__ring--two" /><span className="cx-signal-visual__core" /><span className="cx-signal-visual__trail" /></div>
+          <div className="cx-frozen-mini-art" aria-hidden="true" />
         </div>
       </header>
 

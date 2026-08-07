@@ -4,20 +4,13 @@ import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-const homeLinks = [
+const primaryLinks = [
   ['Stories', '/browse'],
   ['How It Works', '/more#how-it-works'],
   ['About', '/more'],
 ] as const;
 
-const innerLinks = [
-  ['Home', '/'],
-  ['Stories', '/browse'],
-  ['More', '/more'],
-  ['Privacy & Safety', '/privacy'],
-] as const;
-
-const idleWarmRoutes = ['/', '/browse', '/more', '/privacy', '/submit', '/login'] as const;
+const idleWarmRoutes = ['/', '/browse', '/more', '/privacy', '/submit', '/login', '/account'] as const;
 
 function UserIcon() {
   return (
@@ -107,8 +100,6 @@ export function SiteHeader() {
     );
   }
 
-  const desktopLinks = isHome ? homeLinks : innerLinks;
-
   return (
     <header className="site-header" data-home={isHome ? 'true' : 'false'} data-route-pending={pendingHref ? 'true' : 'false'}>
       <div className="site-header-inner">
@@ -126,16 +117,15 @@ export function SiteHeader() {
         </Link>
 
         <nav className="cx-primary-nav" aria-label="Primary navigation">
-          {desktopLinks.map(([label, href]) => navLink(label, href))}
-          {isHome
-            ? navLink(<><UserIcon /><span>Sign In</span></>, '/login', 'cx-sign-in')
-            : navLink('Share Your Story ↗', '/submit', 'cx-header-cta')}
+          {primaryLinks.map(([label, href]) => navLink(label, href))}
+          {navLink(<><UserIcon /><span>Sign In</span></>, '/login', 'cx-sign-in')}
         </nav>
 
         <details className="cx-menu">
           <summary aria-label="Open navigation"><span /></summary>
           <nav aria-label="Mobile navigation">
-            {(isHome ? homeLinks : innerLinks).map(([label, href]) => navLink(label, href))}
+            {primaryLinks.map(([label, href]) => navLink(label, href))}
+            {navLink('Privacy & Safety', '/privacy')}
             {navLink('Sign In', '/login')}
             {navLink('My drafts', '/account')}
             {navLink('Share Your Story', '/submit')}

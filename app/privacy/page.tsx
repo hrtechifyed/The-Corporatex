@@ -8,7 +8,7 @@ export default function Privacy() {
             <h1 className="cx-display">Protected while you <em>speak.</em></h1>
             <p className="cx-lede">Your unfinished contribution stays in your browser while you write. The Final Cut is sent to the CorporateX server only for the safety check before verification, and the story database record is created only after you verify your email and submit.</p>
           </div>
-          <div className="cx-signal-visual cx-signal-visual--compact" aria-hidden="true"><span className="cx-signal-visual__ring cx-signal-visual__ring--one" /><span className="cx-signal-visual__ring cx-signal-visual__ring--two" /><span className="cx-signal-visual__core" /><span className="cx-signal-visual__trail" /></div>
+          <div className="cx-frozen-mini-art" aria-hidden="true" />
         </div>
       </section>
 
