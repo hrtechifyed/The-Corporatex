@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ShareReport } from '@/components/share-report';
-import { CareerJarvis } from '@/components/career-jarvis';
 import { endingFor } from '@/lib/endings';
 
 type P = { params: Promise<{ companySlug: string; experienceSlug: string }> };
@@ -66,12 +65,7 @@ export default async function Story({ params }: P) {
               ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || 'Not stated'}</dd></div>)}
             </dl>
           </div>
-          <CareerJarvis
-            compact
-            pose="protecting"
-            tone={ending.slug}
-            dialogue="This is one person’s experience—not a verdict on an entire employer. Use it to ask better questions."
-          />
+          <div className="cx-signal-visual cx-signal-visual--compact" aria-hidden="true"><span className="cx-signal-visual__ring cx-signal-visual__ring--one" /><span className="cx-signal-visual__ring cx-signal-visual__ring--two" /><span className="cx-signal-visual__core" /><span className="cx-signal-visual__trail" /></div>
         </div>
       </header>
 
