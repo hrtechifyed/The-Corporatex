@@ -1,5 +1,32 @@
 import { expect, test } from '@playwright/test';
 
+test.describe('Frozen homepage', () => {
+  test('renders the approved anime-elegant composition with real interactive controls', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: /Not a score\./i })).toBeVisible();
+    await expect(page.getByText('A sequence.', { exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Explore Stories/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Share Your Story/i }).first()).toBeVisible();
+    await expect(page.locator('.cx-frozen-art')).toBeVisible();
+    await expect(page.locator('.cx-frozen-card')).toHaveCount(5);
+    await expect(page.locator('.cx-signal-visual')).toHaveCount(0);
+    await expect(page.locator('.site-header')).toHaveAttribute('data-home', 'true');
+    await expect(page.locator('.cx-brand')).toContainText('HRTechify');
+    await expect(page.locator('.cx-brand')).toContainText('CorporateX');
+  });
+
+  test('serves the frozen artwork as cached WebP resources', async ({ request }) => {
+    for (const asset of ['hero', 'card-1', 'card-2', 'card-3', 'card-4', 'card-5']) {
+      const response = await request.get(`/frozen-assets/${asset}`);
+      expect(response.ok()).toBeTruthy();
+      expect(response.headers()['content-type']).toContain('image/webp');
+      expect(response.headers()['cache-control']).toContain('immutable');
+      expect((await response.body()).byteLength).toBeGreaterThan(1000);
+    }
+  });
+});
+
 test.describe('Contribution journey', () => {
   test('an ending card automatically opens Set the Scene without authentication', async ({ page }) => {
     await page.goto('/submit');
