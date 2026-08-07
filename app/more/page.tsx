@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { CareerJarvis } from '@/components/career-jarvis';
 
 export default function More() {
   return (
@@ -12,7 +11,7 @@ export default function More() {
             <p className="cx-lede">A rating gives you a reaction. A story shows what was promised, what changed and what to ask before joining.</p>
             <div className="cx-actions"><Link className="cx-button cx-button--signal" href="/browse">Explore Stories</Link><Link className="cx-button cx-button--ghost" href="/submit">Share Your Story</Link></div>
           </div>
-          <CareerJarvis compact pose="pointing" dialogue="The employer is not the villain. Incomplete information is the problem we are solving." />
+          <div className="cx-signal-visual cx-signal-visual--compact" aria-hidden="true"><span className="cx-signal-visual__ring cx-signal-visual__ring--one" /><span className="cx-signal-visual__ring cx-signal-visual__ring--two" /><span className="cx-signal-visual__core" /><span className="cx-signal-visual__trail" /></div>
         </div>
       </section>
 
@@ -35,7 +34,7 @@ export default function More() {
           <div className="cx-feature-grid">
             <article className="cx-feature-card"><span>ONE PERSPECTIVE</span><h3>Clearly labelled.</h3><p>A contributor describes their experience—not an entire organisation.</p></article>
             <article className="cx-feature-card"><span>SAFETY ONLY</span><h3>No opinion score.</h3><p>Direct slurs, targeted abuse, threats, graphic harm and identity details are screened.</p></article>
-            <article className="cx-feature-card"><span>FINAL CONTROL</span><h3>The contributor edits.</h3><p>CareerJarvis guides the journey but never writes or judges the person’s story.</p></article>
+            <article className="cx-feature-card"><span>FINAL CONTROL</span><h3>The contributor edits.</h3><p>CorporateX guides the sequence but never writes or judges the person’s story.</p></article>
           </div>
         </div>
       </section>
@@ -43,7 +42,7 @@ export default function More() {
       <section className="cx-section cx-section--compact">
         <div className="cx-shell cx-journey-panel cx-section-heading">
           <div><p className="cx-kicker">Pass it forward</p><h2 className="cx-title">The right signal can change a career decision.</h2></div>
-          <Link className="cx-button cx-button--signal" href="/submit">Begin with CareerJarvis →</Link>
+          <Link className="cx-button cx-button--signal" href="/submit">Begin with the Signal →</Link>
         </div>
       </section>
     </div>

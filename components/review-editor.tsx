@@ -10,10 +10,10 @@ const editable: [keyof Analysis, string][] = [
   ['positiveMoments', 'The Good Part'],
   ['firstPlotTwist', 'The Shift'],
   ['finalTrigger', 'The Tipping Point'],
-  ['recurringConflict', 'The AI Turn or recurring change'],
+  ['recurringConflict', 'Additional change context'],
   ['whoMayThrive', 'Who Thrives Here?'],
   ['whoMayStruggle', 'Who may find it difficult'],
-  ['wouldReturn', 'Would you return?'],
+  ['wouldReturn', 'Looking Back'],
 ];
 
 export function ReviewEditor({ id, original, initial, ending }: { id: string; original: string; initial: Analysis; ending: string }) {

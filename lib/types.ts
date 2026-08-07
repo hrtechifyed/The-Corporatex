@@ -48,13 +48,13 @@ export type Experience = {
 
 export const SCENES = [
   ['beginning', 'The Beginning', 'What drew you to this role or company in the first place?'],
-  ['promise', 'The Promise', 'What were you told or expecting before you joined?'],
+  ['promise', 'The Promise', 'What were you told, hoping for or expecting before you joined?'],
   ['good_part', 'The Good Part', 'What genuinely worked and deserves to be remembered positively?'],
-  ['shift', 'The Shift', 'When did the experience begin to change, if it changed at all?'],
-  ['tipping_point', 'The Tipping Point', 'What ultimately made moving on the right decision?'],
-  ['lesson', 'The Lesson', 'What should a future candidate ask before deciding?'],
-  ['ai_turn', 'The AI Turn', 'Did technology or AI reshape the role, pressure, learning or security?'],
-  ['who_thrives', 'Who Thrives Here?', 'Who could genuinely succeed in this environment—and why?'],
+  ['shift', 'The Shift', 'What changed the experience, if anything changed at all?'],
+  ['tipping_point', 'The Tipping Point', 'What ultimately changed your decision about staying or leaving?'],
+  ['lesson', 'The Lesson', 'What do you wish you had known earlier, or what should a future candidate ask?'],
+  ['who_thrives', 'Who Thrives Here?', 'Who could genuinely do well in this environment—and why?'],
+  ['looking_back', 'Looking Back', 'Would you make the same choice again, or return under the right circumstances?'],
 ] as const;
 
 export type Analysis = {
