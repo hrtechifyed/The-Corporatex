@@ -1,0 +1,2 @@
+.cx-editor-stage--no-guide { grid-template-columns: minmax(0, 1fr); }
+.cx-journey-head--solo { grid-template-columns: minmax(0, 1fr); }
