@@ -23,6 +23,10 @@ const authModule = await read('lib/auth.ts');
 const profileMigration = await read('supabase/migrations/202608070001_resilient_profile_creation.sql');
 const siteHeader = await read('components/site-header.tsx');
 const performanceCss = await read('app/corporatex-performance.css');
+const frozenHomepageCss = await read('app/frozen-homepage.css');
+const frozenAssetCss = await read('app/frozen-assets.css');
+const frozenAssetRoute = await read('app/frozen-assets/[asset]/route.ts');
+const frozenAssetIndex = await read('lib/frozen-home-assets/index.ts');
 const homePage = await read('app/page.tsx');
 const morePage = await read('app/more/page.tsx');
 const privacyPage = await read('app/privacy/page.tsx');
@@ -132,11 +136,39 @@ test('new-user profile provisioning cannot block Supabase Auth and has a server 
   assert.doesNotMatch(authModule, /supabase\.from\('profiles'\)\.insert/);
 });
 
+test('the frozen homepage matches the approved visual contract without fake production claims', () => {
+  assert.match(homePage, /Not a score\./);
+  assert.match(homePage, /cx-frozen-sequence/);
+  assert.match(homePage, /A rating gives you a reaction\. A story shows what was promised, what changed and what to ask before joining\./);
+  assert.match(homePage, /Real stories\. Real people\. Real clarity\./);
+  assert.match(homePage, /Array\.from\(\{ length: 5 \}/);
+  assert.match(homePage, /published_experiences.*count: 'exact'/s);
+  assert.match(homePage, /No demo account/);
+  assert.doesNotMatch(homePage, /10K\+|professionals and counting/);
+  assert.doesNotMatch(homePage, /cx-signal-visual/);
+  assert.match(siteHeader, /HRTechify/);
+  assert.match(siteHeader, /Corporate<span className="cx-brand-x">X<\/span>/);
+  assert.match(siteHeader, /How It Works/);
+  assert.match(siteHeader, /cx-sign-in/);
+  assert.match(morePage, /id="how-it-works"/);
+});
+
+test('frozen homepage artwork is cacheable and uses the five approved anime story scenes', () => {
+  assert.match(rootLayout, /frozen-homepage\.css/);
+  assert.match(rootLayout, /frozen-assets\.css/);
+  assert.match(frozenHomepageCss, /cx-frozen-art/);
+  assert.match(frozenHomepageCss, /grid-template-columns:repeat\(5/);
+  assert.match(frozenHomepageCss, /@media \(prefers-reduced-motion: reduce\)/);
+  for (const asset of ['hero','card-1','card-2','card-3','card-4','card-5']) assert.match(frozenAssetCss, new RegExp(`/frozen-assets/${asset}`));
+  assert.match(frozenAssetIndex, /hero1 \+ hero2 \+ hero3 \+ hero4 \+ hero5 \+ hero6 \+ hero7/);
+  assert.match(frozenAssetRoute, /Content-Type': 'image\/webp'/);
+  assert.match(frozenAssetRoute, /max-age=31536000, immutable/);
+});
+
 test('CareerJarvis is removed from live public and contribution surfaces', () => {
   for (const [name, source] of Object.entries({ homePage, morePage, privacyPage, loginPage, storyPage, contributorJourney })) {
     assert.doesNotMatch(source, /CareerJarvis|career-jarvis/, `${name} must not render CareerJarvis`);
   }
-  assert.match(homePage, /cx-signal-visual/);
   assert.match(morePage, /cx-signal-visual/);
   assert.match(privacyPage, /cx-signal-visual/);
 });

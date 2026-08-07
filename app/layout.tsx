@@ -6,6 +6,8 @@ import './corporatex-performance.css';
 import './contributor-journey.css';
 import './signal-visual.css';
 import './character-cleanup.css';
+import './frozen-homepage.css';
+import './frozen-assets.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 

@@ -1,22 +1,38 @@
 'use client';
 
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-const links = [
+const homeLinks = [
+  ['Stories', '/browse'],
+  ['How It Works', '/more#how-it-works'],
+  ['About', '/more'],
+] as const;
+
+const innerLinks = [
   ['Home', '/'],
   ['Stories', '/browse'],
   ['More', '/more'],
   ['Privacy & Safety', '/privacy'],
 ] as const;
 
-const idleWarmRoutes = ['/', '/more', '/privacy', '/submit'] as const;
+const idleWarmRoutes = ['/', '/browse', '/more', '/privacy', '/submit', '/login'] as const;
+
+function UserIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <circle cx="12" cy="8" r="3.2" />
+      <path d="M5.5 19.2c.7-3.3 3-5 6.5-5s5.8 1.7 6.5 5" />
+    </svg>
+  );
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const isHome = pathname === '/';
 
   useEffect(() => {
     setPendingHref(null);
@@ -36,19 +52,25 @@ export function SiteHeader() {
     return () => window.clearTimeout(safetyTimer);
   }, [pendingHref]);
 
+  function normalizedPath(href: string) {
+    return href.split('#')[0] || '/';
+  }
+
   function isCurrent(href: string) {
-    if (href === '/') return pathname === '/';
-    if (href === '/browse') return pathname === '/browse' || pathname.startsWith('/experience/');
-    return pathname === href || pathname.startsWith(`${href}/`);
+    const target = normalizedPath(href);
+    if (target === '/') return pathname === '/';
+    if (target === '/browse') return pathname === '/browse' || pathname.startsWith('/experience/');
+    return pathname === target || pathname.startsWith(`${target}/`);
   }
 
   function warm(href: string) {
-    router.prefetch(href);
+    router.prefetch(normalizedPath(href));
   }
 
   function startNavigation(href: string, event: MouseEvent<HTMLAnchorElement>) {
+    const target = normalizedPath(href);
     if (
-      href === pathname ||
+      target === pathname ||
       event.defaultPrevented ||
       event.button !== 0 ||
       event.metaKey ||
@@ -59,12 +81,13 @@ export function SiteHeader() {
       return;
     }
 
-    setPendingHref(href);
+    setPendingHref(target);
   }
 
-  function navLink(label: string, href: string, className?: string) {
+  function navLink(label: ReactNode, href: string, className?: string) {
     const current = isCurrent(href);
-    const pending = pendingHref === href;
+    const target = normalizedPath(href);
+    const pending = pendingHref === target;
 
     return (
       <Link
@@ -84,30 +107,36 @@ export function SiteHeader() {
     );
   }
 
+  const desktopLinks = isHome ? homeLinks : innerLinks;
+
   return (
-    <header className="site-header" data-route-pending={pendingHref ? 'true' : 'false'}>
+    <header className="site-header" data-home={isHome ? 'true' : 'false'} data-route-pending={pendingHref ? 'true' : 'false'}>
       <div className="site-header-inner">
         <Link
           href="/"
           className="cx-brand"
-          aria-label="CorporateX home"
+          aria-label="HRTechify CorporateX home"
           prefetch
           onPointerEnter={() => warm('/')}
           onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation('/', event)}
         >
-          <img src="/hrtechify-logo.svg" alt="" width="38" height="38" />
-          <span>CorporateX</span>
+          <img src="/hrtechify-logo.svg" alt="HRTechify" width="54" height="54" />
+          <span className="cx-brand-parent">HRTechify</span>
+          <span className="cx-brand-product">Corporate<span className="cx-brand-x">X</span></span>
         </Link>
 
         <nav className="cx-primary-nav" aria-label="Primary navigation">
-          {links.map(([label, href]) => navLink(label, href))}
-          {navLink('Share Your Story ↗', '/submit', 'cx-header-cta')}
+          {desktopLinks.map(([label, href]) => navLink(label, href))}
+          {isHome
+            ? navLink(<><UserIcon /><span>Sign In</span></>, '/login', 'cx-sign-in')
+            : navLink('Share Your Story ↗', '/submit', 'cx-header-cta')}
         </nav>
 
         <details className="cx-menu">
           <summary aria-label="Open navigation"><span /></summary>
           <nav aria-label="Mobile navigation">
-            {links.map(([label, href]) => navLink(label, href))}
+            {(isHome ? homeLinks : innerLinks).map(([label, href]) => navLink(label, href))}
+            {navLink('Sign In', '/login')}
             {navLink('My drafts', '/account')}
             {navLink('Share Your Story', '/submit')}
           </nav>

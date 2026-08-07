@@ -2,12 +2,43 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { ENDINGS, endingFor } from '@/lib/endings';
 
+function StoryCard({ story, index }: { story: any | null; index: number }) {
+  if (!story) {
+    return (
+      <article className="cx-frozen-card cx-frozen-card--placeholder" aria-label={`Archive story slot ${index + 1} is waiting for a confirmed story`}>
+        <div className="cx-frozen-card__image" aria-hidden="true" />
+        <div className="cx-frozen-card__body">
+          <h3>Archive forming</h3>
+          <p>Waiting for a confirmed workplace story</p>
+          <div className="cx-frozen-card__meta"><span className="cx-frozen-card__pill">Confirmed stories only</span><span>No demo account</span></div>
+        </div>
+      </article>
+    );
+  }
+
+  const ending = endingFor(story.main_reason);
+  const category = story.broad_function || ending.title;
+  const context = story.broad_region || story.company_display_name || 'Workplace story';
+
+  return (
+    <Link className="cx-frozen-card" href={`/experience/${story.company_slug}/${story.public_slug}`}>
+      <div className="cx-frozen-card__image" aria-hidden="true" />
+      <div className="cx-frozen-card__body">
+        <h3>{story.approved_headline || `${story.company_display_name || 'Workplace'} story`}</h3>
+        <p>{story.approved_summary || ending.description}</p>
+        <div className="cx-frozen-card__meta"><span className="cx-frozen-card__pill">{category}</span><span>{context}</span></div>
+      </div>
+    </Link>
+  );
+}
+
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
   const q = await searchParams;
   const supabase = await createClient();
-  const [{ data: stories }, { data: labels }] = await Promise.all([
+  const [{ data: stories }, { data: labels }, { count: publishedCount }] = await Promise.all([
     supabase.from('published_experiences').select('*').order('published_at', { ascending: false }).limit(6),
     supabase.from('experience_labels').select('experience_id,label').limit(1000),
+    supabase.from('published_experiences').select('id', { count: 'exact', head: true }),
   ]);
 
   let receipt: any = null;
@@ -36,8 +67,41 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
     .slice(0, 14)
     .map(([label, storyCount]) => [label, Math.min(4, Math.max(1, storyCount - 3))] as const);
 
+  const frozenCards = Array.from({ length: 5 }, (_, index) => stories?.[index] ?? null);
+  const trustCount = publishedCount && publishedCount > 0
+    ? `${publishedCount} published ${publishedCount === 1 ? 'signal' : 'signals'} and counting`
+    : 'The confirmed archive is forming';
+
   return (
-    <div className="cx-page">
+    <div className="cx-frozen-home">
+      <section className="cx-frozen-hero" aria-labelledby="frozen-home-title">
+        <div className="cx-frozen-shell cx-frozen-hero-stage">
+          <div className="cx-frozen-copy">
+            <p className="cx-frozen-kicker">Why CorporateX</p>
+            <h1 className="cx-frozen-display" id="frozen-home-title">
+              <span>Not a score.</span>
+              <span className="cx-frozen-sequence-line"><span>A</span><em className="cx-frozen-sequence">sequence.</em></span>
+            </h1>
+            <p className="cx-frozen-lede">A rating gives you a reaction. A story shows what was promised, what changed and what to ask before joining.</p>
+            <div className="cx-frozen-actions">
+              <Link className="cx-frozen-action cx-frozen-action--primary" href="/browse"><span aria-hidden="true">✦</span> Explore Stories <span aria-hidden="true">→</span></Link>
+              <Link className="cx-frozen-action cx-frozen-action--secondary" href="/submit"><span aria-hidden="true">□</span> Share Your Story</Link>
+            </div>
+            <div className="cx-frozen-trust" aria-label="CorporateX story archive">
+              <span className="cx-frozen-trust-copy">Real stories. Real people. Real clarity.</span>
+              <span className="cx-frozen-avatar-stack" aria-hidden="true"><span /><span /><span /><span /></span>
+              <span className="cx-frozen-trust-count">{trustCount}</span>
+            </div>
+          </div>
+
+          <div className="cx-frozen-art" role="img" aria-label="Anime-style professional overlooking a city as a golden story path connects workplace moments." />
+
+          <div className="cx-frozen-story-strip" aria-label="Latest confirmed workplace stories">
+            {frozenCards.map((story, index) => <StoryCard story={story} index={index} key={story?.id || `placeholder-${index}`} />)}
+          </div>
+        </div>
+      </section>
+
       {receipt ? (
         <section className="cx-shell cx-submission-receipt" style={{ gridTemplateColumns: '1fr' }} role="status" aria-live="polite">
           <div>
@@ -48,32 +112,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
           </div>
         </section>
       ) : null}
-
-      <section className="cx-hero">
-        <div className="cx-shell cx-hero-grid">
-          <div className="cx-hero-copy">
-            <p className="cx-kicker">Workplace signals from people who were there</p>
-            <h1 className="cx-display">Every exit leaves a <em>signal.</em></h1>
-            <p className="cx-lede">Some warn. Some reassure. All can help someone choose better.</p>
-            <div className="cx-actions">
-              <Link className="cx-button cx-button--signal" href="/submit">Share Your Story <span aria-hidden="true">→</span></Link>
-              <Link className="cx-button cx-button--ghost" href="/browse">Explore Stories</Link>
-            </div>
-            <ul className="cx-trust-line" aria-label="CorporateX commitments">
-              <li><b>◇</b> Anonymous by design</li>
-              <li><b>✓</b> You control every word</li>
-              <li><b>⌁</b> Safety screen, not opinion control</li>
-            </ul>
-          </div>
-          <div className="cx-hero-visual cx-signal-visual" aria-hidden="true">
-            <span className="cx-signal-visual__ring cx-signal-visual__ring--one" />
-            <span className="cx-signal-visual__ring cx-signal-visual__ring--two" />
-            <span className="cx-signal-visual__core" />
-            <span className="cx-signal-visual__trail" />
-            <span className="cx-signal-path" />
-          </div>
-        </div>
-      </section>
 
       <section className="cx-section" aria-labelledby="ending-title">
         <div className="cx-shell">
