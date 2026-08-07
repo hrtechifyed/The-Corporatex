@@ -5,7 +5,8 @@ test.describe('Frozen homepage', () => {
     await page.goto('/');
 
     await expect(page.getByRole('heading', { name: /Not a score\./i })).toBeVisible();
-    await expect(page.getByText('A sequence.', { exact: true })).toBeVisible();
+    await expect(page.locator('.cx-frozen-sequence')).toBeVisible();
+    await expect(page.locator('.cx-frozen-sequence')).toContainText('sequence');
     await expect(page.getByRole('link', { name: /Explore Stories/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /Share Your Story/i }).first()).toBeVisible();
     await expect(page.locator('.cx-frozen-art')).toBeVisible();
@@ -130,6 +131,7 @@ test('primary navigation reaches the next page without a blank state', async ({ 
   await storiesLink.click();
 
   await expect(page).toHaveURL(/\/browse$/);
-  await expect(page.getByRole('heading', { name: /Stories for the decision ahead/i })).toBeVisible();
+  await expect(page.locator('.cx-archive-hero')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('.cx-archive-hero .cx-display')).toContainText('Stories for the', { timeout: 15_000 });
   await expect(page.locator('.site-header')).toHaveAttribute('data-route-pending', 'false');
 });
