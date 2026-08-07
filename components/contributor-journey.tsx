@@ -28,6 +28,14 @@ const SHIFT_TOPICS: Array<{ value: ShiftTopic; label: string }> = [
   { value: 'other', label: 'Something else' },
 ];
 
+const DEFAULT_CONTEXT: ContributionContext = {
+  companyName: '',
+  broadRegion: '',
+  broadFunction: '',
+  approximateTenure: '1–2 years',
+  workArrangement: 'Hybrid',
+};
+
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
@@ -51,8 +59,7 @@ export function OpeningSignalStep() {
   const [moving, setMoving] = useState(false);
 
   useEffect(() => {
-    const draft = loadContributionDraft();
-    setSelected(draft.ending || null);
+    setSelected(loadContributionDraft().ending || null);
   }, []);
 
   function choose(value: (typeof ENDINGS)[number]['value']) {
@@ -105,7 +112,8 @@ export function OpeningSignalStep() {
 
 export function SceneStep() {
   const router = useRouter();
-  const [context, setContext] = useState<ContributionContext | null>(null);
+  const [context, setContext] = useState<ContributionContext>(DEFAULT_CONTEXT);
+  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -115,18 +123,17 @@ export function SceneStep() {
       return;
     }
     setContext(draft.context);
+    setLoaded(true);
   }, [router]);
 
   useEffect(() => {
-    if (!context) return;
+    if (!loaded) return;
     const draft = loadContributionDraft();
     saveContributionDraft({ ...draft, context, finalCut: undefined, safety: undefined });
-  }, [context]);
-
-  if (!context) return <FlowLoading label="Opening the first scene…" />;
+  }, [context, loaded]);
 
   function change<K extends keyof ContributionContext>(key: K, value: ContributionContext[K]) {
-    setContext((current) => current ? { ...current, [key]: value } : current);
+    setContext((current) => ({ ...current, [key]: value }));
     setError('');
   }
 
@@ -140,6 +147,8 @@ export function SceneStep() {
     router.push('/submit/story?beat=0');
   }
 
+  if (!loaded) return <FlowLoading label="Opening the first scene…" />;
+
   return (
     <div className="cx-flow-shell">
       <JourneyProgress active={2} />
@@ -148,11 +157,11 @@ export function SceneStep() {
         <h1 className="cx-title">Where did this story unfold?</h1>
         <p className="cx-lede">Give readers the setting, not anyone’s identity. Names of colleagues and confidential records should stay out.</p>
         <div className="cx-form-grid cx-flow-form">
-          <label className="cx-field"><span>Company · required</span><input className="cx-input" value={context.companyName} onChange={(e) => change('companyName', e.target.value)} maxLength={120} autoComplete="organization" /></label>
-          <label className="cx-field"><span>Location · required</span><input className="cx-input" value={context.broadRegion} onChange={(e) => change('broadRegion', e.target.value)} maxLength={80} placeholder="e.g. Bengaluru, India or Remote — Europe" /></label>
-          <label className="cx-field"><span>Team or function · optional</span><input className="cx-input" value={context.broadFunction} onChange={(e) => change('broadFunction', e.target.value)} maxLength={80} /></label>
-          <label className="cx-field"><span>Approximate tenure</span><select className="cx-select" value={context.approximateTenure} onChange={(e) => change('approximateTenure', e.target.value)}><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>More than 10 years</option></select></label>
-          <label className="cx-field"><span>Work arrangement</span><select className="cx-select" value={context.workArrangement} onChange={(e) => change('workArrangement', e.target.value)}><option>On-site</option><option>Hybrid</option><option>Remote</option></select></label>
+          <label className="cx-field"><span>Company · required</span><input className="cx-input" value={context.companyName} onChange={(event) => change('companyName', event.target.value)} maxLength={120} autoComplete="organization" /></label>
+          <label className="cx-field"><span>Location · required</span><input className="cx-input" value={context.broadRegion} onChange={(event) => change('broadRegion', event.target.value)} maxLength={80} placeholder="e.g. Bengaluru, India or Remote — Europe" /></label>
+          <label className="cx-field"><span>Team or function · optional</span><input className="cx-input" value={context.broadFunction} onChange={(event) => change('broadFunction', event.target.value)} maxLength={80} /></label>
+          <label className="cx-field"><span>Approximate tenure</span><select className="cx-select" value={context.approximateTenure} onChange={(event) => change('approximateTenure', event.target.value)}><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>More than 10 years</option></select></label>
+          <label className="cx-field"><span>Work arrangement</span><select className="cx-select" value={context.workArrangement} onChange={(event) => change('workArrangement', event.target.value)}><option>On-site</option><option>Hybrid</option><option>Remote</option></select></label>
         </div>
         {error ? <p className="cx-flow-error" role="alert">{error}</p> : null}
         <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push('/submit')}>← Back</button><button type="button" className="cx-button cx-button--signal" onClick={next}>Next →</button></div>
@@ -181,32 +190,33 @@ export function StoryStep() {
     if (draft) saveContributionDraft(draft);
   }, [draft]);
 
-  const [key, title, prompt] = SCENES[sceneIndex];
   if (!draft) return <FlowLoading label="Opening your Story Beats…" />;
+  const activeDraft = draft;
+  const [key, title, prompt] = SCENES[sceneIndex];
 
   function updateAnswer(value: string) {
-    setDraft({ ...draft, answers: { ...draft.answers, [key]: value }, finalCut: undefined, safety: undefined });
+    setDraft({ ...activeDraft, answers: { ...activeDraft.answers, [key]: value }, finalCut: undefined, safety: undefined });
   }
 
   function toggleTopic(topic: ShiftTopic) {
-    const active = draft.shiftTopics.includes(topic);
+    const active = activeDraft.shiftTopics.includes(topic);
     setDraft({
-      ...draft,
-      shiftTopics: active ? draft.shiftTopics.filter((item) => item !== topic) : [...draft.shiftTopics, topic],
-      technologyFollowUp: topic === 'technology-ai' && active ? '' : draft.technologyFollowUp,
+      ...activeDraft,
+      shiftTopics: active ? activeDraft.shiftTopics.filter((item) => item !== topic) : [...activeDraft.shiftTopics, topic],
+      technologyFollowUp: topic === 'technology-ai' && active ? '' : activeDraft.technologyFollowUp,
       finalCut: undefined,
       safety: undefined,
     });
   }
 
   function previous() {
-    saveContributionDraft(draft);
+    saveContributionDraft(activeDraft);
     if (sceneIndex === 0) router.push('/submit/scene');
     else router.push(`/submit/story?beat=${sceneIndex - 1}`);
   }
 
   function next() {
-    saveContributionDraft(draft);
+    saveContributionDraft(activeDraft);
     if (sceneIndex === SCENES.length - 1) router.push('/submit/final-cut');
     else router.push(`/submit/story?beat=${sceneIndex + 1}`);
   }
@@ -215,34 +225,34 @@ export function StoryStep() {
     <div className="cx-flow-shell">
       <JourneyProgress active={3} />
       <section className="cx-flow-card cx-flow-card--story">
-        <div className="cx-flow-beat-index"><span>Story Beat {sceneIndex + 1} of {SCENES.length}</span><span>{draft.answers[key]?.trim() ? 'Answered' : 'Optional'}</span></div>
+        <div className="cx-flow-beat-index"><span>Story Beat {sceneIndex + 1} of {SCENES.length}</span><span>{activeDraft.answers[key]?.trim() ? 'Answered' : 'Optional'}</span></div>
         <p className="cx-kicker">{title}</p>
         <h1 className="cx-title">{prompt}</h1>
         <label className="cx-field cx-flow-writing-field">
           <span>Your experience</span>
-          <textarea autoFocus className="cx-textarea" maxLength={1800} value={draft.answers[key] || ''} onChange={(e) => updateAnswer(e.target.value)} placeholder="Write only what belongs in this moment." />
-          <small>{(draft.answers[key] || '').length} / 1800</small>
+          <textarea autoFocus className="cx-textarea" maxLength={1800} value={activeDraft.answers[key] || ''} onChange={(event) => updateAnswer(event.target.value)} placeholder="Write only what belongs in this moment." />
+          <small>{(activeDraft.answers[key] || '').length} / 1800</small>
         </label>
 
         {key === 'shift' ? (
           <div className="cx-flow-followup">
             <p className="cx-field-label">What kind of change was involved? · optional</p>
             <div className="cx-flow-topic-grid">
-              {SHIFT_TOPICS.map((topic) => <button type="button" className="cx-flow-topic" aria-pressed={draft.shiftTopics.includes(topic.value)} key={topic.value} onClick={() => toggleTopic(topic.value)}>{topic.label}</button>)}
+              {SHIFT_TOPICS.map((topic) => <button type="button" className="cx-flow-topic" aria-pressed={activeDraft.shiftTopics.includes(topic.value)} key={topic.value} onClick={() => toggleTopic(topic.value)}>{topic.label}</button>)}
             </div>
-            {draft.shiftTopics.includes('technology-ai') ? (
+            {activeDraft.shiftTopics.includes('technology-ai') ? (
               <label className="cx-field" style={{ marginTop: '1rem' }}>
                 <span>Technology / AI follow-up · optional</span>
-                <textarea className="cx-textarea" maxLength={1800} value={draft.technologyFollowUp} onChange={(e) => setDraft({ ...draft, technologyFollowUp: e.target.value, finalCut: undefined, safety: undefined })} placeholder="Only add this if technology or AI materially changed the work, pressure, learning or expectations." />
+                <textarea className="cx-textarea" maxLength={1800} value={activeDraft.technologyFollowUp} onChange={(event) => setDraft({ ...activeDraft, technologyFollowUp: event.target.value, finalCut: undefined, safety: undefined })} placeholder="Only add this if technology or AI materially changed the work, pressure, learning or expectations." />
               </label>
             ) : null}
           </div>
         ) : null}
 
         <div className="cx-flow-beat-dots" aria-label={`Story Beat ${sceneIndex + 1} of ${SCENES.length}`}>
-          {SCENES.map(([, beatTitle], index) => <span key={beatTitle} data-active={index === sceneIndex ? 'true' : 'false'} data-complete={Boolean(draft.answers[SCENES[index][0]]?.trim()) ? 'true' : 'false'} />)}
+          {SCENES.map(([, beatTitle], index) => <span key={beatTitle} data-active={index === sceneIndex ? 'true' : 'false'} data-complete={Boolean(activeDraft.answers[SCENES[index][0]]?.trim()) ? 'true' : 'false'} />)}
         </div>
-        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={previous}>← Previous</button><button type="button" className="cx-button cx-button--signal" onClick={next}>{sceneIndex === SCENES.length - 1 ? 'Review my story →' : draft.answers[key]?.trim() ? 'Next →' : 'Skip for now →'}</button></div>
+        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={previous}>← Previous</button><button type="button" className="cx-button cx-button--signal" onClick={next}>{sceneIndex === SCENES.length - 1 ? 'Review my story →' : activeDraft.answers[key]?.trim() ? 'Next →' : 'Skip for now →'}</button></div>
       </section>
     </div>
   );
@@ -259,9 +269,8 @@ export function FinalCutStep() {
       router.replace('/submit');
       return;
     }
-    const cut = current.finalCut || buildInitialFinalCut(current);
     setDraft(current);
-    setFinalCut(cut);
+    setFinalCut(current.finalCut || buildInitialFinalCut(current));
   }, [router]);
 
   useEffect(() => {
@@ -269,10 +278,12 @@ export function FinalCutStep() {
   }, [draft, finalCut]);
 
   if (!draft || !finalCut) return <FlowLoading label="Preparing your Final Cut…" />;
+  const activeDraft = draft;
+  const activeCut = finalCut;
 
   function saveAndCheck() {
-    if (finalCut.headline.trim().length < 3 || finalCut.summary.trim().length < 20) return;
-    saveContributionDraft({ ...draft, finalCut, safety: undefined });
+    if (activeCut.headline.trim().length < 3 || activeCut.summary.trim().length < 20) return;
+    saveContributionDraft({ ...activeDraft, finalCut: activeCut, safety: undefined });
     router.push('/submit/safety');
   }
 
@@ -285,25 +296,25 @@ export function FinalCutStep() {
         <p className="cx-lede">Nothing is submitted yet. Edit or remove anything before the safety check.</p>
 
         <div className="cx-flow-summary-grid">
-          <div><span>Ending</span><strong>{draft.ending}</strong></div>
-          <div><span>Company</span><strong>{draft.context.companyName}</strong></div>
-          <div><span>Region</span><strong>{draft.context.broadRegion}</strong></div>
-          <div><span>Role / team</span><strong>{draft.context.broadFunction || 'Not stated'}</strong></div>
+          <div><span>Ending</span><strong>{activeDraft.ending}</strong></div>
+          <div><span>Company</span><strong>{activeDraft.context.companyName}</strong></div>
+          <div><span>Region</span><strong>{activeDraft.context.broadRegion}</strong></div>
+          <div><span>Role / team</span><strong>{activeDraft.context.broadFunction || 'Not stated'}</strong></div>
         </div>
 
-        <label className="cx-field" style={{ marginTop: '1.5rem' }}><span>Headline</span><input className="cx-input" maxLength={160} value={finalCut.headline} onChange={(e) => setFinalCut({ ...finalCut, headline: e.target.value })} /></label>
-        <label className="cx-field" style={{ marginTop: '1rem' }}><span>Short summary</span><textarea className="cx-textarea" style={{ minHeight: '130px' }} maxLength={1200} value={finalCut.summary} onChange={(e) => setFinalCut({ ...finalCut, summary: e.target.value })} /></label>
+        <label className="cx-field" style={{ marginTop: '1.5rem' }}><span>Headline</span><input className="cx-input" maxLength={160} value={activeCut.headline} onChange={(event) => setFinalCut({ ...activeCut, headline: event.target.value })} /></label>
+        <label className="cx-field" style={{ marginTop: '1rem' }}><span>Short summary</span><textarea className="cx-textarea" style={{ minHeight: '130px' }} maxLength={1200} value={activeCut.summary} onChange={(event) => setFinalCut({ ...activeCut, summary: event.target.value })} /></label>
 
         <div className="cx-flow-final-beats">
           {SCENES.map(([beatKey, beatTitle]) => (
             <label className="cx-field cx-flow-final-beat" key={beatKey}>
               <span>{beatTitle}</span>
-              <textarea className="cx-textarea" maxLength={1800} value={finalCut.beats[beatKey] || ''} onChange={(e) => setFinalCut({ ...finalCut, beats: { ...finalCut.beats, [beatKey]: e.target.value } })} placeholder="Leave blank to remove this Story Beat from the Final Cut." />
+              <textarea className="cx-textarea" maxLength={1800} value={activeCut.beats[beatKey] || ''} onChange={(event) => setFinalCut({ ...activeCut, beats: { ...activeCut.beats, [beatKey]: event.target.value } })} placeholder="Leave blank to remove this Story Beat from the Final Cut." />
             </label>
           ))}
-          {draft.shiftTopics.includes('technology-ai') ? <label className="cx-field cx-flow-final-beat"><span>Technology / AI follow-up · optional</span><textarea className="cx-textarea" maxLength={1800} value={finalCut.technologyFollowUp} onChange={(e) => setFinalCut({ ...finalCut, technologyFollowUp: e.target.value })} /></label> : null}
+          {activeDraft.shiftTopics.includes('technology-ai') ? <label className="cx-field cx-flow-final-beat"><span>Technology / AI follow-up · optional</span><textarea className="cx-textarea" maxLength={1800} value={activeCut.technologyFollowUp} onChange={(event) => setFinalCut({ ...activeCut, technologyFollowUp: event.target.value })} /></label> : null}
         </div>
-        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push(`/submit/story?beat=${SCENES.length - 1}`)}>← Back to Story Beats</button><button type="button" className="cx-button cx-button--signal" onClick={saveAndCheck} disabled={finalCut.headline.trim().length < 3 || finalCut.summary.trim().length < 20}>Run safety check →</button></div>
+        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push(`/submit/story?beat=${SCENES.length - 1}`)}>← Back to Story Beats</button><button type="button" className="cx-button cx-button--signal" onClick={saveAndCheck} disabled={activeCut.headline.trim().length < 3 || activeCut.summary.trim().length < 20}>Run safety check →</button></div>
       </section>
     </div>
   );
