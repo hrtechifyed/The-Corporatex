@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -77,7 +77,7 @@ export function SiteHeader() {
     setPendingHref(target);
   }
 
-  function navLink(label: string, href: string, className?: string) {
+  function navLink(label: ReactNode, href: string, className?: string) {
     const current = isCurrent(href);
     const target = normalizedPath(href);
     const pending = pendingHref === target;
@@ -85,7 +85,7 @@ export function SiteHeader() {
     return (
       <Link
         href={href}
-        key={`${label}-${href}`}
+        key={href}
         className={className}
         prefetch
         aria-current={current ? 'page' : undefined}
@@ -118,7 +118,7 @@ export function SiteHeader() {
 
         <nav className="cx-primary-nav" aria-label="Primary navigation">
           {links.map(([label, href]) => navLink(label, href))}
-          {navLink(<><UserIcon /> <span>Sign In</span></> as unknown as string, '/login', 'cx-sign-in')}
+          {navLink(<><UserIcon /><span>Sign In</span></>, '/login', 'cx-sign-in')}
         </nav>
 
         <details className="cx-menu">
