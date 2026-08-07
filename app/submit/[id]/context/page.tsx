@@ -1,6 +1,5 @@
 import { ownedExperience } from '@/lib/auth';
 import { ENDINGS } from '@/lib/endings';
-import { CareerJarvis } from '@/components/career-jarvis';
 import { updateContext } from './actions';
 
 export default async function Context({ params }: { params: Promise<{ id: string }> }) {
@@ -11,13 +10,12 @@ export default async function Context({ params }: { params: Promise<{ id: string
   return (
     <div className="cx-page cx-journey">
       <div className="cx-shell">
-        <div className="cx-journey-head">
+        <div className="cx-journey-head cx-journey-head--solo">
           <div>
             <p className="cx-kicker">Edit the Scene</p>
             <h1 className="cx-title">Change the context, not your identity.</h1>
             <p className="cx-lede">Your saved Story Beats remain exactly where you left them.</p>
           </div>
-          <CareerJarvis compact pose="pointing" dialogue="Adjust the setting here. Your Story Beats are preserved." />
         </div>
 
         <form action={updateContext.bind(null, id)} className="cx-journey-panel">
@@ -39,9 +37,7 @@ export default async function Context({ params }: { params: Promise<{ id: string
             <label className="cx-field"><span>Approximate tenure</span><select className="cx-select" name="approximateTenure" defaultValue={experience.approximate_tenure || '1–2 years'}><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>More than 10 years</option></select></label>
             <label className="cx-field"><span>Work arrangement</span><select className="cx-select" name="workArrangement" defaultValue={experience.work_arrangement || 'Hybrid'}><option>On-site</option><option>Hybrid</option><option>Remote</option></select></label>
           </div>
-          <div className="cx-actions" style={{ justifyContent: 'flex-end' }}>
-            <button className="cx-button cx-button--signal" type="submit">Save and return to Story Beats →</button>
-          </div>
+          <div className="cx-actions" style={{ justifyContent: 'flex-end' }}><button className="cx-button cx-button--signal" type="submit">Save and return to Story Beats →</button></div>
         </form>
       </div>
     </div>
