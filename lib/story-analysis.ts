@@ -8,6 +8,7 @@ type StorySource = {
 };
 
 type GuidedAnswer = {
+  key: string;
   answer: string;
   sortOrder: number;
 };
@@ -68,12 +69,10 @@ function collectStrings(value: unknown, output: string[]): void {
     if (normalized) output.push(normalized);
     return;
   }
-
   if (Array.isArray(value)) {
     value.forEach((item) => collectStrings(item, output));
     return;
   }
-
   if (value && typeof value === 'object') {
     Object.values(value as Record<string, unknown>).forEach((item) => collectStrings(item, output));
   }
@@ -89,7 +88,9 @@ function guidedAnswers(value: unknown): GuidedAnswer[] {
       const answer = typeof row.answer === 'string' ? normalize(row.answer) : '';
       const rawOrder = row.sort_order ?? row.sortOrder;
       const sortOrder = typeof rawOrder === 'number' && Number.isFinite(rawOrder) ? rawOrder : index;
-      return answer ? { answer, sortOrder } : null;
+      const rawKey = row.question_key ?? row.questionKey;
+      const key = typeof rawKey === 'string' ? rawKey : `beat_${index}`;
+      return answer ? { key, answer, sortOrder } : null;
     })
     .filter((item): item is GuidedAnswer => item !== null)
     .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -103,20 +104,15 @@ function broadFunction(context: unknown): string {
 
 function identifyingIndicators(text: string): string[] {
   const indicators: string[] = [];
-  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(text)) {
-    indicators.push('Possible email address');
-  }
-  if (/(?:\+?\d[\d\s().-]{7,}\d)/.test(text)) {
-    indicators.push('Possible phone number');
-  }
-  if (/\b(?:https?:\/\/|www\.)\S+/i.test(text)) {
-    indicators.push('Possible web address');
-  }
+  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(text)) indicators.push('Possible email address');
+  if (/(?:\+?\d[\d\s().-]{7,}\d)/.test(text)) indicators.push('Possible phone number');
+  if (/\b(?:https?:\/\/|www\.)\S+/i.test(text)) indicators.push('Possible web address');
   return indicators;
 }
 
 export async function analyseStory(source: StorySource) {
   const answers = guidedAnswers(source.guided);
+  const byKey = new Map(answers.map((item) => [item.key, item.answer]));
   const collected: string[] = [];
   collectStrings(source.context, collected);
   collectStrings(source.guided, collected);
@@ -134,29 +130,31 @@ export async function analyseStory(source: StorySource) {
     source.freeText || answers.map(({ answer }) => answer).join(' ') || 'A contributor-described workplace experience.',
     1200,
   );
+  const shift = byKey.get('shift') || '';
+  const technologyFollowUp = byKey.get('shift_technology_followup') || '';
+  const shiftWithOptionalTechnology = [shift, technologyFollowUp].filter(Boolean).join('\n\n');
+  const lesson = byKey.get('lesson') || '';
 
   return analysisSchema.parse({
-    suggestedHeadline: role
-      ? truncate(`A ${role} workplace experience`, 160)
-      : 'A workplace experience worth examining',
+    suggestedHeadline: role ? truncate(`A ${role} workplace experience`, 160) : 'A workplace experience worth examining',
     shortSummary: summary,
-    openingPromise: truncate(answers[0]?.answer || '', 12000),
-    realityCheck: truncate(answers[1]?.answer || '', 12000),
-    firstPlotTwist: truncate(answers[3]?.answer || '', 12000),
-    recurringConflict: truncate(answers[6]?.answer || '', 12000),
+    openingPromise: truncate(byKey.get('beginning') || answers[0]?.answer || '', 12000),
+    realityCheck: truncate(byKey.get('promise') || answers[1]?.answer || '', 12000),
+    firstPlotTwist: truncate(shiftWithOptionalTechnology || answers[3]?.answer || '', 12000),
+    recurringConflict: '',
     managementArc: '',
     leadershipArc: '',
     workloadAndBoundaries: '',
     growthAndPromotion: '',
     payAndBenefits: '',
     teamAndCulture: '',
-    positiveMoments: truncate(answers[2]?.answer || '', 12000),
-    finalTrigger: truncate(answers[4]?.answer || '', 12000),
+    positiveMoments: truncate(byKey.get('good_part') || answers[2]?.answer || '', 12000),
+    finalTrigger: truncate(byKey.get('tipping_point') || answers[4]?.answer || '', 12000),
     warningSigns: [],
-    whoMayThrive: truncate(answers[7]?.answer || '', 12000),
+    whoMayThrive: truncate(byKey.get('who_thrives') || '', 12000),
     whoMayStruggle: '',
-    candidateQuestions: answers[5]?.answer ? [truncate(answers[5].answer, 300)] : [],
-    wouldReturn: '',
+    candidateQuestions: lesson ? [truncate(lesson, 300)] : [],
+    wouldReturn: truncate(byKey.get('looking_back') || '', 1200),
     suggestedLabels,
     possibleIdentifyingDetails: identifyingIndicators(storyText),
     possibleAbusiveContent: matchedSafetyRules.map(({ label }) => label),
