@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { ownedExperience } from '@/lib/auth';
 import { ReviewEditor } from '@/components/review-editor';
 import { analysisSchema } from '@/lib/schemas';
-import { CareerJarvis } from '@/components/career-jarvis';
 import { endingFor } from '@/lib/endings';
 
 export default async function Review({ params }: { params: Promise<{ id: string }> }) {
@@ -23,7 +22,7 @@ export default async function Review({ params }: { params: Promise<{ id: string 
   return (
     <div className="cx-page cx-journey">
       <div className="cx-shell">
-        <div className="cx-journey-head">
+        <div className="cx-journey-head cx-journey-head--solo">
           <div>
             <p className="cx-kicker">The Final Cut · Private</p>
             <h1 className="cx-title">Read it as someone else will.</h1>
@@ -35,16 +34,8 @@ export default async function Review({ params }: { params: Promise<{ id: string 
               <li aria-current="step"><span>4</span>Final Cut</li>
             </ol>
           </div>
-          <CareerJarvis
-            compact
-            pose="acknowledging"
-            tone={ending.slug}
-            dialogue="Your meaning stays yours. Keep what helps someone understand and remove anything that identifies a person."
-          />
         </div>
-        {parsed.seriousTopic ? (
-          <aside className="cx-journey-panel cx-note">Sensitive material was detected. Review the neutral wording and identity details with particular care.</aside>
-        ) : null}
+        {parsed.seriousTopic ? <aside className="cx-journey-panel cx-note">Sensitive material was detected. Review the neutral wording and identity details with particular care.</aside> : null}
         <ReviewEditor id={id} original={original} initial={parsed} ending={ending.title} />
       </div>
     </div>
