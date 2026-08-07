@@ -8,6 +8,8 @@ import { analyseStory } from '@/lib/story-analysis';
 import { HIGHLIGHT_FIELDS } from '@/lib/review';
 import { SCENES } from '@/lib/types';
 
+type GuidedRow = { question_key: string; answer: string; sort_order: number };
+
 export async function POST(req: Request) {
   let createdExperienceId: string | null = null;
   const admin = createAdminClient();
@@ -19,7 +21,7 @@ export async function POST(req: Request) {
     if (userError || !user) return NextResponse.json({ error: 'Verify your email before submitting.' }, { status: 401 });
     if (!user.email) return NextResponse.json({ error: 'A verified email address is required.' }, { status: 422 });
 
-    const guided = SCENES.flatMap(([key], index) => {
+    const guided: GuidedRow[] = SCENES.flatMap(([key], index) => {
       const answer = String(input.finalCut.beats[key] || '').trim();
       return answer ? [{ question_key: key, answer, sort_order: index * 10 }] : [];
     });
@@ -44,17 +46,27 @@ export async function POST(req: Request) {
       .maybeSingle();
     if (profileReadError) throw profileReadError;
 
-    if (!existingProfile) {
-      const hrtId = await allocateHrtId(async (candidate) => {
-        const { data } = await admin.from('profiles').select('id').eq('hrt_id', candidate).maybeSingle();
-        return Boolean(data);
-      }, 12);
-      const { error: profileInsertError } = await admin.from('profiles').insert({
-        id: user.id,
-        hrt_id: hrtId,
-        private_email: user.email,
-      });
-      if (profileInsertError && profileInsertError.code !== '23505') throw profileInsertError;
+    let profileReady = Boolean(existingProfile);
+    if (!profileReady) {
+      for (let attempt = 0; attempt < 12 && !profileReady; attempt += 1) {
+        const hrtId = await allocateHrtId(async (candidate) => {
+          const { data } = await admin.from('profiles').select('id').eq('hrt_id', candidate).maybeSingle();
+          return Boolean(data);
+        }, 12);
+        const insertedProfile = await admin.from('profiles').insert({
+          id: user.id,
+          hrt_id: hrtId,
+          private_email: user.email,
+        });
+        if (!insertedProfile.error) {
+          profileReady = true;
+          break;
+        }
+        if (insertedProfile.error.code !== '23505') throw insertedProfile.error;
+        const { data: racedProfile } = await admin.from('profiles').select('id').eq('id', user.id).maybeSingle();
+        profileReady = Boolean(racedProfile);
+      }
+      if (!profileReady) throw new Error('Unable to create a private CorporateX profile.');
     } else {
       const { error: profileUpdateError } = await admin.from('profiles').update({ private_email: user.email }).eq('id', user.id);
       if (profileUpdateError) throw profileUpdateError;
@@ -84,9 +96,10 @@ export async function POST(req: Request) {
         }).select('id').single();
         created = retry;
       }
-      if (created.error) throw created.error;
+      if (created.error || !created.data) throw created.error || new Error('Unable to create company record.');
       company = created.data;
     }
+    if (!company) throw new Error('Unable to resolve company record.');
 
     const inserted = await admin.from('experiences').insert({
       profile_id: user.id,
@@ -102,7 +115,7 @@ export async function POST(req: Request) {
       approved_headline: input.finalCut.headline,
       approved_summary: input.finalCut.summary,
     }).select('id').single();
-    if (inserted.error) throw inserted.error;
+    if (inserted.error || !inserted.data) throw inserted.error || new Error('Unable to create story record.');
     createdExperienceId = inserted.data.id;
 
     if (guided.length) {
