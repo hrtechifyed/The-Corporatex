@@ -1,0 +1,8 @@
+:root {
+  --cx-frozen-hero: url('/frozen-assets/hero');
+  --cx-frozen-card-1: url('/frozen-assets/card-1');
+  --cx-frozen-card-2: url('/frozen-assets/card-2');
+  --cx-frozen-card-3: url('/frozen-assets/card-3');
+  --cx-frozen-card-4: url('/frozen-assets/card-4');
+  --cx-frozen-card-5: url('/frozen-assets/card-5');
+}
