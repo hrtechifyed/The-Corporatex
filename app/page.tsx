@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { CareerJarvis } from '@/components/career-jarvis';
 import { createClient } from '@/lib/supabase/server';
 import { ENDINGS, endingFor } from '@/lib/endings';
 
@@ -40,8 +39,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
   return (
     <div className="cx-page">
       {receipt ? (
-        <section className="cx-shell cx-submission-receipt" role="status" aria-live="polite">
-          <CareerJarvis compact pose={receipt.status === 'published' ? 'releasing' : 'protecting'} dialogue={receipt.status === 'published' ? 'Your signal is live in the archive.' : 'Your signal is safe and has entered the review path.'} />
+        <section className="cx-shell cx-submission-receipt" style={{ gridTemplateColumns: '1fr' }} role="status" aria-live="polite">
           <div>
             <p className="cx-kicker">Journey complete</p>
             <h2>{receipt.status === 'published' ? 'Your signal is visible.' : 'Your story is safely submitted.'}</h2>
@@ -67,9 +65,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
               <li><b>⌁</b> Safety screen, not opinion control</li>
             </ul>
           </div>
-          <div className="cx-hero-visual">
-            <span className="cx-signal-path" aria-hidden="true" />
-            <CareerJarvis pose="releasing" dialogue="I’m CareerJarvis. I’ll help turn your experience into a signal someone else can use." />
+          <div className="cx-hero-visual cx-signal-visual" aria-hidden="true">
+            <span className="cx-signal-visual__ring cx-signal-visual__ring--one" />
+            <span className="cx-signal-visual__ring cx-signal-visual__ring--two" />
+            <span className="cx-signal-visual__core" />
+            <span className="cx-signal-visual__trail" />
+            <span className="cx-signal-path" />
           </div>
         </div>
       </section>
@@ -136,7 +137,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         <div className="cx-shell cx-journey-panel">
           <div className="cx-section-heading">
             <div><p className="cx-kicker">Pass it forward</p><h2 className="cx-title">Your ending could improve someone else’s beginning.</h2></div>
-            <Link className="cx-button cx-button--signal" href="/submit">Begin with CareerJarvis →</Link>
+            <Link className="cx-button cx-button--signal" href="/submit">Begin with the Signal →</Link>
           </div>
         </div>
       </section>
