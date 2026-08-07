@@ -5,6 +5,7 @@ import './corporatex-overrides.css';
 import './corporatex-performance.css';
 import './contributor-journey.css';
 import './signal-visual.css';
+import './character-cleanup.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 
