@@ -129,7 +129,7 @@ test.describe('Contribution journey', () => {
     await page.getByLabel(/Company · required/i).fill('Northstar Technologies');
     await page.getByLabel(/Location · required/i).fill('not-a-place');
     await page.getByRole('button', { name: 'Next →' }).click();
-    await expect(page.getByRole('alert')).toContainText('could not verify');
+    await expect(page.locator('.cx-flow-error[role="alert"]')).toContainText('could not verify');
     await expect(page).toHaveURL(/\/submit\/scene$/);
   });
 
