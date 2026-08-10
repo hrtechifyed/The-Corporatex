@@ -1,0 +1,174 @@
+/* Homepage ending cards — image-first editorial treatment matching the Archive forming cards. */
+
+.cx-ending-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(.85rem, 1.25vw, 1.2rem) !important;
+  align-items: stretch !important;
+}
+
+.cx-ending-grid .cx-ending-card {
+  --ending-accent: #e9a33a;
+  position: relative !important;
+  min-width: 0 !important;
+  min-height: 410px !important;
+  display: grid !important;
+  grid-template-rows: minmax(215px, 56%) minmax(165px, 44%) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--ending-accent) 30%, #343638) !important;
+  border-radius: 24px !important;
+  color: inherit !important;
+  background: #090a0b !important;
+  box-shadow: 0 22px 54px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.035) !important;
+  text-decoration: none !important;
+  isolation: isolate;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease !important;
+}
+
+.cx-ending-grid .cx-ending-card[data-ending="break-free"] { --ending-accent: #e9a33a; }
+.cx-ending-grid .cx-ending-card[data-ending="next-act"] { --ending-accent: #79aef6; }
+.cx-ending-grid .cx-ending-card[data-ending="mixed-ending"] { --ending-accent: #9b7bea; }
+.cx-ending-grid .cx-ending-card[data-ending="pass-the-torch"] { --ending-accent: #68d1bd; }
+
+/* The old abstract sun/door/person composition is replaced by a contextual workplace image. */
+.cx-ending-grid .cx-ending-card__scene {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-position: center !important;
+  background-size: cover !important;
+  filter: saturate(.92) contrast(1.035) brightness(.9);
+  transform: none !important;
+}
+
+.cx-ending-grid .cx-ending-card__scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(5,6,8,.02) 48%, rgba(5,6,8,.82) 100%),
+    linear-gradient(90deg, color-mix(in srgb, var(--ending-accent) 7%, transparent), transparent 46%);
+}
+
+.cx-ending-grid .cx-ending-card[data-ending="break-free"] .cx-ending-card__scene {
+  background-image: url('/frozen-assets/card-1.webp') !important;
+  background-position: center 46% !important;
+}
+.cx-ending-grid .cx-ending-card[data-ending="next-act"] .cx-ending-card__scene {
+  background-image: url('/frozen-assets/card-2.webp') !important;
+  background-position: center 45% !important;
+}
+.cx-ending-grid .cx-ending-card[data-ending="mixed-ending"] .cx-ending-card__scene {
+  background-image: url('/frozen-assets/card-3.webp') !important;
+  background-position: center 43% !important;
+}
+.cx-ending-grid .cx-ending-card[data-ending="pass-the-torch"] .cx-ending-card__scene {
+  background-image: url('/frozen-assets/card-5.webp') !important;
+  background-position: center 42% !important;
+}
+
+.cx-ending-grid .cx-ending-card__sun,
+.cx-ending-grid .cx-ending-card__door,
+.cx-ending-grid .cx-ending-card__person {
+  display: none !important;
+}
+
+.cx-ending-grid .cx-ending-card__copy {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  padding: 1.1rem 1.15rem 1.2rem !important;
+  background:
+    radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--ending-accent) 8%, transparent), transparent 42%),
+    linear-gradient(180deg, #101113 0%, #090a0b 72%) !important;
+  text-align: left !important;
+  transform: none !important;
+}
+
+.cx-ending-grid .cx-ending-card__copy > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 24px !important;
+  margin: 0 0 .65rem !important;
+  padding: .24rem .48rem !important;
+  border: 1px solid color-mix(in srgb, var(--ending-accent) 28%, transparent) !important;
+  border-radius: 7px !important;
+  color: var(--ending-accent) !important;
+  background: color-mix(in srgb, var(--ending-accent) 8%, transparent) !important;
+  font-size: .59rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: .16em !important;
+  text-transform: uppercase !important;
+}
+
+.cx-ending-grid .cx-ending-card__copy h3 {
+  margin: 0 !important;
+  color: #fff8ed !important;
+  font-size: clamp(1.35rem, 1.7vw, 1.8rem) !important;
+  line-height: 1.07 !important;
+  letter-spacing: -.035em !important;
+}
+
+.cx-ending-grid .cx-ending-card__copy p {
+  display: -webkit-box !important;
+  margin: .6rem 0 0 !important;
+  overflow: hidden !important;
+  color: #aaa5a1 !important;
+  font-size: .8rem !important;
+  line-height: 1.5 !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+.cx-ending-grid .cx-ending-card:hover,
+.cx-ending-grid .cx-ending-card:focus-visible {
+  transform: translateY(-5px) !important;
+  border-color: color-mix(in srgb, var(--ending-accent) 66%, #343638) !important;
+  box-shadow: 0 30px 68px rgba(0,0,0,.42), 0 0 30px color-mix(in srgb, var(--ending-accent) 10%, transparent) !important;
+}
+
+.cx-ending-grid .cx-ending-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ending-accent) 70%, white) !important;
+  outline-offset: 4px !important;
+}
+
+@media (max-width: 1100px) {
+  .cx-ending-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+  .cx-ending-grid .cx-ending-card { min-height: 430px !important; grid-template-rows: minmax(235px, 57%) minmax(165px, 43%) !important; }
+}
+
+@media (max-width: 620px) {
+  .cx-ending-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: .8rem !important;
+    padding: .2rem 2px .75rem !important;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .cx-ending-grid::-webkit-scrollbar { display: none; }
+  .cx-ending-grid .cx-ending-card {
+    flex: 0 0 min(84vw, 330px) !important;
+    min-height: 405px !important;
+    grid-template-rows: 220px 1fr !important;
+    scroll-snap-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-ending-grid .cx-ending-card { transition: none !important; }
+}
