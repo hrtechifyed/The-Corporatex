@@ -1,5 +1,5 @@
-import { SceneStep } from '@/components/contributor-journey';
+import { ValidatedSceneStep } from '@/components/validated-scene-step';
 
 export default function SetTheScenePage() {
-  return <SceneStep />;
+  return <ValidatedSceneStep />;
 }

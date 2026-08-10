@@ -1,4 +1,14 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function mockValidPlace(page: Page) {
+  await page.route('**/api/location/validate?**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ valid: true, matchedName: 'Bengaluru, Karnataka, India' }),
+    });
+  });
+}
 
 test.describe('Frozen homepage', () => {
   test('renders the approved anime-elegant composition with real interactive controls', async ({ page }) => {
@@ -15,6 +25,8 @@ test.describe('Frozen homepage', () => {
     await expect(page.locator('.site-header')).toHaveAttribute('data-home', 'true');
     await expect(page.locator('.cx-brand').first()).toContainText('HRTechify');
     await expect(page.locator('.cx-brand').first()).toContainText('CorporateX');
+    await expect(page.locator('#live-signals')).toBeVisible();
+    await expect(page.getByText('Live · pending content validation')).toBeVisible();
   });
 
   test('serves the frozen artwork as cached WebP resources', async ({ request }) => {
@@ -46,6 +58,8 @@ test.describe('Global frozen design system', () => {
       await expect(footer.locator('.cx-brand')).toContainText('HRTechify');
       await expect(footer.locator('.cx-brand')).toContainText('CorporateX');
       await expect(footer.getByRole('link', { name: 'Privacy & Safety' })).toBeVisible();
+      await expect(footer.locator('.cx-footer-bottom span').first()).toContainText('CorporateX — Powered by HRTechify · People · Technology · Growth');
+      await expect(footer.locator('.cx-footer-bottom span').nth(1)).toContainText('© 2026 All Rights Reserved. Stories are contributor perspectives');
     });
   }
 
@@ -55,6 +69,16 @@ test.describe('Global frozen design system', () => {
       await expect(page.locator('.cx-frozen-mini-art')).toBeVisible();
       await expect(page.locator('.cx-signal-visual')).toHaveCount(0);
     }
+  });
+
+  test('About is animated and scroll-free on desktop', async ({ page }) => {
+    await page.goto('/about');
+    await expect(page.getByRole('heading', { name: /Workplace truth has a timeline/i })).toBeVisible();
+    await expect(page.locator('.cx-about-thread')).toBeVisible();
+    await expect(page.locator('.cx-about-sequence li')).toHaveCount(4);
+    const overflow = await page.evaluate(() => getComputedStyle(document.body).overflow);
+    expect(overflow).toBe('hidden');
+    await expect(page.locator('.site-footer')).toBeVisible();
   });
 });
 
@@ -73,6 +97,7 @@ test.describe('Contribution journey', () => {
   });
 
   test('Set the Scene leads into linear Story Beats and AI appears only when chosen', async ({ page }) => {
+    await mockValidPlace(page);
     await page.goto('/submit');
     await page.getByRole('radio', { name: /Mixed Ending/i }).click();
     await expect(page).toHaveURL(/\/submit\/scene$/);
@@ -95,11 +120,25 @@ test.describe('Contribution journey', () => {
     await expect(page.getByText(/Technology \/ AI follow-up · optional/i)).toBeVisible();
   });
 
+  test('Set the Scene blocks a location that cannot be verified', async ({ page }) => {
+    await page.route('**/api/location/validate?**', async (route) => {
+      await route.fulfill({ status: 422, contentType: 'application/json', body: JSON.stringify({ valid: false, error: 'We could not verify that location. Use a city, region or country.' }) });
+    });
+    await page.goto('/submit');
+    await page.getByRole('radio', { name: /Break Free/i }).click();
+    await page.getByLabel(/Company · required/i).fill('Northstar Technologies');
+    await page.getByLabel(/Location · required/i).fill('not-a-place');
+    await page.getByRole('button', { name: 'Next →' }).click();
+    await expect(page.locator('.cx-flow-error[role="alert"]')).toContainText('could not verify');
+    await expect(page).toHaveURL(/\/submit\/scene$/);
+  });
+
   test('Final Cut and Safety happen before the verification gate', async ({ page }) => {
+    await mockValidPlace(page);
     await page.goto('/submit');
     await page.getByRole('radio', { name: /Next Act/i }).click();
     await page.getByLabel(/Company · required/i).fill('Northstar Technologies');
-    await page.getByLabel(/Location · required/i).fill('Remote — India');
+    await page.getByLabel(/Location · required/i).fill('Bengaluru, India');
     await page.getByRole('button', { name: 'Next →' }).click();
 
     for (let beat = 0; beat < 7; beat += 1) {
