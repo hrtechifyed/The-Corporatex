@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
-async function mockValidPlace(page: Parameters<Parameters<typeof test>[1]>[0]['page']) {
+async function mockValidPlace(page: Page) {
   await page.route('**/api/location/validate?**', async (route) => {
     await route.fulfill({
       status: 200,
