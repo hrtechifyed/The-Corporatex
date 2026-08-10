@@ -36,10 +36,14 @@ function weightFor(count: number) {
 
 export async function LiveSignalCloud() {
   const publicClient = await createClient();
-  const { data: publicLabels } = await publicClient
-    .from('experience_labels')
-    .select('experience_id,label')
+  const { data: publishedExperiences } = await publicClient
+    .from('published_experiences')
+    .select('id')
     .limit(1200);
+  const publishedIds = (publishedExperiences || []).map((row) => String(row.id)).filter(Boolean);
+  const publicLabels = publishedIds.length
+    ? (await publicClient.from('experience_labels').select('experience_id,label').in('experience_id', publishedIds).limit(1600)).data
+    : [];
 
   const publishedByLabel = new Map<string, Set<string>>();
   for (const row of publicLabels || []) {
