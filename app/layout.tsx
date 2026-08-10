@@ -11,6 +11,7 @@ import './frozen-assets.css';
 import './frozen-global.css';
 import './story-beat-navigation.css';
 import './product-polish.css';
+import './about-deck.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 
