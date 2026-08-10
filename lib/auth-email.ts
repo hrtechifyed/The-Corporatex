@@ -79,18 +79,31 @@ function buildRawEmail(input: {
 function copyForPurpose(purpose: CorporateXAuthPurpose) {
   return purpose === 'submission'
     ? {
-        subject: 'Verify your email to submit your CorporateX story',
+        subject: 'Thank you for sharing your story — one last step',
+        preheader: 'Your experience deserves to be heard. Verify your email to safely submit your CorporateX story.',
         eyebrow: 'CorporateX story verification',
-        heading: 'One last step before submission',
-        intro: 'Your story is ready. Verify this email address to save it and send it into the private CorporateX review path.',
-        button: 'Verify email & submit story',
+        heading: 'Thank you for trusting us with your story.',
+        paragraphs: [
+          'You took the time to reflect on what was promised, what worked, what changed, and what you learned along the way. That experience matters.',
+          'CorporateX exists because workplace decisions are rarely understood through a score alone. They become clearer when people can share what actually happened — in their own words.',
+          'Your perspective can help someone else ask a better question, notice an important signal, or make a more informed career decision.',
+          'Before we can safely submit your story, we need to verify that this email belongs to you.',
+        ],
+        button: 'Verify my email & submit my story',
+        afterButton: 'Once verified, your contribution will enter CorporateX’s private review process. It will not be published automatically.',
+        privacy: 'Your email address remains private and is used only to securely associate the contribution with your account. It will never appear on the public story.',
+        closing: 'Thank you for adding your voice. You were there. Your experience counts. And your story deserves more than a rating.',
       }
     : {
         subject: 'Your CorporateX sign-in link',
+        preheader: 'Use your one-time private link to return to CorporateX.',
         eyebrow: 'CorporateX private sign-in',
         heading: 'Continue to your private CorporateX account',
-        intro: 'Use this one-time link to sign in without a password.',
+        paragraphs: ['Use this one-time link to sign in without a password.'],
         button: 'Sign in to CorporateX',
+        afterButton: '',
+        privacy: '',
+        closing: '',
       };
 }
 
@@ -132,23 +145,45 @@ export async function sendCorporateXAuthEmail(input: {
   const text = [
     copy.heading,
     '',
-    copy.intro,
-    '',
+    ...copy.paragraphs.flatMap((paragraph) => [paragraph, '']),
+    copy.button,
     verificationUrl.toString(),
     '',
+    copy.afterButton,
+    copy.afterButton ? '' : null,
+    copy.privacy,
+    copy.privacy ? '' : null,
+    copy.closing,
+    copy.closing ? '' : null,
+    '— CorporateX by HRTechify',
+    'People · Technology · Growth',
+    '',
     'This link is private and one-time use. If you did not request it, you can ignore this email.',
-  ].join('\n');
+  ].filter((line): line is string => line !== null && line !== '').join('\n');
+
+  const paragraphHtml = copy.paragraphs
+    .map((paragraph) => `<p style="margin:0 0 18px;color:#d2ccc3;font-size:15px;line-height:1.75;">${escapeHtml(paragraph)}</p>`)
+    .join('');
+
   const html = `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:24px;background:#050608;color:#fffaf0;font-family:Arial,Helvetica,sans-serif;">
+    <span style="display:none!important;visibility:hidden;opacity:0;color:transparent;height:0;width:0;overflow:hidden;">${escapeHtml(copy.preheader)}</span>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#0d0e10;border:1px solid rgba(246,200,79,.28);border-radius:20px;overflow:hidden;">
       <tr><td style="height:6px;background:linear-gradient(90deg,#d8872d,#f6c84f,#ffd761);"></td></tr>
       <tr><td style="padding:34px;">
         <p style="margin:0 0 10px;color:#f6c84f;font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;">${escapeHtml(copy.eyebrow)}</p>
-        <h1 style="margin:0 0 18px;font-size:27px;line-height:1.25;color:#fffaf0;">${escapeHtml(copy.heading)}</h1>
-        <p style="margin:0 0 24px;color:#bdb7b0;font-size:15px;line-height:1.7;">${escapeHtml(copy.intro)}</p>
-        <p style="margin:0 0 24px;"><a href="${escapeHtml(verificationUrl.toString())}" style="display:inline-block;padding:13px 20px;border-radius:12px;background:#f6c84f;color:#17120a;text-decoration:none;font-weight:800;">${escapeHtml(copy.button)} →</a></p>
-        <p style="margin:0;color:#77716d;font-size:12px;line-height:1.6;">This link is private and one-time use. If you did not request it, you can ignore this email.</p>
+        <h1 style="margin:0 0 20px;font-size:28px;line-height:1.25;color:#fffaf0;">${escapeHtml(copy.heading)}</h1>
+        ${paragraphHtml}
+        <p style="margin:6px 0 26px;"><a href="${escapeHtml(verificationUrl.toString())}" style="display:inline-block;padding:14px 20px;border-radius:12px;background:#f6c84f;color:#17120a;text-decoration:none;font-weight:800;">${escapeHtml(copy.button)} →</a></p>
+        ${copy.afterButton ? `<p style="margin:0 0 16px;color:#e3ddd4;font-size:14px;line-height:1.7;">${escapeHtml(copy.afterButton)}</p>` : ''}
+        ${copy.privacy ? `<p style="margin:0 0 22px;color:#aaa39b;font-size:13px;line-height:1.7;">${escapeHtml(copy.privacy)}</p>` : ''}
+        ${copy.closing ? `<div style="margin:26px 0 0;padding:20px;border-left:3px solid #f6c84f;background:rgba(246,200,79,.05);"><p style="margin:0;color:#fffaf0;font-size:15px;line-height:1.75;font-weight:700;">${escapeHtml(copy.closing)}</p></div>` : ''}
+        <div style="margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.08);">
+          <p style="margin:0 0 4px;color:#fffaf0;font-size:14px;font-weight:800;">CorporateX <span style="color:#f6c84f;">by HRTechify</span></p>
+          <p style="margin:0 0 18px;color:#8e877f;font-size:12px;letter-spacing:.04em;">People · Technology · Growth</p>
+          <p style="margin:0;color:#77716d;font-size:12px;line-height:1.6;">This link is private and one-time use. If you did not request it, you can ignore this email.</p>
+        </div>
       </td></tr>
     </table>
   </body>
