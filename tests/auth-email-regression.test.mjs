@@ -16,11 +16,22 @@ test('user auth emails are sent through the HRTechify Gmail transport with Corpo
   assert.match(authEmail, /GMAIL_USER/);
   assert.match(authEmail, /google\.gmail\(\{ version: 'v1'/);
   assert.match(authEmail, /HRTechify · CorporateX/);
-  assert.match(authEmail, /Verify your email to submit your CorporateX story/);
+  assert.match(authEmail, /Thank you for sharing your story — one last step/);
   assert.match(authEmail, /Your CorporateX sign-in link/);
   assert.match(authEmail, /auth\.admin\.generateLink/);
   assert.match(authEmail, /hashed_token/);
   assert.match(authEmail, /new URL\('\/auth\/confirm'/);
+});
+
+test('submission verification email thanks contributors and makes the privacy/review promise explicit', () => {
+  assert.match(authEmail, /Thank you for trusting us with your story\./);
+  assert.match(authEmail, /That experience matters\./);
+  assert.match(authEmail, /Your perspective can help someone else ask a better question/);
+  assert.match(authEmail, /Verify my email & submit my story/);
+  assert.match(authEmail, /It will not be published automatically\./);
+  assert.match(authEmail, /It will never appear on the public story\./);
+  assert.match(authEmail, /You were there\. Your experience counts\. And your story deserves more than a rating\./);
+  assert.match(authEmail, /People · Technology · Growth/);
 });
 
 test('verification links no longer depend on a localhost or Supabase email redirect', () => {
