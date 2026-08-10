@@ -20,12 +20,13 @@ export default async function VerifySubmission({ searchParams }: { searchParams:
         {q.sent ? (
           <div className="cx-flow-status cx-flow-status--success" role="status">
             <strong>Check your inbox.</strong>
-            <p>Open the CorporateX confirmation link in this browser. After verification, the story will be saved and sent into the private review path.</p>
+            <p>The verification email is sent by HRTechify · CorporateX. Open the CorporateX link in this browser; after verification, the story will be saved and sent into the private review path.</p>
             <p className="cx-note">Do not clear site data before opening the link; your unfinished contribution is still stored only in this browser.</p>
           </div>
         ) : (
           <form action={requestSubmissionLink} className="cx-flow-verify-form">
             <label className="cx-field"><span>Email address</span><input className="cx-input" required type="email" name="email" autoComplete="email" /></label>
+            <p className="cx-note">The one-time verification email will come from the HRTechify mailbox with CorporateX branding.</p>
             {q.error ? <p className="cx-flow-error" role="alert">{q.error}</p> : null}
             <div className="cx-flow-actions"><a className="cx-button cx-button--ghost" href="/submit/final-cut">← Back to Final Cut</a><button className="cx-button cx-button--signal" type="submit">Email my confirmation link →</button></div>
           </form>
