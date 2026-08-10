@@ -114,7 +114,9 @@ test('the contribution stays pre-auth until Final Cut and Safety are complete', 
   assert.match(safetyRoute, /contributionSubmissionSchema/);
   assert.match(safetyRoute, /analyseStory/);
   assert.doesNotMatch(safetyRoute, /requireProfile|auth\.getUser/);
-  assert.match(verifyAction, /emailRedirectTo: `\$\{origin\}\/auth\/callback\?next=\$\{encodeURIComponent\('\/submit\/finish'\)\}`/);
+  assert.match(verifyAction, /sendCorporateXAuthEmail/);
+  assert.match(verifyAction, /purpose: 'submission'/);
+  assert.doesNotMatch(verifyAction, /signInWithOtp|emailRedirectTo/);
 });
 
 test('verified finalization creates the database record only after authentication and keeps moderation private', () => {
