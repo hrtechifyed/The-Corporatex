@@ -15,7 +15,7 @@ export function SiteFooter() {
         <nav className="cx-footer-nav" aria-label="Footer navigation">
           <Link href="/browse">Stories</Link>
           <Link href="/more#how-it-works">How It Works</Link>
-          <Link href="/more">About</Link>
+          <Link href="/about">About</Link>
           <Link href="/submit">Share Your Story</Link>
           <Link href="/privacy">Privacy &amp; Safety</Link>
           <Link href="/terms">Terms</Link>
@@ -23,7 +23,7 @@ export function SiteFooter() {
         </nav>
         <div className="cx-footer-bottom">
           <span>CorporateX — Powered by HRTechify · People · Technology · Growth</span>
-          <span>© 2026 All Rights Reserved. Stories are contributor perspectives.</span>
+          <span>© 2026 All Rights Reserved. Stories are contributor perspectives</span>
         </div>
       </div>
     </footer>
