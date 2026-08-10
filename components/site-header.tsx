@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 const primaryLinks = [
+  ['Home', '/'],
   ['Stories', '/browse'],
   ['How It Works', '/more#how-it-works'],
   ['About', '/about'],
