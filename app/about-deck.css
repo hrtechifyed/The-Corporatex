@@ -1,0 +1,379 @@
+/* About v2 — single-screen homepage-like swipe deck. Loaded after product-polish.css. */
+.cx-about-page--deck {
+  height: calc(100svh - 82px - 64px);
+  min-height: 0;
+  padding: clamp(.8rem, 1.7vh, 1.35rem) max(24px, calc((100vw - 1510px) / 2));
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(216,135,45,.14), transparent 28rem),
+    radial-gradient(circle at 58% 82%, rgba(246,200,79,.045), transparent 25rem),
+    linear-gradient(135deg, #040506 0%, #070809 52%, #050608 100%);
+}
+
+.cx-about-stage--deck {
+  width: 100%;
+  max-width: 1510px;
+  height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(390px, .86fr) minmax(520px, 1.14fr);
+  align-items: center;
+  gap: clamp(2rem, 4.5vw, 5.8rem);
+}
+
+.cx-about-page--deck .cx-about-copy {
+  align-self: center;
+  max-width: 650px;
+}
+.cx-about-page--deck .cx-about-title {
+  max-width: 640px;
+  margin: .6rem 0 .9rem;
+  font-size: clamp(3.3rem, 5.6vw, 6.15rem);
+  line-height: .9;
+  letter-spacing: -.065em;
+  text-wrap: balance;
+}
+.cx-about-page--deck .cx-about-lede {
+  max-width: 610px;
+  font-size: clamp(.92rem, 1.15vw, 1.08rem);
+  line-height: 1.62;
+}
+.cx-about-page--deck .cx-about-actions { margin-top: 1.25rem; }
+.cx-about-microcopy {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  margin: 1rem 0 0;
+  color: #756f6b;
+  font-size: .68rem;
+  font-weight: 720;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.cx-about-microcopy span { color: var(--cx-signal); }
+
+.cx-about-deck-visual {
+  position: relative;
+  min-height: 0;
+  height: min(62vh, 560px);
+  max-height: 100%;
+  border: 1px solid rgba(246,200,79,.15);
+  border-radius: 30px;
+  overflow: hidden;
+  outline: none;
+  background: #070809;
+  box-shadow: 0 30px 90px rgba(0,0,0,.46);
+  touch-action: pan-y;
+  user-select: none;
+}
+.cx-about-deck-visual:focus-visible {
+  border-color: rgba(246,200,79,.55);
+  box-shadow: 0 0 0 3px rgba(246,200,79,.1), 0 30px 90px rgba(0,0,0,.46);
+}
+.cx-about-deck-visual .cx-about-art {
+  inset: 0;
+  opacity: .28;
+  filter: saturate(.78) brightness(.66);
+  background:
+    linear-gradient(90deg, rgba(5,6,8,.93), rgba(5,6,8,.38) 45%, rgba(5,6,8,.76)),
+    linear-gradient(180deg, rgba(5,6,8,.12), #050608 95%),
+    url('/frozen-assets/hero.webp') 61% center / cover no-repeat;
+  animation: cx-about-breathe 14s ease-in-out infinite alternate;
+}
+
+/* A faint signal thread ties the deck back to the homepage's golden path. */
+.cx-about-deck-visual .cx-about-thread {
+  left: 8%;
+  top: auto;
+  bottom: 56px;
+  width: 66%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(246,200,79,.18), rgba(246,200,79,.62), transparent);
+  box-shadow: 0 0 24px rgba(246,200,79,.12);
+  transform: rotate(-7deg);
+}
+.cx-about-deck-visual .cx-about-thread span {
+  left: 0;
+  top: -3px;
+  width: 32px;
+  height: 7px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, transparent, #ffe797, transparent);
+  animation: cx-about-deck-thread 4.6s ease-in-out infinite;
+}
+
+/* Override the old vertical checklist into a cinematic stacked deck. */
+.cx-about-card-deck {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx-about-card-deck > li {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(78%, 510px);
+  height: min(84%, 470px);
+  display: block;
+  margin: 0;
+  opacity: 1;
+  transform-origin: 50% 55%;
+  transition: transform .48s cubic-bezier(.2,.76,.2,1), opacity .36s ease, filter .36s ease;
+  animation: none;
+  pointer-events: none;
+}
+.cx-about-card-deck > li[data-depth="0"] {
+  z-index: 8;
+  transform: translate(-56%, -52%) rotate(-1.2deg) scale(1);
+  filter: none;
+}
+.cx-about-card-deck > li[data-depth="1"] {
+  z-index: 7;
+  transform: translate(-48%, -49%) rotate(1.4deg) scale(.965);
+  filter: brightness(.76) saturate(.8);
+}
+.cx-about-card-deck > li[data-depth="2"] {
+  z-index: 6;
+  transform: translate(-40%, -46%) rotate(3deg) scale(.93);
+  filter: brightness(.56) saturate(.66);
+}
+.cx-about-card-deck > li[data-depth="3"] {
+  z-index: 5;
+  transform: translate(-34%, -43%) rotate(4.4deg) scale(.895);
+  opacity: .5;
+  filter: brightness(.4) saturate(.55);
+}
+.cx-about-card-deck > li[data-active="true"] { pointer-events: auto; }
+
+.cx-about-deck-card {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 52% 48%;
+  overflow: hidden;
+  border: 1px solid rgba(246,200,79,.25);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(18,19,21,.98), rgba(7,8,9,.995));
+  box-shadow: 0 24px 65px rgba(0,0,0,.5), inset 0 1px rgba(255,255,255,.035);
+}
+.cx-about-card-art {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-position: center;
+  background-size: cover;
+}
+.cx-about-card-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(7,8,9,.82) 100%);
+}
+.cx-about-card-art--experience { background-image: url('/frozen-assets/card-1.webp'); }
+.cx-about-card-art--sequence { background-image: url('/frozen-assets/card-3.webp'); }
+.cx-about-card-art--signal { background-image: url('/frozen-assets/card-4.webp'); }
+.cx-about-card-art--decision { background-image: url('/frozen-assets/card-5.webp'); }
+
+.cx-about-card-copy {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1rem, 2.2vw, 1.55rem) clamp(1.15rem, 2.5vw, 1.75rem);
+  background: linear-gradient(180deg, rgba(10,11,12,.9), #070809 38%);
+}
+.cx-about-card-label {
+  color: var(--cx-signal);
+  font-size: .64rem;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.cx-about-card-copy h2 {
+  max-width: 470px;
+  margin: .55rem 0 .45rem;
+  color: #fff8ed;
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  line-height: 1.02;
+  letter-spacing: -.035em;
+}
+.cx-about-card-copy p {
+  max-width: 470px;
+  margin: 0;
+  color: #aaa4a0;
+  font-size: clamp(.76rem, 1vw, .9rem);
+  line-height: 1.5;
+}
+.cx-about-card-copy small {
+  margin-top: auto;
+  padding-top: .65rem;
+  color: #746e69;
+  font-size: .61rem;
+  font-weight: 760;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.cx-about-deck-controls {
+  position: absolute;
+  z-index: 12;
+  right: 22px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .35rem;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 999px;
+  background: rgba(5,6,8,.76);
+  backdrop-filter: blur(10px);
+}
+.cx-about-deck-controls > button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(246,200,79,.23);
+  border-radius: 50%;
+  color: #f7cc5b;
+  background: rgba(246,200,79,.035);
+  cursor: pointer;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.cx-about-deck-controls > button:hover { transform: translateY(-1px); background: rgba(246,200,79,.1); border-color: rgba(246,200,79,.5); }
+.cx-about-deck-dots { display: flex; align-items: center; gap: .35rem; }
+.cx-about-deck-dots button {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #5e5956;
+  cursor: pointer;
+  transition: width .22s ease, border-radius .22s ease, background .22s ease;
+}
+.cx-about-deck-dots button[aria-current="true"] { width: 20px; border-radius: 99px; background: var(--cx-signal); box-shadow: 0 0 12px rgba(246,200,79,.38); }
+.cx-about-swipe-hint {
+  position: absolute;
+  z-index: 10;
+  left: 22px;
+  bottom: 28px;
+  color: #77716d;
+  font-size: .57rem;
+  font-weight: 820;
+  letter-spacing: .16em;
+}
+
+/* About gets a deliberately compact footer so the entire experience fits in one viewport. */
+body:has(.cx-about-page--deck) { overflow: hidden !important; }
+body:has(.cx-about-page--deck) main#main { min-height: 0 !important; }
+body:has(.cx-about-page--deck) .site-footer {
+  position: fixed;
+  z-index: 45;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  min-height: 64px;
+  overflow: hidden;
+  border-top: 1px solid rgba(246,200,79,.12);
+  background: rgba(5,6,8,.96);
+  backdrop-filter: blur(14px);
+}
+body:has(.cx-about-page--deck) .site-footer .footer-grid {
+  width: min(1320px, calc(100vw - 48px));
+  height: 64px;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+body:has(.cx-about-page--deck) .site-footer .cx-footer-brand,
+body:has(.cx-about-page--deck) .site-footer .cx-footer-nav { display: none; }
+body:has(.cx-about-page--deck) .site-footer .cx-footer-bottom {
+  width: 100%;
+  gap: .16rem;
+  padding: 0;
+  border: 0;
+  font-size: .61rem;
+  line-height: 1.25;
+}
+
+@keyframes cx-about-deck-thread {
+  0%, 100% { translate: 0 0; opacity: .2; }
+  50% { translate: 420px 0; opacity: 1; }
+}
+
+@media (max-width: 1000px) {
+  .cx-about-stage--deck { grid-template-columns: minmax(310px, .78fr) minmax(430px, 1.22fr); gap: 1.5rem; }
+  .cx-about-card-deck > li { width: min(82%, 470px); }
+  .cx-about-page--deck .cx-about-title { font-size: clamp(3rem, 5.8vw, 4.9rem); }
+}
+
+@media (max-width: 820px) {
+  .cx-about-page--deck {
+    height: calc(100svh - 76px - 64px);
+    min-height: 0;
+    padding: .55rem 14px .5rem;
+  }
+  .cx-about-stage--deck {
+    height: 100%;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-items: stretch;
+    gap: .65rem;
+  }
+  .cx-about-page--deck .cx-about-copy { max-width: none; }
+  .cx-about-page--deck .cx-kicker { margin-bottom: .2rem; font-size: .57rem; }
+  .cx-about-page--deck .cx-about-title {
+    max-width: none;
+    margin: .2rem 0 .35rem;
+    font-size: clamp(2.1rem, 9.4vw, 3.6rem);
+    line-height: .92;
+  }
+  .cx-about-page--deck .cx-about-lede { max-width: 92%; font-size: .74rem; line-height: 1.42; }
+  .cx-about-page--deck .cx-about-actions { margin-top: .55rem; gap: .5rem; }
+  .cx-about-page--deck .cx-about-actions .cx-button { min-height: 38px; padding: .45rem .72rem; font-size: .7rem; }
+  .cx-about-microcopy { display: none; }
+  .cx-about-deck-visual { height: 100%; min-height: 0; border-radius: 20px; }
+  .cx-about-card-deck > li { width: min(82%, 430px); height: min(88%, 470px); }
+  .cx-about-deck-card { grid-template-rows: 45% 55%; border-radius: 18px; }
+  .cx-about-card-copy { padding: .9rem 1rem; }
+  .cx-about-card-copy h2 { margin: .35rem 0 .3rem; font-size: clamp(1.15rem, 5vw, 1.55rem); }
+  .cx-about-card-copy p { font-size: .69rem; line-height: 1.4; }
+  .cx-about-card-copy small { padding-top: .4rem; font-size: .52rem; }
+  .cx-about-deck-controls { right: 12px; bottom: 10px; transform: scale(.9); transform-origin: right bottom; }
+  .cx-about-swipe-hint { left: 13px; bottom: 20px; font-size: .5rem; }
+  body:has(.cx-about-page--deck) { overflow: hidden !important; }
+  body:has(.cx-about-page--deck) .site-footer,
+  body:has(.cx-about-page--deck) .site-footer .footer-grid { height: 64px; min-height: 64px; }
+  body:has(.cx-about-page--deck) .site-footer .cx-footer-bottom { font-size: .54rem; }
+}
+
+@media (max-height: 710px) and (min-width: 821px) {
+  .cx-about-page--deck .cx-about-title { font-size: clamp(3rem, 5vw, 4.7rem); }
+  .cx-about-page--deck .cx-about-lede { font-size: .86rem; line-height: 1.48; }
+  .cx-about-page--deck .cx-about-actions { margin-top: .85rem; }
+  .cx-about-deck-visual { height: min(58vh, 455px); }
+  .cx-about-card-deck > li { height: min(82%, 405px); }
+}
+
+@media (max-height: 690px) and (max-width: 820px) {
+  .cx-about-page--deck .cx-about-lede { display: none; }
+  .cx-about-page--deck .cx-about-actions .cx-button--ghost { display: none; }
+  .cx-about-deck-card { grid-template-rows: 40% 60%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-about-card-deck > li,
+  .cx-about-deck-dots button,
+  .cx-about-deck-controls > button { transition: none !important; }
+  .cx-about-deck-visual .cx-about-art,
+  .cx-about-deck-visual .cx-about-thread span { animation: none !important; }
+}
