@@ -1,0 +1,30 @@
+/* Story Beat navigation belongs above the answer box so contributors can move on without scrolling to the bottom. */
+.cx-flow-card--story {
+  display: flex;
+  flex-direction: column;
+}
+
+.cx-flow-card--story > .cx-flow-beat-index { order: 1; }
+.cx-flow-card--story > .cx-kicker { order: 2; }
+.cx-flow-card--story > .cx-title { order: 3; }
+.cx-flow-card--story > .cx-flow-actions {
+  order: 4;
+  margin: 1.2rem 0 0;
+  justify-content: flex-end;
+  align-items: center;
+}
+.cx-flow-card--story > .cx-flow-actions .cx-button--ghost { margin-right: auto; }
+.cx-flow-card--story > .cx-flow-writing-field { order: 5; }
+.cx-flow-card--story > .cx-flow-followup { order: 6; }
+.cx-flow-card--story > .cx-flow-beat-dots { order: 7; }
+
+@media (max-width: 620px) {
+  .cx-flow-card--story > .cx-flow-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .cx-flow-card--story > .cx-flow-actions .cx-button {
+    width: auto;
+  }
+}
