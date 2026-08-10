@@ -7,10 +7,10 @@ import { usePathname, useRouter } from 'next/navigation';
 const primaryLinks = [
   ['Stories', '/browse'],
   ['How It Works', '/more#how-it-works'],
-  ['About', '/more'],
+  ['About', '/about'],
 ] as const;
 
-const idleWarmRoutes = ['/', '/browse', '/more', '/privacy', '/submit', '/login', '/account'] as const;
+const idleWarmRoutes = ['/', '/browse', '/more', '/about', '/privacy', '/submit', '/login', '/account'] as const;
 
 function UserIcon() {
   return (
@@ -111,10 +111,13 @@ export function SiteHeader() {
           onPointerEnter={() => warm('/')}
           onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation('/', event)}
         >
+          <span className="cx-brand-orbit" aria-hidden="true" />
           <img src="/hrtechify-logo.svg" alt="HRTechify" width="54" height="54" />
           <span className="cx-brand-parent">HRTechify</span>
           <span className="cx-brand-product">Corporate<span className="cx-brand-x">X</span></span>
         </Link>
+
+        <span className="cx-header-signal" aria-hidden="true"><i /><i /><i /></span>
 
         <nav className="cx-primary-nav" aria-label="Primary navigation">
           {primaryLinks.map(([label, href]) => navLink(label, href))}
