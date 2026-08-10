@@ -10,6 +10,17 @@ import { SCENES } from '@/lib/types';
 
 type GuidedRow = { question_key: string; answer: string; sort_order: number };
 
+const SHIFT_TOPIC_LABELS: Record<string, string> = {
+  leadership: 'Leadership',
+  team: 'Culture',
+  workload: 'Workload',
+  structure: 'Structure',
+  compensation: 'Compensation',
+  'technology-ai': 'AI',
+  expectations: 'Expectations',
+  other: 'Other change',
+};
+
 export async function POST(req: Request) {
   let createdExperienceId: string | null = null;
   const admin = createAdminClient();
@@ -143,15 +154,21 @@ export async function POST(req: Request) {
       if (storedHighlights.error) throw storedHighlights.error;
     }
 
-    if (analysis.suggestedLabels.length) {
-      const storedLabels = await admin.from('experience_labels').insert(analysis.suggestedLabels.map((label) => ({ experience_id: createdExperienceId, label })));
+    const liveLabels = Array.from(new Set([
+      input.ending,
+      ...input.shiftTopics.map((topic) => SHIFT_TOPIC_LABELS[topic]).filter(Boolean),
+      ...analysis.suggestedLabels,
+    ])).slice(0, 12);
+
+    if (liveLabels.length) {
+      const storedLabels = await admin.from('experience_labels').insert(liveLabels.map((label) => ({ experience_id: createdExperienceId, label })));
       if (storedLabels.error) throw storedLabels.error;
     }
 
     const submitted = await admin.from('experiences').update({ status: 'pending_moderation' }).eq('id', createdExperienceId);
     if (submitted.error) throw submitted.error;
 
-    return NextResponse.json({ id: createdExperienceId, status: 'pending_moderation' }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ id: createdExperienceId, status: 'pending_moderation', liveLabels }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     if (createdExperienceId) {
       const cleanup = await admin.from('experiences').delete().eq('id', createdExperienceId);
