@@ -9,6 +9,7 @@ const [
   footer,
   about,
   css,
+  refinement,
   locationRoute,
   scene,
   scenePage,
@@ -22,6 +23,7 @@ const [
   read('components/site-footer.tsx'),
   read('app/about/page.tsx'),
   read('app/product-polish.css'),
+  read('app/interface-refinement.css'),
   read('app/api/location/validate/route.ts'),
   read('components/validated-scene-step.tsx'),
   read('app/submit/scene/page.tsx'),
@@ -32,7 +34,8 @@ const [
   read('app/layout.tsx'),
 ]);
 
-test('primary navigation is animated and About has its own route', () => {
+test('primary navigation is animated, includes Home and About has its own route', () => {
+  assert.match(header, /\['Home', '\/'\]/);
   assert.match(header, /\['About', '\/about'\]/);
   assert.match(header, /cx-brand-orbit/);
   assert.match(header, /cx-header-signal/);
@@ -53,6 +56,23 @@ test('About is a one-screen animated narrative on desktop with a mobile usabilit
   assert.match(css, /cx-about-thread/);
   assert.match(css, /cx-about-breathe/);
   assert.match(css, /@media \(max-width: 820px\)[\s\S]*body:has\(\.cx-about-page\)\s*\{\s*overflow:auto/);
+});
+
+test('About deck is parallel and straight rather than a crooked fan', () => {
+  assert.match(refinement, /data-depth="0"[\s\S]*translate\(-58%, -50%\)/);
+  assert.match(refinement, /data-depth="1"[\s\S]*translate\(-51%, -50%\)/);
+  assert.match(refinement, /data-depth="2"[\s\S]*translate\(-44%, -50%\)/);
+  assert.match(refinement, /data-depth="3"[\s\S]*translate\(-37%, -50%\)/);
+  assert.doesNotMatch(refinement, /data-depth="[0-3]"[^}]*rotate\(/s);
+});
+
+test('Opening Signal ending cards use contextual approved anime artwork', () => {
+  assert.match(refinement, /data-ending="break-free"[\s\S]*card-5\.webp/);
+  assert.match(refinement, /data-ending="next-act"[\s\S]*card-2\.webp/);
+  assert.match(refinement, /data-ending="mixed-ending"[\s\S]*card-4\.webp/);
+  assert.match(refinement, /data-ending="pass-the-torch"[\s\S]*card-3\.webp/);
+  assert.match(refinement, /ENDING 01/);
+  assert.match(refinement, /ENDING 04/);
 });
 
 test('footer legal copy is exactly two centered lines', () => {
@@ -94,8 +114,11 @@ test('incoming word cloud exposes only predefined safe labels while stories stay
   assert.match(complete, /pending content validation/);
 });
 
-test('the product polish stylesheet loads after the frozen global system', () => {
+test('refinement styles load last so they override older abstract card/deck rules', () => {
   const frozenIndex = layout.indexOf("./frozen-global.css");
   const polishIndex = layout.indexOf("./product-polish.css");
+  const deckIndex = layout.indexOf("./about-deck.css");
+  const refinementIndex = layout.indexOf("./interface-refinement.css");
   assert.ok(frozenIndex >= 0 && polishIndex > frozenIndex);
+  assert.ok(deckIndex > polishIndex && refinementIndex > deckIndex);
 });
