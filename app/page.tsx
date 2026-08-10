@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { ENDINGS, endingFor } from '@/lib/endings';
+import { LiveSignalCloud } from '@/components/live-signal-cloud';
 
 function StoryCard({ story, index }: { story: any | null; index: number }) {
   if (!story) {
@@ -35,9 +36,8 @@ function StoryCard({ story, index }: { story: any | null; index: number }) {
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
   const q = await searchParams;
   const supabase = await createClient();
-  const [{ data: stories }, { data: labels }, { count: publishedCount }] = await Promise.all([
+  const [{ data: stories }, { count: publishedCount }] = await Promise.all([
     supabase.from('published_experiences').select('*').order('published_at', { ascending: false }).limit(6),
-    supabase.from('experience_labels').select('experience_id,label').limit(1000),
     supabase.from('published_experiences').select('id', { count: 'exact', head: true }),
   ]);
 
@@ -50,22 +50,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
       .maybeSingle();
     receipt = data;
   }
-
-  const storyIdsByLabel = new Map<string, Set<string>>();
-  for (const row of labels || []) {
-    const label = String(row.label || '').trim();
-    const experienceId = String(row.experience_id || '').trim();
-    if (!label || !experienceId) continue;
-    const storyIds = storyIdsByLabel.get(label) || new Set<string>();
-    storyIds.add(experienceId);
-    storyIdsByLabel.set(label, storyIds);
-  }
-  const signals = [...storyIdsByLabel.entries()]
-    .map(([label, storyIds]) => [label, storyIds.size] as const)
-    .filter(([, storyCount]) => storyCount >= 5)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 14)
-    .map(([label, storyCount]) => [label, Math.min(4, Math.max(1, storyCount - 3))] as const);
 
   const frozenCards = Array.from({ length: 5 }, (_, index) => stories?.[index] ?? null);
   const trustCount = publishedCount && publishedCount > 0
@@ -106,9 +90,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         <section className="cx-shell cx-submission-receipt" style={{ gridTemplateColumns: '1fr' }} role="status" aria-live="polite">
           <div>
             <p className="cx-kicker">Journey complete</p>
-            <h2>{receipt.status === 'published' ? 'Your signal is visible.' : 'Your story is safely submitted.'}</h2>
-            <p>{receipt.status === 'published' ? 'It now contributes to the shared archive.' : 'It remains private while the safety review is completed. Difficult or critical opinions are not a reason for removal.'}</p>
-            <div className="cx-actions"><Link className="cx-button cx-button--ghost" href="/">Dismiss</Link><Link className="cx-button cx-button--signal" href="/account">Open my archive</Link></div>
+            <h2>{receipt.status === 'published' ? 'Your signal is visible.' : 'Your signal is live while your story stays private.'}</h2>
+            <p>{receipt.status === 'published' ? 'It now contributes to the shared archive.' : 'Safe theme labels from your verified contribution can now appear in the Live Signal Cloud as pending content validation. Your actual story is still private until moderation is complete.'}</p>
+            <div className="cx-actions"><Link className="cx-button cx-button--ghost" href="/">Dismiss</Link><Link className="cx-button cx-button--ghost" href="/#live-signals">See the Live Signal Cloud</Link><Link className="cx-button cx-button--signal" href="/account">Open my archive</Link></div>
           </div>
         </section>
       ) : null}
@@ -153,23 +137,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         </div>
       </section>
 
-      <section className="cx-section" aria-labelledby="signal-map-title">
-        <div className="cx-shell">
-          <p className="cx-kicker">Shared intelligence</p>
-          <h2 className="cx-title" id="signal-map-title">What people notice before they move on.</h2>
-          <p className="cx-lede">A theme appears only after at least five separate confirmed stories share it.</p>
-          {signals.length ? (
-            <div className="cx-signal-map" aria-label="Common story themes">
-              {signals.map(([label, weight]) => <Link className="cx-signal-word" data-weight={weight} href={`/browse?q=${encodeURIComponent(label)}`} key={label}>{label}</Link>)}
-            </div>
-          ) : (
-            <div className="cx-empty">
-              <h3>The collective Signal Map is still forming.</h3>
-              <p>Individual stories can be explored now. Shared themes will appear only when enough separate published experiences support them.</p>
-            </div>
-          )}
-        </div>
-      </section>
+      <LiveSignalCloud />
 
       <section className="cx-section cx-section--compact">
         <div className="cx-shell cx-journey-panel">
