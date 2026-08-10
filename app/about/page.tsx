@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import Link from 'next/link';
 
 const aboutSteps = [
@@ -26,7 +27,7 @@ export default function AboutPage() {
           <div className="cx-about-thread" aria-hidden="true"><span /></div>
           <ol className="cx-about-sequence">
             {aboutSteps.map(([number, label, text], index) => (
-              <li key={label} style={{ '--about-index': index } as React.CSSProperties}>
+              <li key={label} style={{ '--about-index': index } as CSSProperties}>
                 <span className="cx-about-node" aria-hidden="true">{number}</span>
                 <div><strong>{label}</strong><p>{text}</p></div>
               </li>
