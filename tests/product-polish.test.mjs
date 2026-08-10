@@ -64,7 +64,7 @@ test('footer legal copy is exactly two centered lines', () => {
 
 test('Set the Scene verifies a broad location as a real place before Story Beats', () => {
   assert.match(scenePage, /ValidatedSceneStep/);
-  assert.match(scene, /\/api\/location\/validate\?q=/);
+  assert.match(scene, /async function next\(\)[\s\S]*\/api\/location\/validate\?q=/);
   assert.match(scene, /Checking that this is a real place/);
   assert.match(scene, /Verified place:/);
   assert.match(scene, /Remote work is captured separately/);
@@ -73,12 +73,13 @@ test('Set the Scene verifies a broad location as a real place before Story Beats
   assert.match(locationRoute, /User-Agent/);
   assert.match(locationRoute, /1050/);
   assert.match(locationRoute, /revalidate:\s*86400/);
-  assert.doesNotMatch(scene, /onChange=.*location\/validate/s, 'location lookup must not be autocomplete-on-keystroke');
+  assert.doesNotMatch(scene, /useEffect\([^)]*location\/validate/s, 'place verification must not be an autocomplete effect');
 });
 
 test('incoming word cloud exposes only predefined safe labels while stories stay private', () => {
   assert.match(home, /LiveSignalCloud/);
   assert.match(liveCloud, /SAFE_LIVE_LABELS/);
+  assert.match(liveCloud, /published_experiences/);
   assert.match(liveCloud, /pending_moderation/);
   assert.match(liveCloud, /Live · pending content validation/);
   assert.match(liveCloud, /not that the contributor’s story has been published/);
