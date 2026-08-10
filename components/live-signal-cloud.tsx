@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -137,7 +138,7 @@ export async function LiveSignalCloud() {
           <div className="cx-live-signal-cloud" aria-label="Current workplace signal themes">
             {liveSignals.map((signal) => {
               const state = signal.pendingCount > 0 ? 'pending' : 'confirmed';
-              const style = { '--signal-weight': weightFor(signal.count) } as React.CSSProperties;
+              const style = { '--signal-weight': weightFor(signal.count) } as CSSProperties;
               return state === 'confirmed' ? (
                 <Link className="cx-live-signal-word" data-state={state} style={style} href={`/browse?q=${encodeURIComponent(signal.label)}`} key={signal.label}>{signal.label}</Link>
               ) : (
