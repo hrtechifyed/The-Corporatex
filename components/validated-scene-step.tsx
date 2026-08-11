@@ -41,7 +41,7 @@ const ENDING_SCENE_CONTENT: Record<EndingValue, { headline: string; message: str
 };
 
 function JourneyProgress() {
-  const labels = ['Opening Signal', 'Set the Scene', 'Story Beats', 'Final Cut', 'Submit'];
+  const labels = ['Opening Signal', 'Setting the Scene', 'Story Beats', 'Final Cut', 'Submit'];
   return (
     <ol className="cx-flow-progress" aria-label="Contribution journey">
       {labels.map((label, index) => (
@@ -134,7 +134,7 @@ export function ValidatedSceneStep({ endingSlug, fromHome = false }: { endingSlu
         <JourneyProgress />
         <section className="cx-flow-card cx-flow-card--center" role="status">
           <p className="cx-kicker">Scene 01</p>
-          <h1 className="cx-title">Set the Scene</h1>
+          <h1 className="cx-title">Setting the Scene</h1>
           <p className="cx-note">Preparing the context for your story…</p>
         </section>
       </div>
@@ -159,7 +159,7 @@ export function ValidatedSceneStep({ endingSlug, fromHome = false }: { endingSlu
 
         <div className="cx-scene-form-heading">
           <p className="cx-kicker">Scene 01</p>
-          <h1 className="cx-title">Set the Scene</h1>
+          <h1 className="cx-title">Setting the Scene</h1>
           <h2>Where did this story unfold?</h2>
           <p className="cx-lede">Give readers the setting, not anyone’s identity. Names of colleagues and confidential records should stay out.</p>
         </div>
