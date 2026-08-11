@@ -31,7 +31,7 @@
 .cx-ending-grid .cx-ending-card[data-ending="mixed-ending"] { --ending-accent: #9b7bea; }
 .cx-ending-grid .cx-ending-card[data-ending="pass-the-torch"] { --ending-accent: #68d1bd; }
 
-/* The old abstract sun/door/person composition is replaced by a contextual workplace image. */
+/* The old abstract sun/door/person composition is replaced by the same working frozen asset routes used by the Archive strip. */
 .cx-ending-grid .cx-ending-card__scene {
   position: relative !important;
   inset: auto !important;
@@ -44,6 +44,7 @@
   border-radius: 0 !important;
   background-position: center !important;
   background-size: cover !important;
+  background-repeat: no-repeat !important;
   filter: saturate(.92) contrast(1.035) brightness(.9);
   transform: none !important;
 }
@@ -59,19 +60,19 @@
 }
 
 .cx-ending-grid .cx-ending-card[data-ending="break-free"] .cx-ending-card__scene {
-  background-image: url('/frozen-assets/card-1.webp') !important;
+  background-image: var(--cx-frozen-card-1) !important;
   background-position: center 46% !important;
 }
 .cx-ending-grid .cx-ending-card[data-ending="next-act"] .cx-ending-card__scene {
-  background-image: url('/frozen-assets/card-2.webp') !important;
+  background-image: var(--cx-frozen-card-2) !important;
   background-position: center 45% !important;
 }
 .cx-ending-grid .cx-ending-card[data-ending="mixed-ending"] .cx-ending-card__scene {
-  background-image: url('/frozen-assets/card-3.webp') !important;
+  background-image: var(--cx-frozen-card-3) !important;
   background-position: center 43% !important;
 }
 .cx-ending-grid .cx-ending-card[data-ending="pass-the-torch"] .cx-ending-card__scene {
-  background-image: url('/frozen-assets/card-5.webp') !important;
+  background-image: var(--cx-frozen-card-5) !important;
   background-position: center 42% !important;
 }
 
