@@ -42,42 +42,6 @@
   grid-column: 1 / 2;
 }
 
-/* Updated visible terminology while preserving the existing heading box and route contract. */
-.cx-scene-page .cx-scene-form-heading .cx-title {
-  position: relative;
-  color: transparent !important;
-}
-.cx-scene-page .cx-scene-form-heading .cx-title::after {
-  content: 'Setting the Scene';
-  position: absolute;
-  inset: 0 auto auto 0;
-  display: block;
-  color: #fffaf0;
-  font: inherit;
-  line-height: inherit;
-  letter-spacing: inherit;
-  white-space: nowrap;
-}
-body:has(.cx-scene-page) .cx-flow-progress li:nth-child(2) {
-  position: relative;
-  color: transparent !important;
-}
-body:has(.cx-scene-page) .cx-flow-progress li:nth-child(2)::after {
-  content: 'Setting the Scene';
-  position: absolute;
-  left: 32px;
-  color: var(--cx-text);
-  font-size: .68rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-body:has(.cx-scene-page) .cx-flow-progress li:nth-child(2) > span {
-  color: #17110c !important;
-  border-color: var(--cx-signal) !important;
-  background: var(--cx-signal) !important;
-  font-size: .6rem !important;
-}
-
 @media (max-width: 760px) {
   .cx-scene-page .cx-flow-form {
     grid-template-columns: 1fr !important;
