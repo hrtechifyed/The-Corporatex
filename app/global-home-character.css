@@ -1,0 +1,112 @@
+/* Shared homepage character anchor.
+   Every non-home route uses the exact frozen homepage hero asset in the same upper-right space. */
+body.cx-body:not(:has(.cx-frozen-home)) {
+  background-color: #050608;
+  background-image:
+    linear-gradient(90deg, #050608 0%, rgba(5,6,8,.97) 20%, rgba(5,6,8,.82) 42%, rgba(5,6,8,.34) 60%, transparent 76%),
+    linear-gradient(180deg, rgba(5,6,8,.08) 0%, transparent 72%, #050608 100%),
+    var(--cx-frozen-hero),
+    radial-gradient(circle at 88% 10%, rgba(216,135,45,.06), transparent 32rem),
+    radial-gradient(circle at 5% 46%, rgba(156,55,28,.055), transparent 30rem);
+  background-size:
+    100% 694px,
+    100% 694px,
+    min(63vw, 1010px) 620px,
+    auto,
+    auto;
+  background-position:
+    left 74px,
+    left 74px,
+    right max(0px, calc((100vw - 1610px) / 2 - 32px)) top 74px,
+    88% 10%,
+    5% 46%;
+  background-repeat: no-repeat;
+}
+
+/* Let the shared character replace route-specific copies in the first viewport. */
+body.cx-body:not(:has(.cx-frozen-home)) main#main > .cx-page {
+  background-color: transparent !important;
+}
+body.cx-body:not(:has(.cx-frozen-home)) main#main > .cx-page > :first-child {
+  background-color: transparent !important;
+}
+body.cx-body:not(:has(.cx-frozen-home)) .cx-story-hero::after,
+body.cx-body:not(:has(.cx-frozen-home)) .cx-archive-hero::after {
+  display: none !important;
+}
+body.cx-body:not(:has(.cx-frozen-home)) main#main > .cx-page > .cx-section:first-child .cx-frozen-mini-art {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* About keeps its interactive deck, but the artwork behind it is the same shared homepage character. */
+body.cx-body:not(:has(.cx-frozen-home)) .cx-about-page {
+  background: transparent !important;
+}
+body.cx-body:not(:has(.cx-frozen-home)) .cx-about-visual {
+  background: rgba(8,9,10,.26) !important;
+}
+body.cx-body:not(:has(.cx-frozen-home)) .cx-about-art {
+  opacity: 0 !important;
+  background: transparent !important;
+}
+
+/* Auth/system pages no longer introduce a second, differently-positioned copy of the character. */
+body.cx-body:not(:has(.cx-frozen-home)) .cx-system-shell::before {
+  display: none !important;
+}
+
+/* Reserve the same right-side visual rail used by the homepage on desktop. */
+@media (min-width: 1101px) {
+  body.cx-body:not(:has(.cx-frozen-home)) .cx-flow-shell > .cx-flow-progress,
+  body.cx-body:not(:has(.cx-frozen-home)) .cx-flow-shell > .cx-flow-card {
+    width: min(960px, calc(100vw - 560px));
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  body.cx-body:not(:has(.cx-frozen-home)) .cx-system-shell {
+    width: min(820px, calc(100vw - 560px));
+    margin-left: max(32px, calc((100vw - 1610px) / 2));
+    margin-right: auto;
+  }
+
+  body.cx-body:not(:has(.cx-frozen-home)) .cx-archive-hero > .cx-shell > *,
+  body.cx-body:not(:has(.cx-frozen-home)) .cx-story-hero > .cx-shell > * {
+    max-width: min(900px, calc(100vw - 560px));
+  }
+
+  body.cx-body:not(:has(.cx-frozen-home)) main#main > .cx-page > .cx-section:first-child > .cx-shell:not(.cx-story-hero-grid) > * {
+    max-width: min(900px, calc(100vw - 560px));
+  }
+}
+
+@media (max-width: 1100px) {
+  body.cx-body:not(:has(.cx-frozen-home)) {
+    background-image:
+      linear-gradient(90deg, #050608 0%, rgba(5,6,8,.93) 30%, rgba(5,6,8,.54) 64%, rgba(5,6,8,.2) 100%),
+      linear-gradient(180deg, rgba(5,6,8,.12), transparent 62%, #050608 100%),
+      var(--cx-frozen-hero),
+      radial-gradient(circle at 88% 10%, rgba(216,135,45,.05), transparent 26rem);
+    background-size: 100% 560px, 100% 560px, min(92vw, 760px) 480px, auto;
+    background-position: left 76px, left 76px, right -110px top 76px, 88% 10%;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (max-width: 760px) {
+  body.cx-body:not(:has(.cx-frozen-home)) {
+    background-image:
+      linear-gradient(90deg, rgba(5,6,8,.94), rgba(5,6,8,.62)),
+      linear-gradient(180deg, rgba(5,6,8,.12), transparent 58%, #050608 100%),
+      var(--cx-frozen-hero);
+    background-size: 100% 430px, 100% 430px, 520px 390px;
+    background-position: left 76px, left 76px, right -205px top 76px;
+    background-repeat: no-repeat;
+  }
+
+  body.cx-body:not(:has(.cx-frozen-home)) main#main > .cx-page > .cx-section:first-child .cx-frozen-mini-art {
+    display: none !important;
+  }
+}

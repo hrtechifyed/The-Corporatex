@@ -15,6 +15,7 @@ import './about-deck.css';
 import './interface-refinement.css';
 import './home-ending-cards.css';
 import './scene-form-alignment.css';
+import './global-home-character.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 
