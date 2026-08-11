@@ -42,29 +42,39 @@
   grid-column: 1 / 2;
 }
 
-/* Updated terminology: the visible journey step is “Setting the Scene”. */
+/* Updated visible terminology while preserving the existing heading box and route contract. */
 .cx-scene-page .cx-scene-form-heading .cx-title {
-  font-size: 0 !important;
-  line-height: 0 !important;
+  position: relative;
+  color: transparent !important;
 }
 .cx-scene-page .cx-scene-form-heading .cx-title::after {
   content: 'Setting the Scene';
+  position: absolute;
+  inset: 0 auto auto 0;
   display: block;
-  color: inherit;
-  font-size: clamp(2.3rem, 5vw, 5.2rem);
-  line-height: .98;
-  letter-spacing: -.055em;
-  font-weight: 850;
+  color: #fffaf0;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
 }
-.cx-flow-progress li:nth-child(2) {
-  font-size: 0 !important;
+body:has(.cx-scene-page) .cx-flow-progress li:nth-child(2) {
+  position: relative;
+  color: transparent !important;
 }
-.cx-flow-progress li:nth-child(2)::after {
+body:has(.cx-scene-page) .cx-flow-progress li:nth-child(2)::after {
   content: 'Setting the Scene';
+  position: absolute;
+  left: 32px;
+  color: var(--cx-text);
   font-size: .68rem;
   font-weight: 800;
+  white-space: nowrap;
 }
-.cx-flow-progress li:nth-child(2) > span {
+body:has(.cx-scene-page) .cx-flow-progress li:nth-child(2) > span {
+  color: #17110c !important;
+  border-color: var(--cx-signal) !important;
+  background: var(--cx-signal) !important;
   font-size: .6rem !important;
 }
 
