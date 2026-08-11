@@ -1,0 +1,86 @@
+/* Setting the Scene: keep paired fields on the same baseline regardless of helper copy. */
+.cx-scene-page .cx-flow-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  column-gap: clamp(1rem, 2vw, 1.5rem) !important;
+  row-gap: 1.35rem !important;
+  align-items: start !important;
+}
+
+.cx-scene-page .cx-flow-form > .cx-field {
+  display: grid !important;
+  grid-template-rows: minmax(22px, auto) 74px auto !important;
+  align-content: start !important;
+  align-self: start !important;
+  gap: .55rem !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+.cx-scene-page .cx-flow-form > .cx-field > span:first-child {
+  min-height: 22px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  margin: 0 !important;
+}
+
+.cx-scene-page .cx-flow-form .cx-input,
+.cx-scene-page .cx-flow-form .cx-select {
+  width: 100% !important;
+  height: 74px !important;
+  min-height: 74px !important;
+  margin: 0 !important;
+}
+
+.cx-scene-page .cx-flow-form .cx-location-state {
+  min-height: 44px !important;
+  margin: .05rem 0 0 !important;
+  align-self: start !important;
+}
+
+.cx-scene-page .cx-flow-form > .cx-field:nth-child(5) {
+  grid-column: 1 / 2;
+}
+
+/* Updated terminology: the visible journey step is “Setting the Scene”. */
+.cx-scene-page .cx-scene-form-heading .cx-title {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+.cx-scene-page .cx-scene-form-heading .cx-title::after {
+  content: 'Setting the Scene';
+  display: block;
+  color: inherit;
+  font-size: clamp(2.3rem, 5vw, 5.2rem);
+  line-height: .98;
+  letter-spacing: -.055em;
+  font-weight: 850;
+}
+.cx-flow-progress li:nth-child(2) {
+  font-size: 0 !important;
+}
+.cx-flow-progress li:nth-child(2)::after {
+  content: 'Setting the Scene';
+  font-size: .68rem;
+  font-weight: 800;
+}
+.cx-flow-progress li:nth-child(2) > span {
+  font-size: .6rem !important;
+}
+
+@media (max-width: 760px) {
+  .cx-scene-page .cx-flow-form {
+    grid-template-columns: 1fr !important;
+  }
+  .cx-scene-page .cx-flow-form > .cx-field:nth-child(5) {
+    grid-column: 1;
+  }
+  .cx-scene-page .cx-flow-form .cx-input,
+  .cx-scene-page .cx-flow-form .cx-select {
+    height: 64px !important;
+    min-height: 64px !important;
+  }
+  .cx-scene-page .cx-flow-form > .cx-field {
+    grid-template-rows: minmax(22px, auto) 64px auto !important;
+  }
+}
