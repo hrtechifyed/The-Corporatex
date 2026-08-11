@@ -1,0 +1,143 @@
+/* Opening Signal refinement — mirrors the homepage ending cards and extends the cinematic world. */
+
+body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) .cx-flow-shell {
+  position: relative;
+  z-index: 1;
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+/* Extend the homepage city / golden-signal atmosphere through the lower page.
+   The shared character remains the single sharp hero on the right; this layer is deliberately
+   darkened and softened so it reads as environment, not a second character. */
+body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background:
+    linear-gradient(180deg, transparent 0 460px, rgba(5,6,8,.2) 700px, rgba(5,6,8,.7) 100%),
+    radial-gradient(circle at 76% 72%, rgba(232,155,44,.11), transparent 34rem);
+}
+body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  left: 0;
+  right: 0;
+  top: 520px;
+  min-height: 900px;
+  background-image:
+    linear-gradient(180deg, #050608 0%, rgba(5,6,8,.52) 18%, rgba(5,6,8,.32) 48%, #050608 100%),
+    linear-gradient(90deg, #050608 0%, rgba(5,6,8,.78) 34%, rgba(5,6,8,.3) 68%, #050608 100%),
+    var(--cx-frozen-hero);
+  background-size: 100% 100%, 100% 100%, max(1180px, 100vw) auto;
+  background-position: center, center, center 62%;
+  background-repeat: no-repeat;
+  filter: saturate(.82) brightness(.48) blur(2px);
+  opacity: .62;
+  transform: scale(1.025);
+  transform-origin: center top;
+}
+body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 480px 0 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 74% 24%, rgba(246,200,79,.16), transparent 27rem),
+    linear-gradient(180deg, transparent 0%, rgba(5,6,8,.46) 45%, #050608 100%);
+}
+
+/* Two cards per row on desktop: same editorial image-first construction as the homepage. */
+.cx-ending-choice-grid--flow {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(1rem, 1.6vw, 1.35rem) !important;
+  align-items: stretch !important;
+}
+
+.cx-ending-choice-grid--flow .cx-ending-choice--button {
+  min-width: 0 !important;
+}
+
+.cx-ending-choice-grid--flow .cx-ending-choice__card {
+  min-height: 382px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 1.25rem 1.25rem !important;
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--ending-accent) 7%, transparent), transparent 38%),
+    linear-gradient(180deg, rgba(16,17,19,.98), rgba(7,8,9,.99)) !important;
+}
+
+/* Exact same image mapping as the homepage Four Honest Endings cards. */
+.cx-ending-choice-grid--flow .cx-ending-choice__card::before {
+  flex: 0 0 218px !important;
+  width: calc(100% + 2.5rem) !important;
+  margin: 0 -1.25rem 1rem !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  filter: saturate(.92) contrast(1.035) brightness(.9) !important;
+}
+.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="break-free"] .cx-ending-choice__card::before {
+  background-image: linear-gradient(180deg, rgba(5,6,8,.01) 46%, rgba(5,6,8,.78) 100%), var(--cx-frozen-card-1) !important;
+  background-position: center 46% !important;
+}
+.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="next-act"] .cx-ending-choice__card::before {
+  background-image: linear-gradient(180deg, rgba(5,6,8,.01) 46%, rgba(5,6,8,.78) 100%), var(--cx-frozen-card-2) !important;
+  background-position: center 45% !important;
+}
+.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="mixed-ending"] .cx-ending-choice__card::before {
+  background-image: linear-gradient(180deg, rgba(5,6,8,.01) 46%, rgba(5,6,8,.78) 100%), var(--cx-frozen-card-3) !important;
+  background-position: center 43% !important;
+}
+.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="pass-the-torch"] .cx-ending-choice__card::before {
+  background-image: linear-gradient(180deg, rgba(5,6,8,.01) 46%, rgba(5,6,8,.78) 100%), var(--cx-frozen-card-5) !important;
+  background-position: center 42% !important;
+}
+
+.cx-ending-choice-grid--flow .cx-ending-choice__card::after {
+  top: 232px !important;
+  left: 1.25rem !important;
+}
+.cx-ending-choice-grid--flow .cx-ending-choice__card > strong {
+  margin-top: 1.42rem !important;
+  font-size: clamp(1.45rem, 2.1vw, 2rem) !important;
+}
+.cx-ending-choice-grid--flow .cx-ending-choice__card > span:not(.cx-ending-choice__status) {
+  max-width: 36ch;
+  font-size: .9rem !important;
+  line-height: 1.55 !important;
+}
+.cx-ending-choice-grid--flow .cx-ending-choice__card > small {
+  padding-top: .72rem !important;
+}
+
+@media (max-width: 760px) {
+  .cx-ending-choice-grid--flow {
+    grid-template-columns: 1fr !important;
+  }
+  .cx-ending-choice-grid--flow .cx-ending-choice__card {
+    min-height: 390px !important;
+  }
+  .cx-ending-choice-grid--flow .cx-ending-choice__card::before {
+    flex-basis: 215px !important;
+  }
+  .cx-ending-choice-grid--flow .cx-ending-choice__card::after {
+    top: 229px !important;
+  }
+  body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main::before {
+    top: 430px;
+    min-height: 1100px;
+    background-size: 100% 100%, 100% 100%, 900px auto;
+    background-position: center, center, 64% 58%;
+    opacity: .42;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main::before {
+    filter: saturate(.82) brightness(.48);
+  }
+}
