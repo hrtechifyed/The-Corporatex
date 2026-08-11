@@ -11,16 +11,16 @@ test('desktop primary navigation includes a visible Home link', async ({ page })
   await expect(page.locator('.site-header')).toHaveAttribute('data-home', 'true');
 });
 
-test('Opening Signal cards use contextual anime workplace artwork instead of abstract geometry', async ({ page }) => {
+test('Opening Signal cards use the exact homepage contextual anime artwork instead of abstract geometry', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/submit');
   await expect(page.getByRole('heading', { name: 'How did this ending feel?' })).toBeVisible();
 
   const mappings = [
-    ['break-free', 'card-5.webp', 'ENDING 01'],
-    ['next-act', 'card-2.webp', 'ENDING 02'],
-    ['mixed-ending', 'card-4.webp', 'ENDING 03'],
-    ['pass-the-torch', 'card-3.webp', 'ENDING 04'],
+    ['break-free', 'card-1', 'ENDING 01'],
+    ['next-act', 'card-2', 'ENDING 02'],
+    ['mixed-ending', 'card-3', 'ENDING 03'],
+    ['pass-the-torch', 'card-5', 'ENDING 04'],
   ] as const;
 
   for (const [ending, asset, label] of mappings) {
@@ -30,6 +30,7 @@ test('Opening Signal cards use contextual anime workplace artwork instead of abs
     const beforeImage = await card.evaluate((element) => getComputedStyle(element, '::before').backgroundImage);
     const endingLabel = await card.evaluate((element) => getComputedStyle(element, '::after').content);
     expect(beforeImage).toContain(`/frozen-assets/${asset}`);
+    expect(beforeImage).not.toContain('.webp');
     expect(endingLabel).toContain(label);
   }
 });
