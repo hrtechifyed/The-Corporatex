@@ -28,11 +28,6 @@ test('Setting the Scene keeps paired fields aligned and uses the updated label',
   expect(Math.abs(companyBox!.height - locationBox!.height)).toBeLessThanOrEqual(2);
   expect(Math.abs(teamBox!.height - tenureBox!.height)).toBeLessThanOrEqual(2);
 
-  const heading = page.locator('.cx-scene-form-heading .cx-title');
-  const visibleHeading = await heading.evaluate((node) => getComputedStyle(node, '::after').content);
-  expect(visibleHeading).toContain('Setting the Scene');
-
-  const progressLabel = page.locator('.cx-flow-progress li').nth(1);
-  const visibleProgress = await progressLabel.evaluate((node) => getComputedStyle(node, '::after').content);
-  expect(visibleProgress).toContain('Setting the Scene');
+  await expect(page.getByRole('heading', { name: 'Setting the Scene', exact: true })).toBeVisible();
+  await expect(page.locator('.cx-flow-progress li').nth(1)).toContainText('Setting the Scene');
 });
