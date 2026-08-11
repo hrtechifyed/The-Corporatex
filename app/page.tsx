@@ -104,7 +104,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
           <p className="cx-lede">Relief, progress, mixed truth and genuine recommendation all carry useful information.</p>
           <div className="cx-ending-grid">
             {ENDINGS.map((ending, index) => (
-              <Link className="cx-ending-card" data-ending={ending.slug} href={`/browse?ending=${encodeURIComponent(ending.value)}`} key={ending.value}>
+              <Link
+                className="cx-ending-card"
+                data-ending={ending.slug}
+                href={`/submit/scene?ending=${ending.slug}&from=home`}
+                aria-label={`${ending.title}: begin sharing this story`}
+                key={ending.value}
+              >
                 <span className="cx-ending-card__scene" aria-hidden="true"><span className="cx-ending-card__sun" /><span className="cx-ending-card__door" /><span className="cx-ending-card__person" /></span>
                 <span className="cx-ending-card__copy"><span>Ending {String(index + 1).padStart(2, '0')}</span><h3>{ending.title}</h3><p>{ending.description}</p></span>
               </Link>
