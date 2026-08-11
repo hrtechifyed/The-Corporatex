@@ -7,7 +7,7 @@ const endings = [
   { slug: 'pass-the-torch', value: 'Pass the Torch', headline: 'Some chapters end with something worth passing on.', asset: 'card-5' },
 ];
 
-test('homepage ending cards enter Set the Scene directly instead of browsing stories', async ({ page }) => {
+test('homepage ending cards enter Setting the Scene directly instead of browsing stories', async ({ page }) => {
   await page.goto('/');
   const cards = page.locator('.cx-ending-grid .cx-ending-card');
   await expect(cards).toHaveCount(4);
@@ -18,15 +18,15 @@ test('homepage ending cards enter Set the Scene directly instead of browsing sto
 
   await cards.first().click();
   await expect(page).toHaveURL(/\/submit\/scene\?ending=break-free&from=home$/);
-  await expect(page.getByRole('heading', { name: 'Set the Scene', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Setting the Scene', exact: true })).toBeVisible();
   await expect(page.getByText('Relief can be part of the truth.', { exact: true })).toBeVisible();
   await expect(page.getByText('Loading stories')).toHaveCount(0);
 });
 
-test('Set the Scene uses ending-specific acknowledgment, art and draft state', async ({ page }) => {
+test('Setting the Scene uses ending-specific acknowledgment, art and draft state', async ({ page }) => {
   for (const ending of endings) {
     await page.goto(`/submit/scene?ending=${ending.slug}&from=home`);
-    await expect(page.getByRole('heading', { name: 'Set the Scene', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Setting the Scene', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Where did this story unfold?', exact: true })).toBeVisible();
     await expect(page.getByText(ending.headline, { exact: true })).toBeVisible();
     await expect(page.getByText(`You chose · ${ending.value}`, { exact: true })).toBeVisible();
