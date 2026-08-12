@@ -1,5 +1,37 @@
 /* Keep the decorative navbar signal in the actual flex gap between brand and navigation.
-   The previous absolute positioning could drift underneath the nav at wide/intermediate viewports. */
+   Also keep the GitHub/static homepage header at the same top position and height as
+   the live Next.js application header so route changes do not visually jump. */
+:root {
+  --pages-header-height: 82px;
+  --pages-header-height-mobile: 76px;
+  --pages-preview-note-height: 32px;
+}
+
+.pages-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important;
+  min-height: var(--pages-header-height) !important;
+  height: var(--pages-header-height) !important;
+  padding-block: 0 !important;
+  align-items: center !important;
+}
+
+/* The mirror notice should not push the navbar down. Keep it directly beneath the
+   anchored header and reserve equivalent space before the homepage content. */
+.pages-preview-note {
+  position: fixed;
+  z-index: 49;
+  top: var(--pages-header-height);
+  left: 0;
+  right: 0;
+  min-height: var(--pages-preview-note-height);
+}
+
+main#main {
+  padding-top: var(--pages-preview-note-height);
+}
+
 .pages-header-signal {
   position: relative;
   left: auto;
@@ -17,5 +49,18 @@
 @media (max-width: 1180px) {
   .pages-header-signal {
     display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .pages-header {
+    min-height: var(--pages-header-height-mobile) !important;
+    height: var(--pages-header-height-mobile) !important;
+    padding-block: 0 !important;
+    align-items: center !important;
+  }
+
+  .pages-preview-note {
+    top: var(--pages-header-height-mobile);
   }
 }

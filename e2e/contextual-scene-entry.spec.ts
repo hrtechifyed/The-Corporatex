@@ -9,14 +9,18 @@ const endings = [
 
 test('homepage ending cards enter Setting the Scene directly instead of browsing stories', async ({ page }) => {
   await page.goto('/');
-  const cards = page.locator('.cx-ending-grid .cx-ending-card');
+  const cards = page.locator('.pages-ending-grid .pages-ending-card');
   await expect(cards).toHaveCount(4);
 
   for (let index = 0; index < endings.length; index += 1) {
-    await expect(cards.nth(index)).toHaveAttribute('href', `/submit/scene?ending=${endings[index].slug}&from=home`);
+    await expect(cards.nth(index)).toHaveAttribute(
+      'href',
+      `https://corporatex.onrender.com/submit/scene?ending=${endings[index].slug}&from=home`,
+    );
   }
 
-  await cards.first().click();
+  // Keep CI on the local branch while validating the server-backed handoff destination.
+  await page.goto('/submit/scene?ending=break-free&from=home');
   await expect(page).toHaveURL(/\/submit\/scene\?ending=break-free&from=home$/);
   await expect(page.getByRole('heading', { name: 'Setting the Scene', exact: true })).toBeVisible();
   await expect(page.getByText('Relief can be part of the truth.', { exact: true })).toBeVisible();

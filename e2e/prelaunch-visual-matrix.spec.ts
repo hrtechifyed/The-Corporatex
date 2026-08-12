@@ -47,7 +47,7 @@ async function assertViewportIntegrity(page: Page) {
   expect(geometry.headingLeft).toBeGreaterThanOrEqual(-1);
   expect(geometry.headingRight).toBeLessThanOrEqual(geometry.viewportWidth + 1);
   expect(geometry.headingTop).toBeGreaterThanOrEqual(0);
-  await expect(page.locator('.site-header')).toBeVisible();
+  await expect(page.locator('.pages-header, .site-header')).toBeVisible();
 }
 
 test.describe('Prelaunch visual acceptance matrix', () => {

@@ -17,19 +17,18 @@ test.describe('Frozen homepage', () => {
   test('renders the approved anime-elegant composition with an honest archive state', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { name: /Not a score\./i })).toBeVisible();
-    await expect(page.locator('.cx-frozen-sequence')).toContainText('sequence');
-    await expect(page.getByRole('link', { name: /Explore Stories/i })).toBeVisible();
+    await expect(page.locator('#pages-home-title em')).toContainText('sequence');
+    await expect(page.getByRole('link', { name: /Explore Stories/i }).first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Share Your Story/i }).first()).toBeVisible();
-    await expect(page.locator('.cx-frozen-art')).toBeVisible();
-    const cardCount = await page.locator('.cx-frozen-card').count();
-    expect(cardCount).toBeLessThanOrEqual(5);
-    if (cardCount === 0) await expect(page.locator('.cx-frozen-archive-forming')).toBeVisible();
+    await expect(page.locator('.pages-hero-art')).toBeVisible();
+    await expect(page.locator('.pages-story-card--forming')).toBeVisible();
     await expect(page.locator('.cx-signal-visual')).toHaveCount(0);
-    await expect(page.locator('.site-header')).toHaveAttribute('data-home', 'true');
-    await expect(page.locator('.cx-brand').first()).toContainText('HRTechify');
-    await expect(page.locator('.cx-brand').first()).toContainText('CorporateX');
+    await expect(page.locator('.pages-header')).toBeVisible();
+    await expect(page.locator('.pages-brand').first()).toContainText('HRTechify');
+    await expect(page.locator('.pages-brand').first()).toContainText('CorporateX');
     await expect(page.locator('#live-signals')).toBeVisible();
     await expect(page.getByText('Live · pending content validation')).toBeVisible();
+    await expect(page.getByText('CorporateX public mirror')).toBeVisible();
   });
 
   test('serves the frozen artwork as cached WebP resources', async ({ request }) => {
