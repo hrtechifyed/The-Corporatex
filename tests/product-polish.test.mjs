@@ -45,7 +45,7 @@ test('GitHub Pages is an explicit public mirror with local explanatory pages and
 });
 
 test('GitHub Pages remains truthful when live server data is unavailable', () => {
-  assert.match(pagesPreview, /does not invent or cache employee stories/i);
+  assert.match(pagesPreview, /without inventing or caching employee stories/i);
   assert.match(pagesPreview, /does not snapshot pending contributions or private moderation state/i);
   assert.doesNotMatch(pagesPreview, /Northstar Technologies|Atlas Systems|Meridian Works|10K\+/i);
   assert.equal((pagesPreview.match(/class="pages-ending-card"/g) || []).length, 4);
