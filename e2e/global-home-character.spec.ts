@@ -23,9 +23,13 @@ test('the homepage keeps its original character without adding the non-home back
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/');
 
-  await expect(page.locator('.cx-frozen-art')).toBeVisible();
-  const backgroundImage = await page.locator('body.cx-body').evaluate((node) => getComputedStyle(node).backgroundImage);
-  expect(backgroundImage).not.toContain('/frozen-assets/hero');
+  const hero = page.locator('.pages-hero-art');
+  await expect(hero).toBeVisible();
+  const heroImage = await hero.evaluate((node) => getComputedStyle(node).backgroundImage);
+  expect(heroImage).toContain('/pages-home/frozen-assets/hero.webp');
+
+  const bodyImage = await page.locator('body').evaluate((node) => getComputedStyle(node).backgroundImage);
+  expect(bodyImage).not.toContain('/frozen-assets/hero');
 });
 
 test('contributor pages reserve the right-side character rail instead of covering it with the form card', async ({ page }) => {
