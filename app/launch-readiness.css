@@ -1,0 +1,181 @@
+/* CorporateX prelaunch launch-readiness layer.
+   Loaded last so launch-critical visibility, asset routing and geometry win the cascade. */
+
+/* Frozen asset routes in the live Next.js app are extensionless. */
+.cx-story-hero::after,
+.cx-archive-hero::after {
+  background-image:
+    linear-gradient(90deg,#050608 0%,rgba(5,6,8,.72) 22%,rgba(5,6,8,.28) 48%,rgba(5,6,8,.72) 100%),
+    linear-gradient(180deg,rgba(5,6,8,.35),transparent 45%,#050608),
+    url('/frozen-assets/hero') !important;
+}
+.cx-frozen-mini-art {
+  background-image:
+    linear-gradient(90deg,rgba(5,6,8,.34),transparent 35%),
+    linear-gradient(180deg,rgba(5,6,8,.1),rgba(5,6,8,.5)),
+    url('/frozen-assets/hero') !important;
+}
+.cx-archive-card:nth-child(5n+1) .cx-archive-card__art,
+.cx-story-card:nth-child(5n+1) .cx-story-card__art { background-image: url('/frozen-assets/card-1') !important; }
+.cx-archive-card:nth-child(5n+2) .cx-archive-card__art,
+.cx-story-card:nth-child(5n+2) .cx-story-card__art { background-image: url('/frozen-assets/card-2') !important; }
+.cx-archive-card:nth-child(5n+3) .cx-archive-card__art,
+.cx-story-card:nth-child(5n+3) .cx-story-card__art { background-image: url('/frozen-assets/card-3') !important; }
+.cx-archive-card:nth-child(5n+4) .cx-archive-card__art,
+.cx-story-card:nth-child(5n+4) .cx-story-card__art { background-image: url('/frozen-assets/card-4') !important; }
+.cx-archive-card:nth-child(5n+5) .cx-archive-card__art,
+.cx-story-card:nth-child(5n+5) .cx-story-card__art { background-image: url('/frozen-assets/card-5') !important; }
+
+/* About: enforce safe desktop gutters and known-good extensionless artwork. */
+.cx-about-page--deck {
+  padding-left: max(32px, calc((100vw - 1440px) / 2)) !important;
+  padding-right: max(32px, calc((100vw - 1440px) / 2)) !important;
+}
+.cx-about-stage--deck {
+  width: min(100%, 1440px) !important;
+  grid-template-columns: minmax(390px, .9fr) minmax(500px, 1.1fr) !important;
+  gap: clamp(1.75rem, 3.6vw, 4.5rem) !important;
+}
+.cx-about-page--deck .cx-about-copy { min-width: 0; padding-left: 0; }
+.cx-about-page--deck .cx-about-title,
+.cx-about-page--deck .cx-about-lede { max-width: 100%; }
+.cx-about-deck-visual .cx-about-art {
+  background-image:
+    linear-gradient(90deg, rgba(5,6,8,.93), rgba(5,6,8,.38) 45%, rgba(5,6,8,.76)),
+    linear-gradient(180deg, rgba(5,6,8,.12), #050608 95%),
+    url('/frozen-assets/hero') !important;
+}
+.cx-about-card-art--experience { background-image: url('/frozen-assets/card-1') !important; }
+.cx-about-card-art--sequence { background-image: url('/frozen-assets/card-3') !important; }
+.cx-about-card-art--signal { background-image: url('/frozen-assets/card-4') !important; }
+.cx-about-card-art--decision { background-image: url('/frozen-assets/card-5') !important; }
+
+/* How It Works: replace oversized blank cards with compact cinematic information cards. */
+.cx-feature-grid--illustrated {
+  align-items: stretch;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+}
+.cx-feature-card--illustrated {
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  display: grid !important;
+  grid-template-rows: minmax(150px, 185px) auto;
+  justify-content: stretch !important;
+}
+.cx-feature-card__art {
+  position: relative;
+  min-height: 150px;
+  background-size: cover;
+  background-position: center;
+  filter: saturate(.88) contrast(1.05) brightness(.78);
+}
+.cx-feature-card__art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5,6,8,.04), rgba(5,6,8,.18) 48%, rgba(8,9,10,.94));
+}
+.cx-feature-card__art[data-scene='signal'] { background-image: url('/frozen-assets/card-1'); }
+.cx-feature-card__art[data-scene='sequence'] { background-image: url('/frozen-assets/card-3'); }
+.cx-feature-card__art[data-scene='decision'] { background-image: url('/frozen-assets/card-5'); }
+.cx-feature-card__body { padding: 1.05rem 1.15rem 1.25rem; }
+.cx-feature-card__body > span { color: var(--cx-signal); font-size: .68rem; font-weight: 900; letter-spacing: .15em; }
+.cx-feature-card__body h3 { margin: .55rem 0 .45rem; }
+.cx-feature-card__body p { margin: 0; }
+
+/* A truthful zero-story state should look intentional, not like five broken placeholders. */
+.cx-frozen-archive-forming {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  bottom: 36px;
+  display: grid;
+  grid-template-columns: minmax(240px, 360px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid rgba(246,200,79,.18);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(13,14,16,.96), rgba(7,8,9,.94));
+  box-shadow: 0 22px 58px rgba(0,0,0,.35);
+}
+.cx-frozen-archive-forming__art {
+  min-height: 110px;
+  border-radius: 15px;
+  background:
+    linear-gradient(90deg,rgba(5,6,8,.15),rgba(5,6,8,.48)),
+    url('/frozen-assets/card-1') center 44% / cover no-repeat;
+}
+.cx-frozen-archive-forming h3 { margin: 0; color: #fff8ed; }
+.cx-frozen-archive-forming p { margin: .4rem 0 0; color: #918b86; line-height: 1.5; }
+.cx-frozen-archive-forming .cx-ending-badge { white-space: nowrap; }
+
+/* Contributor confidence and control. */
+.cx-draft-assurance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding-top: .85rem;
+  border-top: 1px solid rgba(255,255,255,.07);
+  color: #8f8984;
+  font-size: .76rem;
+}
+.cx-draft-assurance strong { color: #cfc8bf; }
+.cx-link-button {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  color: #d8b451;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cx-link-button:hover { color: #ffe08a; }
+
+/* Moderation: the exact-public-preview is visually distinct from private review notes. */
+.cx-public-preview {
+  margin: 1.1rem 0;
+  overflow: hidden;
+  border: 1px solid rgba(246,200,79,.28);
+  border-radius: 18px;
+  background: #070809;
+}
+.cx-public-preview__header { padding: 1rem 1.1rem; border-bottom: 1px solid rgba(246,200,79,.14); background: rgba(246,200,79,.045); }
+.cx-public-preview__header h3 { margin: .25rem 0 0; color: #fff8ed; }
+.cx-public-preview__body { padding: 1.1rem; }
+.cx-public-preview__meta { display: flex; flex-wrap: wrap; gap: .45rem; margin: .8rem 0; }
+.cx-public-preview__meta span { padding: .35rem .55rem; border: 1px solid rgba(255,255,255,.09); border-radius: 999px; color: #a9a39e; font-size: .7rem; }
+.cx-public-preview__beats { display: grid; gap: .7rem; margin-top: 1rem; }
+.cx-public-preview__beat { padding: .8rem .9rem; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; background: rgba(255,255,255,.018); }
+.cx-public-preview__beat strong { display: block; margin-bottom: .3rem; color: #e7c45d; font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; }
+.cx-public-preview__beat p { margin: 0; white-space: pre-wrap; color: #cbc5be; line-height: 1.55; }
+.cx-public-preview__labels { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .9rem; }
+.cx-public-preview__labels span { padding: .35rem .55rem; border-radius: 999px; background: rgba(246,200,79,.08); color: #e2be58; font-size: .7rem; }
+
+.cx-account-action-row { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1rem; }
+.cx-status-pill { display: inline-flex; padding: .35rem .55rem; border-radius: 999px; background: rgba(246,200,79,.08); color: #e2bd58; font-size: .72rem; font-weight: 800; }
+
+@media (max-width: 1000px) {
+  .cx-about-page--deck { padding-left: 24px !important; padding-right: 24px !important; }
+  .cx-about-stage--deck { grid-template-columns: minmax(320px,.82fr) minmax(430px,1.18fr) !important; }
+  .cx-frozen-archive-forming { grid-template-columns: 180px 1fr; }
+  .cx-frozen-archive-forming .cx-ending-badge { display: none; }
+}
+@media (max-width: 820px) {
+  .cx-about-page--deck { padding-left: 14px !important; padding-right: 14px !important; }
+  .cx-about-stage--deck { grid-template-columns: 1fr !important; }
+  .cx-frozen-archive-forming { position: relative; bottom: auto; grid-template-columns: 1fr; margin: 0 18px 24px; }
+  .cx-frozen-archive-forming__art { min-height: 150px; }
+  .cx-feature-card--illustrated { grid-template-rows: 150px auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-feature-card__art { transition: none !important; }
+}
