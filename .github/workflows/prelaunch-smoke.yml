@@ -1,0 +1,45 @@
+name: Prelaunch production smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${HEAD_SHA}"
+          git checkout --detach FETCH_HEAD
+
+      - name: Select Node.js 22
+        shell: bash
+        run: |
+          . "${NVM_DIR}/nvm.sh"
+          nvm install 22
+          nvm use 22
+          node --version
+
+      - name: Wait for production deployment
+        if: github.event_name == 'push'
+        run: sleep 90
+
+      - name: Run production availability and load smoke
+        env:
+          CORPORATEX_BASE_URL: https://corporatex.onrender.com
+          CORPORATEX_SMOKE_REQUESTS: 10
+          CORPORATEX_SMOKE_CONCURRENCY: 5
+          CORPORATEX_SMOKE_TIMEOUT_MS: 15000
+          CORPORATEX_SMOKE_P95_MS: 12000
+        run: node scripts/load-smoke.mjs
