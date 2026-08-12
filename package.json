@@ -27,7 +27,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/sync-live-home.mjs && next build",
     "start": "next start -p ${PORT:-3000}",
     "dev:static": "python3 -m http.server 4173",
     "build:static": "node scripts/build.mjs",
