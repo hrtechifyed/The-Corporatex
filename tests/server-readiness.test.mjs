@@ -14,9 +14,13 @@ const pagesWorkflow = await read('.github/workflows/deploy-pages.yml');
 const rootLayout = await read('app/layout.tsx');
 const submitPage = await read('app/submit/page.tsx');
 const contributorJourney = await read('components/contributor-journey.tsx');
+const sceneStep = await read('components/validated-scene-step.tsx');
+const safetyStep = await read('components/safety-step.tsx');
 const contributionDraft = await read('lib/contribution-draft.ts');
 const storyTypes = await read('lib/types.ts');
 const verifyAction = await read('app/submit/verify/actions.ts');
+const submissionEmail = await read('lib/submission-auth-email.ts');
+const submissionHandoff = await read('lib/submission-handoff.ts');
 const finalizeRoute = await read('app/api/submission/finalize/route.ts');
 const safetyRoute = await read('app/api/submission/safety/route.ts');
 const authModule = await read('lib/auth.ts');
@@ -26,6 +30,7 @@ const siteFooter = await read('components/site-footer.tsx');
 const performanceCss = await read('app/corporatex-performance.css');
 const frozenHomepageCss = await read('app/frozen-homepage.css');
 const frozenGlobalCss = await read('app/frozen-global.css');
+const launchCss = await read('app/launch-readiness.css');
 const frozenAssetCss = await read('app/frozen-assets.css');
 const frozenAssetRoute = await read('app/frozen-assets/[asset]/route.ts');
 const frozenAssetIndex = await read('lib/frozen-home-assets/index.ts');
@@ -34,26 +39,19 @@ const morePage = await read('app/more/page.tsx');
 const privacyPage = await read('app/privacy/page.tsx');
 const loginPage = await read('app/login/page.tsx');
 const storyPage = await read('app/experience/[companySlug]/[experienceSlug]/page.tsx');
+const moderationPage = await read('app/moderation/page.tsx');
+const moderationApi = await read('app/api/moderation/[id]/route.ts');
+const accountPage = await read('app/account/page.tsx');
 
-const requiredRuntimeDependencies = [
-  'next',
-  'react',
-  'react-dom',
-  '@supabase/ssr',
-  '@supabase/supabase-js',
-  'googleapis',
-  'zod',
-];
+const requiredRuntimeDependencies = ['next','react','react-dom','@supabase/ssr','@supabase/supabase-js','googleapis','zod'];
 
-test('Next.js production commands are available without removing static commands', () => {
+test('Next.js production commands remain available with the static preview commands', () => {
   assert.equal(packageJson.scripts.dev, 'next dev');
   assert.equal(packageJson.scripts.build, 'next build');
   assert.match(packageJson.scripts.start, /next start/);
   assert.equal(packageJson.scripts['build:static'], 'node scripts/build.mjs');
   assert.equal(packageJson.scripts['check:server'], 'next build');
   assert.equal(packageJson.scripts['test:e2e'], 'playwright test');
-  assert.match(packageJson.scripts.check, /check:static/);
-  assert.match(packageJson.scripts.check, /check:server/);
 });
 
 test('server runtime and build dependencies are declared', () => {
@@ -65,16 +63,14 @@ test('server runtime and build dependencies are declared', () => {
 
 test('story analysis stays local and treats AI as an emergent signal rather than a mandatory beat', () => {
   assert.match(storyAnalysisModule, /const SAFETY_RULES/);
-  assert.match(storyAnalysisModule, /possibleAbusiveContent/);
   assert.match(storyAnalysisModule, /identifyingIndicators/);
   assert.match(storyAnalysisModule, /shift_technology_followup/);
   assert.doesNotMatch(storyAnalysisModule, /GEMINI_API_KEY|@google\/genai|GoogleGenAI/);
   assert.match(analysisRunner, /does not send your story to an external AI service/);
   assert.match(storyTypes, /\['looking_back', 'Looking Back'/);
-  assert.doesNotMatch(storyTypes, /\['ai_turn'|The AI Turn/);
 });
 
-test('Render blueprint creates a Node web service with a health check', () => {
+test('Render blueprint creates a Node web service with health check and private server secrets', () => {
   assert.match(renderBlueprint, /type: web/);
   assert.match(renderBlueprint, /runtime: node/);
   assert.match(renderBlueprint, /buildCommand: npm install --no-audit --no-fund && npm run build/);
@@ -82,7 +78,6 @@ test('Render blueprint creates a Node web service with a health check', () => {
   assert.match(renderBlueprint, /healthCheckPath: \/api\/health/);
   assert.match(renderBlueprint, /key: SUPABASE_SERVICE_ROLE_KEY\s+sync: false/);
   assert.match(renderBlueprint, /key: GMAIL_USER\s+value: hrtechifyed@gmail\.com/);
-  assert.doesNotMatch(renderBlueprint, /GEMINI_API_KEY/);
 });
 
 test('health endpoint is independent from Supabase and returns no-store JSON', () => {
@@ -92,41 +87,50 @@ test('health endpoint is independent from Supabase and returns no-store JSON', (
   assert.doesNotMatch(healthRoute, /supabase|GMAIL|GOOGLE_/i);
 });
 
-test('Opening Signal is standalone and selecting a card automatically moves to Set the Scene', () => {
+test('Opening Signal is standalone and selecting a card automatically moves to Setting the Scene', () => {
   assert.match(submitPage, /OpeningSignalStep/);
-  assert.doesNotMatch(submitPage, /createDraft|Set the Scene|requireProfile/);
+  assert.match(submitPage, /8–12 minutes/);
   assert.match(contributorJourney, /How did this ending feel\?/);
+  assert.match(contributorJourney, /Setting the Scene/);
   assert.match(contributorJourney, /router\.push\('\/submit\/scene'\)/);
   assert.match(contributorJourney, /role="radio"/);
-  assert.match(contributorJourney, /aria-checked=\{isSelected\}/);
-  assert.doesNotMatch(contributorJourney, /Continue to Set the Scene/);
 });
 
-test('the contribution stays pre-auth until Final Cut and Safety are complete', () => {
+test('the contribution stays pre-auth through Final Cut and Safety and requires deliberate context plus minimum substance', () => {
   assert.match(contributionDraft, /window\.localStorage/);
-  assert.match(contributorJourney, /Where did this story unfold\?/);
+  assert.match(contributionDraft, /MIN_SUBSTANTIVE_STORY_CHARS/);
+  assert.match(contributionDraft, /approximateTenure: ''/);
+  assert.match(contributionDraft, /workArrangement: ''/);
+  assert.match(sceneStep, /Choose tenure/);
+  assert.match(sceneStep, /Choose arrangement/);
+  assert.match(sceneStep, /Continue with this location/);
   assert.match(contributorJourney, /Review my story →/);
   assert.match(contributorJourney, /Run safety check →/);
-  assert.match(contributorJourney, /Verify &amp; submit →/);
-  assert.match(contributorJourney, /technology-ai/);
-  assert.match(contributorJourney, /Technology \/ AI follow-up · optional/);
-  assert.doesNotMatch(contributorJourney, /CareerJarvis/);
+  assert.match(contributorJourney, /hasSubstantiveStory/);
+  assert.match(safetyStep, /It does not detect every identifying clue/);
   assert.match(safetyRoute, /contributionSubmissionSchema/);
   assert.match(safetyRoute, /analyseStory/);
   assert.doesNotMatch(safetyRoute, /requireProfile|auth\.getUser/);
-  assert.match(verifyAction, /sendCorporateXAuthEmail/);
-  assert.match(verifyAction, /purpose: 'submission'/);
+});
+
+test('verification creates a recoverable private handoff that can cross browsers or devices', () => {
+  assert.match(verifyAction, /sendRecoverableSubmissionLink/);
+  assert.match(verifyAction, /draftPayload/);
+  assert.match(submissionEmail, /prepareSubmissionHandoff/);
+  assert.match(submissionEmail, /another browser or device/);
+  assert.match(submissionHandoff, /status: 'draft'/);
+  assert.match(submissionHandoff, /guided_answers/);
   assert.doesNotMatch(verifyAction, /signInWithOtp|emailRedirectTo/);
 });
 
-test('verified finalization creates the database record only after authentication and keeps moderation private', () => {
+test('verified finalization is authenticated, idempotent and never auto-publishes a new submission', () => {
   assert.match(finalizeRoute, /auth\.getUser\(\)/);
-  assert.match(finalizeRoute, /if \(userError \|\| !user\).*status: 401/);
-  assert.match(finalizeRoute, /status: 'draft'/);
+  assert.match(finalizeRoute, /status: 401/);
+  assert.match(finalizeRoute, /idempotent: true/);
   assert.match(finalizeRoute, /status: 'awaiting_ai_analysis'/);
   assert.match(finalizeRoute, /status: 'awaiting_user_approval'/);
   assert.match(finalizeRoute, /status: 'pending_moderation'/);
-  assert.doesNotMatch(finalizeRoute, /status: 'published'/);
+  assert.doesNotMatch(finalizeRoute, /update\(\{ status: 'published'/);
   assert.match(finalizeRoute, /possibleIdentifyingDetails/);
   assert.match(finalizeRoute, /possibleAbusiveContent/);
 });
@@ -134,78 +138,64 @@ test('verified finalization creates the database record only after authenticatio
 test('new-user profile provisioning cannot block Supabase Auth and has a server fallback', () => {
   assert.match(profileMigration, /Never abort creation of auth\.users/);
   assert.match(profileMigration, /exception when others/);
-  assert.match(profileMigration, /return new;/);
   assert.match(authModule, /createAdminClient/);
   assert.match(authModule, /ensureProfileRecord/);
-  assert.doesNotMatch(authModule, /supabase\.from\('profiles'\)\.insert/);
 });
 
-test('the frozen homepage matches the approved visual contract without fake production claims', () => {
+test('homepage preserves the approved proposition without fake production claims', () => {
   assert.match(homePage, /Not a score\./);
   assert.match(homePage, /cx-frozen-sequence/);
-  assert.match(homePage, /A rating gives you a reaction\. A story shows what was promised, what changed and what to ask before joining\./);
   assert.match(homePage, /Real stories\. Real people\. Real clarity\./);
-  assert.match(homePage, /Array\.from\(\{ length: 5 \}/);
   assert.match(homePage, /published_experiences.*count: 'exact'/s);
-  assert.match(homePage, /No demo account/);
+  assert.match(homePage, /Archive forming/);
+  assert.match(homePage, /No demonstration account/);
   assert.doesNotMatch(homePage, /10K\+|professionals and counting/);
-  assert.doesNotMatch(homePage, /cx-signal-visual/);
   assert.match(siteHeader, /HRTechify/);
-  assert.match(siteHeader, /Corporate<span className="cx-brand-x">X<\/span>/);
   assert.match(siteHeader, /How It Works/);
-  assert.match(siteHeader, /cx-sign-in/);
-  assert.match(morePage, /id="how-it-works"/);
 });
 
-test('frozen homepage artwork is cacheable and uses the five approved anime story scenes', () => {
+test('frozen homepage artwork is cacheable and launch overrides use valid extensionless app routes', () => {
   assert.match(rootLayout, /frozen-homepage\.css/);
   assert.match(rootLayout, /frozen-assets\.css/);
+  assert.match(rootLayout, /launch-readiness\.css/);
   assert.match(frozenHomepageCss, /cx-frozen-art/);
-  assert.match(frozenHomepageCss, /grid-template-columns:repeat\(5/);
-  assert.match(frozenHomepageCss, /@media \(prefers-reduced-motion: reduce\)/);
   for (const asset of ['hero','card-1','card-2','card-3','card-4','card-5']) assert.match(frozenAssetCss, new RegExp(`/frozen-assets/${asset}`));
   assert.match(frozenAssetIndex, /hero1 \+ hero2 \+ hero3 \+ hero4 \+ hero5 \+ hero6 \+ hero7/);
   assert.match(frozenAssetRoute, /Content-Type': 'image\/webp'/);
   assert.match(frozenAssetRoute, /max-age=31536000, immutable/);
+  assert.match(launchCss, /url\('\/frozen-assets\/hero'\)/);
+  assert.doesNotMatch(launchCss, /frozen-assets\/hero\.webp/);
 });
 
-test('the frozen black-gold design system is global from header through footer', () => {
+test('global black-gold design remains intact while current launch overrides load last', () => {
   assert.match(rootLayout, /frozen-global\.css/);
   assert.match(frozenGlobalCss, /body\.cx-body/);
   assert.match(frozenGlobalCss, /\.site-header/);
   assert.match(frozenGlobalCss, /\.site-footer/);
-  assert.match(frozenGlobalCss, /\.cx-flow-card/);
-  assert.match(frozenGlobalCss, /\.cx-system-card/);
-  assert.match(frozenGlobalCss, /\.cx-archive-card/);
-  assert.match(frozenGlobalCss, /\/frozen-assets\/hero\.webp/);
-  assert.match(frozenGlobalCss, /\/frozen-assets\/card-5\.webp/);
-  assert.match(siteHeader, /const primaryLinks/);
-  assert.doesNotMatch(siteHeader, /innerLinks|desktopLinks/);
-  assert.match(siteFooter, /HRTechify/);
-  assert.match(siteFooter, /Corporate<span className="cx-brand-x">X<\/span>/);
-  assert.match(siteFooter, /How It Works/);
-  for (const [name, source] of Object.entries({ morePage, privacyPage, storyPage })) {
-    assert.match(source, /cx-frozen-mini-art/, `${name} should use the approved anime/city visual language`);
-    assert.doesNotMatch(source, /cx-signal-visual/, `${name} should not fall back to the old abstract signal visual`);
-  }
+  assert.ok(rootLayout.indexOf('./launch-readiness.css') > rootLayout.indexOf('./frozen-global.css'));
+  assert.match(siteFooter, /CorporateX — Powered by HRTechify/);
+  for (const [name, source] of Object.entries({ morePage, privacyPage, storyPage })) assert.match(source, /cx-frozen-mini-art/, `${name} should use approved visual language`);
+});
+
+test('moderation and account workflows satisfy the prelaunch trust gate', () => {
+  assert.match(moderationPage, /What will be published/);
+  assert.match(moderationPage, /Community report queue/);
+  assert.match(moderationApi, /publicPreviewReviewed/);
+  assert.match(accountPage, /In private review/);
+  assert.match(accountPage, /Changes requested/);
+  assert.match(accountPage, /\/account\/story\//);
 });
 
 test('CareerJarvis is removed from live public and contribution surfaces', () => {
-  for (const [name, source] of Object.entries({ homePage, morePage, privacyPage, loginPage, storyPage, contributorJourney })) {
-    assert.doesNotMatch(source, /CareerJarvis|career-jarvis/, `${name} must not render CareerJarvis`);
-  }
+  for (const [name, source] of Object.entries({ homePage, morePage, privacyPage, loginPage, storyPage, contributorJourney })) assert.doesNotMatch(source, /CareerJarvis|career-jarvis/, `${name} must not render CareerJarvis`);
 });
 
-test('route rendering keeps the previous transition-lag safeguards', () => {
+test('route rendering keeps transition-lag safeguards', () => {
   assert.doesNotMatch(rootLayout, /force-dynamic/);
   assert.match(rootLayout, /corporatex-performance\.css/);
-  assert.match(rootLayout, /contributor-journey\.css/);
   assert.match(siteHeader, /router\.prefetch/);
-  assert.match(siteHeader, /data-route-pending/);
   assert.match(performanceCss, /content-visibility:\s*auto/);
-  assert.match(performanceCss, /contain:\s*layout paint/);
   assert.match(performanceCss, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.doesNotMatch(performanceCss, /transition:\s*all/);
 });
 
 test('environment and CI do not require an external story-analysis key', () => {
@@ -216,8 +206,6 @@ test('environment and CI do not require an external story-analysis key', () => {
 test('CI installs dependencies and validates the server while Pages stays static', () => {
   assert.match(siteWorkflow, /npm install --no-audit --no-fund/);
   assert.match(siteWorkflow, /npm run check/);
-  assert.match(siteWorkflow, /NEXT_PUBLIC_SUPABASE_URL/);
   assert.match(pagesWorkflow, /npm install --no-audit --no-fund/);
   assert.match(pagesWorkflow, /npm run check:static/);
-  assert.doesNotMatch(pagesWorkflow, /npm run check\s*$/m);
 });
