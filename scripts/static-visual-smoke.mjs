@@ -4,6 +4,7 @@ import { mkdir } from 'node:fs/promises';
 
 const port = 4173;
 const base = `http://127.0.0.1:${port}`;
+const artifactDir = 'prelaunch-artifacts/github-pages';
 const server = spawn('python3', ['-m', 'http.server', String(port), '-d', 'dist'], { stdio: ['ignore', 'pipe', 'pipe'] });
 
 async function waitForServer() {
@@ -35,7 +36,7 @@ let browser;
 try {
   await waitForServer();
   browser = await chromium.launch({ headless: true });
-  await mkdir('test-results/prelaunch-matrix', { recursive: true });
+  await mkdir(artifactDir, { recursive: true });
 
   for (const viewport of [
     { name: 'github-pages-desktop-1440', width: 1440, height: 900 },
@@ -78,7 +79,7 @@ try {
     }
 
     await prime(page);
-    await page.screenshot({ path: `test-results/prelaunch-matrix/${viewport.name}.png`, fullPage: true });
+    await page.screenshot({ path: `${artifactDir}/${viewport.name}.png`, fullPage: true });
     await page.close();
   }
 
