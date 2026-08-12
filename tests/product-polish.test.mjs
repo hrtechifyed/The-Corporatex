@@ -19,6 +19,7 @@ const [
   complete,
   layout,
   pagesPreview,
+  pagesCss,
   staticBuild,
 ] = await Promise.all([
   read('components/site-header.tsx'),
@@ -35,6 +36,7 @@ const [
   read('app/submit/complete/page.tsx'),
   read('app/layout.tsx'),
   read('pages-preview/index.html'),
+  read('pages-preview/github-pages-current.css'),
   read('scripts/build.mjs'),
 ]);
 
@@ -64,8 +66,9 @@ test('GitHub Pages overlays the current homepage preview and materializes the fr
   assert.match(pagesPreview, /HRTechify/);
   assert.match(pagesPreview, />Sign In</);
   assert.match(pagesPreview, /https:\/\/corporatex\.onrender\.com\/login/);
-  assert.match(pagesPreview, /frozen-assets\/hero\.webp/);
-  assert.match(pagesPreview, /frozen-assets\/card-1\.webp/);
+  assert.match(pagesCss, /frozen-assets\/hero\.webp/);
+  assert.match(pagesCss, /frozen-assets\/card-1\.webp/);
+  assert.match(pagesCss, /frozen-assets\/card-5\.webp/);
   assert.match(pagesPreview, /CorporateX — Powered by HRTechify · People · Technology · Growth/);
   assert.match(staticBuild, /pages-preview\/index\.html/);
   assert.match(staticBuild, /dist\/frozen-assets\/hero\.webp/);
