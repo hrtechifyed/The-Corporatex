@@ -7,7 +7,7 @@ const read = (path) => readFile(path, 'utf8');
 const [
   header, footer, about, css, refinement, openingRefinement, readiness, locationRoute, scene, scenePage,
   liveCloud, finalize, handoff, home, complete, layout, pagesPreview, pagesCss, pagesFixes, staticBuild,
-  account, moderation, moderationApi, privacy, browse,
+  account, moderation, moderationApi, moderationControls, privacy, browse,
 ] = await Promise.all([
   read('components/site-header.tsx'), read('components/site-footer.tsx'), read('app/about/page.tsx'), read('app/product-polish.css'),
   read('app/interface-refinement.css'), read('app/opening-signal-refinement.css'), read('app/launch-readiness.css'),
@@ -15,7 +15,7 @@ const [
   read('components/live-signal-cloud.tsx'), read('app/api/submission/finalize/route.ts'), read('lib/submission-handoff.ts'),
   read('app/page.tsx'), read('app/submit/complete/page.tsx'), read('app/layout.tsx'), read('pages-preview/index.html'),
   read('pages-preview/github-pages-current.css'), read('pages-preview/prelaunch-pages-fixes.css'), read('scripts/build.mjs'),
-  read('app/account/page.tsx'), read('app/moderation/page.tsx'), read('app/api/moderation/[id]/route.ts'),
+  read('app/account/page.tsx'), read('app/moderation/page.tsx'), read('app/api/moderation/[id]/route.ts'), read('components/moderation-controls.tsx'),
   read('app/privacy/page.tsx'), read('app/browse/page.tsx'),
 ]);
 
@@ -106,13 +106,18 @@ test('submission is backed by a private recoverable handoff and idempotent final
   assert.match(finalize, /\['pending_moderation', 'published'\]/);
 });
 
-test('moderation cannot publish without exact public-preview confirmation', () => {
+test('moderation cannot publish anything other than the exact reviewed saved public copy', () => {
   assert.match(moderation, /What will be published/);
   assert.match(moderation, /experience_highlights/);
   assert.match(moderation, /experience_labels/);
   assert.match(moderation, /Community report queue/);
+  assert.match(moderationControls, /publicCopyDirty/);
+  assert.match(moderationControls, /Save the public headline\/summary edits first/);
+  assert.match(moderationControls, /disabled=\{!previewReviewed \|\| publicCopyDirty\}/);
   assert.match(moderationApi, /publicPreviewReviewed/);
   assert.match(moderationApi, /Review and confirm the exact public preview/);
+  assert.match(moderationApi, /input\.headline !== experience\.approved_headline/);
+  assert.match(moderationApi, /public copy changed after the preview was generated/i);
 });
 
 test('My Stories uses human status language and no legacy journey links', () => {
