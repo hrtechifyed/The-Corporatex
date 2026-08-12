@@ -1,6 +1,13 @@
 /* CorporateX prelaunch launch-readiness layer.
    Loaded last so launch-critical visibility, asset routing and geometry win the cascade. */
 
+/* The footer is small enough to keep painted. Avoid a 720px content-visibility placeholder
+   appearing as a blank black region in full-page captures or fast route transitions. */
+.site-footer {
+  content-visibility: visible !important;
+  contain-intrinsic-size: auto !important;
+}
+
 /* Frozen asset routes in the live Next.js app are extensionless. */
 .cx-story-hero::after,
 .cx-archive-hero::after {
