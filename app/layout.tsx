@@ -17,8 +17,10 @@ import './home-ending-cards.css';
 import './scene-form-alignment.css';
 import './global-home-character.css';
 import './opening-signal-refinement.css';
+import './launch-readiness.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import { FunnelTelemetry } from '@/components/funnel-telemetry';
 
 const site = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -49,6 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className="cx-body">
         <a href="#main" className="fixed -top-20 left-4 z-[100] bg-signal p-3 text-black focus:top-4">Skip to content</a>
         <SiteHeader />
+        <FunnelTelemetry />
         <main id="main">{children}</main>
         <SiteFooter />
       </body>
