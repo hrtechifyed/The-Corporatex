@@ -16,6 +16,21 @@ const publicPages = [
   { name: 'browse', path: '/browse' },
 ] as const;
 
+async function primeOffscreenContent(page: Page) {
+  await page.evaluate(async () => {
+    const step = Math.max(320, Math.round(window.innerHeight * .72));
+    const bottom = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    for (let y = 0; y <= bottom; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    }
+    window.scrollTo(0, bottom);
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    window.scrollTo(0, 0);
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  });
+}
+
 async function assertViewportIntegrity(page: Page) {
   const geometry = await page.evaluate(() => {
     const heading = document.querySelector('h1');
@@ -43,6 +58,16 @@ test.describe('Prelaunch visual acceptance matrix', () => {
         await page.goto(route.path);
         await page.waitForLoadState('domcontentloaded');
         await assertViewportIntegrity(page);
+        await primeOffscreenContent(page);
+        if (route.name === 'how-it-works') {
+          const gap = await page.evaluate(() => {
+            const lastSection = document.querySelector('main#main > .cx-page > section:last-child')?.getBoundingClientRect();
+            const footer = document.querySelector('.site-footer')?.getBoundingClientRect();
+            if (!lastSection || !footer) return 9999;
+            return Math.max(0, footer.top - lastSection.bottom);
+          });
+          expect(gap).toBeLessThan(120);
+        }
         await mkdir('test-results/prelaunch-matrix', { recursive: true });
         await page.screenshot({ path: `test-results/prelaunch-matrix/${route.name}-${viewport.name}.png`, fullPage: route.name !== 'about' });
       });
@@ -55,6 +80,7 @@ test.describe('Prelaunch visual acceptance matrix', () => {
       await expect(page).toHaveURL(/\/submit\/scene$/);
       await assertViewportIntegrity(page);
       await expect(page.getByText('Setting the Scene', { exact: true }).first()).toBeVisible();
+      await primeOffscreenContent(page);
       await mkdir('test-results/prelaunch-matrix', { recursive: true });
       await page.screenshot({ path: `test-results/prelaunch-matrix/setting-the-scene-${viewport.name}.png`, fullPage: true });
     });

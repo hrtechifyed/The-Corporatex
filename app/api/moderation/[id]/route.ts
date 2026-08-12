@@ -26,7 +26,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { supabase, profile } = await requireModerator();
     const { data: experience, error } = await supabase
       .from('experiences')
-      .select('status,approved_headline,public_slug,profile_id,companies(slug)')
+      .select('status,approved_headline,approved_summary,public_slug,profile_id,companies(slug)')
       .eq('id', id)
       .single();
     if (error) throw error;
@@ -41,6 +41,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     if (input.action === 'publish' && !input.publicPreviewReviewed) {
       return NextResponse.json({ error: 'Review and confirm the exact public preview before publication.' }, { status: 422 });
+    }
+    if (input.action === 'publish' && (input.headline !== experience.approved_headline || input.summary !== experience.approved_summary)) {
+      return NextResponse.json({ error: 'The public copy changed after the preview was generated. Save the edits, refresh, and review the exact public preview again.' }, { status: 409 });
     }
     if (['reject', 'request_changes', 'unpublish'].includes(input.action) && input.privateReason.trim().length < 3) {
       return NextResponse.json({ error: 'Add a moderation reason before taking this action.' }, { status: 422 });
