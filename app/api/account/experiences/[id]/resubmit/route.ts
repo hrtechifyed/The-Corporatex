@@ -15,6 +15,8 @@ const schema = z.object({
   technologyFollowUp: z.string().max(1800).default(''),
 });
 
+type GuidedRow = { experience_id: string; question_key: string; answer: string; sort_order: number };
+
 const SHIFT_TOPIC_LABELS: Record<string, string> = {
   leadership: 'Leadership', team: 'Culture', workload: 'Workload', structure: 'Structure',
   compensation: 'Compensation', 'technology-ai': 'AI', expectations: 'Expectations', other: 'Other change',
@@ -39,7 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (existingError) throw existingError;
     const shiftTopics = (existingRows || []).filter((row) => String(row.question_key).startsWith('shift_topic:')).map((row) => String(row.question_key).slice('shift_topic:'.length));
 
-    const guided = SCENES.flatMap(([key], index) => {
+    const guided: GuidedRow[] = SCENES.flatMap(([key], index) => {
       const answer = String(input.beats[key] || '').trim();
       return answer ? [{ experience_id: id, question_key: key, answer, sort_order: index * 10 }] : [];
     });
