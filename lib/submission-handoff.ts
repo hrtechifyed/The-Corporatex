@@ -82,13 +82,16 @@ export async function prepareSubmissionHandoff(userId: string, email: string, dr
     if (error) throw error;
   }
 
-  const guided = SCENES.flatMap(([key], index) => {
+  const guided: Array<{ experience_id: string; question_key: string; answer: string; sort_order: number }> = SCENES.flatMap(([key], index) => {
     const answer = String(draft.finalCut?.beats[key] || '').trim();
     return answer ? [{ experience_id: draft.draftId, question_key: key, answer, sort_order: index * 10 }] : [];
   });
   if (draft.finalCut?.technologyFollowUp.trim()) {
     guided.push({ experience_id: draft.draftId, question_key: 'shift_technology_followup', answer: draft.finalCut.technologyFollowUp.trim(), sort_order: 31 });
   }
+  draft.shiftTopics.forEach((topic, index) => {
+    guided.push({ experience_id: draft.draftId, question_key: `shift_topic:${topic}`, answer: topic, sort_order: 40 + index });
+  });
 
   const removedAnswers = await admin.from('guided_answers').delete().eq('experience_id', draft.draftId);
   if (removedAnswers.error) throw removedAnswers.error;
