@@ -18,11 +18,14 @@ export function AccountStoryControls({ id, status }: { id: string; status: strin
       setMessage(body.error || 'The story could not be updated.');
       return;
     }
-    setMessage(body.deleted ? 'Private story deleted.' : 'Story withdrawn.');
+    if (body.deleted) {
+      setMessage('Private story deleted.');
+      router.replace('/account');
+      return;
+    }
+    setMessage('Story withdrawn. You can now permanently delete its private record if you choose.');
     router.refresh();
   }
-
-  if (status === 'withdrawn') return <p className="cx-note">This story has been withdrawn. You can permanently delete the private record from the story details page.</p>;
 
   return (
     <div className="cx-account-action-row">
