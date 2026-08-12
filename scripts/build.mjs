@@ -8,18 +8,19 @@ await cp('public', 'dist/public', { recursive: true });
 await cp('public', 'dist', { recursive: true });
 await cp('src', 'dist/src', { recursive: true });
 
-function withProductionRuntime(html) {
+function withProductionRuntime(html, { submit = false } = {}) {
   if (html.includes('github-production.js')) return html;
-  return html.replace(
-    '</body>',
-    '<script type="module" src="src/github-production.js"></script>\n<script type="module" src="src/github-submit.js"></script>\n</body>',
-  );
+  const scripts = [
+    '<script type="module" src="src/github-production.js"></script>',
+    submit ? '<script type="module" src="src/github-submit.js"></script>' : '',
+  ].filter(Boolean).join('\n');
+  return html.replace('</body>', `${scripts}\n</body>`);
 }
 
 for (const file of await readdir('.')) {
   if (file.endsWith('.html')) {
     const html = await readFile(file, 'utf8');
-    await writeFile(`dist/${file}`, withProductionRuntime(html));
+    await writeFile(`dist/${file}`, withProductionRuntime(html, { submit: file === 'guided-story.html' }));
   }
 }
 
