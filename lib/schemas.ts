@@ -55,6 +55,14 @@ const beatRecord = z.record(z.string(), z.string().max(1800)).superRefine((value
   }
 });
 
+const contributionSafetySchema = z.object({
+  possibleIdentifyingDetails: z.array(z.string().max(300)).max(20),
+  possibleAbusiveContent: z.array(z.string().max(300)).max(20),
+  seriousTopic: z.boolean(),
+  suggestedLabels: z.array(z.string().max(40)).max(12),
+  checkedAt: z.number().int().positive(),
+});
+
 export const contributionSubmissionSchema = z.object({
   version: z.literal(3),
   draftId: z.string().uuid(),
@@ -76,7 +84,7 @@ export const contributionSubmissionSchema = z.object({
     beats: beatRecord,
     technologyFollowUp: z.string().max(1800),
   }),
-  safety: z.unknown().optional(),
+  safety: contributionSafetySchema.optional(),
 }).superRefine((value, ctx) => {
   const storyLength = Object.values(value.finalCut.beats)
     .map((answer) => String(answer || '').replace(/\s+/g, ' ').trim())
