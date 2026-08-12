@@ -38,5 +38,6 @@ for (let index = 1; index <= 5; index += 1) {
 // Server-only actions deliberately link back to the live Render app.
 await cp('pages-preview/index.html', 'dist/index.html');
 await cp('pages-preview/github-pages-current.css', 'dist/github-pages-current.css');
+await cp('pages-preview/prelaunch-pages-fixes.css', 'dist/prelaunch-pages-fixes.css');
 
 console.log('Built static site in dist/ with current CorporateX GitHub Pages preview.');
