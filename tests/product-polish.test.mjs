@@ -71,7 +71,8 @@ test('GitHub Pages overlays the current homepage preview and materializes the fr
   assert.match(pagesCss, /frozen-assets\/card-5\.webp/);
   assert.match(pagesPreview, /CorporateX — Powered by HRTechify · People · Technology · Growth/);
   assert.match(staticBuild, /pages-preview\/index\.html/);
-  assert.match(staticBuild, /dist\/frozen-assets\/hero\.webp/);
+  assert.match(staticBuild, /frozenOutputDir = 'dist\/frozen-assets'/);
+  assert.match(staticBuild, /\$\{frozenOutputDir\}\/hero\.webp/);
   assert.match(staticBuild, /readFrozenChunk/);
 });
 
