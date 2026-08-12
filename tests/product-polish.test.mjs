@@ -60,20 +60,50 @@ test('account utility stays secondary and becomes My Stories for an authenticate
   assert.match(header, /'cx-sign-in'/);
 });
 
-test('GitHub Pages overlays the current homepage preview and materializes the frozen artwork', () => {
+test('GitHub Pages mirrors the complete public homepage structure with frozen artwork', () => {
   assert.match(pagesPreview, /Not a score\./);
   assert.match(pagesPreview, /A <em>sequence\.<\/em>/);
-  assert.match(pagesPreview, /HRTechify/);
+  assert.match(pagesPreview, /Real stories\. Real people\. Real clarity\./);
+  assert.match(pagesPreview, /FOUR HONEST ENDINGS/);
+  assert.match(pagesPreview, /An exit is not always a warning\./);
+  assert.match(pagesPreview, /SIGNALS FROM PEOPLE WHO WERE THERE/);
+  assert.match(pagesPreview, /Stories for the decision ahead\./);
+  assert.match(pagesPreview, /LIVE SIGNAL CLOUD/);
+  assert.match(pagesPreview, /What people are noticing right now\./);
+  assert.match(pagesPreview, /PASS IT FORWARD/);
+  assert.match(pagesPreview, /Your ending could improve someone else’s beginning\./);
+  assert.match(pagesPreview, /CorporateX — Powered by HRTechify · People · Technology · Growth/);
+
+  const endingLinks = [
+    ['break-free', 'card-1.webp'],
+    ['next-act', 'card-2.webp'],
+    ['mixed-ending', 'card-3.webp'],
+    ['pass-the-torch', 'card-5.webp'],
+  ];
+  for (const [ending, asset] of endingLinks) {
+    assert.match(pagesPreview, new RegExp(`https:\\/\\/corporatex\\.onrender\\.com\\/submit\\/scene\\?ending=${ending}&from=home`));
+    assert.match(pagesCss, new RegExp(`frozen-assets\\/${asset}`));
+  }
+
   assert.match(pagesPreview, />Sign In</);
   assert.match(pagesPreview, /https:\/\/corporatex\.onrender\.com\/login/);
   assert.match(pagesCss, /frozen-assets\/hero\.webp/);
-  assert.match(pagesCss, /frozen-assets\/card-1\.webp/);
-  assert.match(pagesCss, /frozen-assets\/card-5\.webp/);
-  assert.match(pagesPreview, /CorporateX — Powered by HRTechify · People · Technology · Growth/);
+  assert.match(pagesCss, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(pagesCss, /@media\(max-width:1180px\)[\s\S]*pages-ending-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(pagesCss, /@media\(max-width:560px\)[\s\S]*pages-ending-grid\{grid-template-columns:1fr\}/);
   assert.match(staticBuild, /pages-preview\/index\.html/);
   assert.match(staticBuild, /frozenOutputDir = 'dist\/frozen-assets'/);
   assert.match(staticBuild, /\$\{frozenOutputDir\}\/hero\.webp/);
   assert.match(staticBuild, /readFrozenChunk/);
+});
+
+test('GitHub Pages remains truthful when server data is unavailable', () => {
+  assert.match(pagesPreview, /GitHub Pages mirrors the public design without inventing or caching employee stories/);
+  assert.match(pagesPreview, /This static GitHub mirror does not snapshot pending contributions or private moderation state/);
+  assert.match(pagesPreview, /https:\/\/corporatex\.onrender\.com\/#live-signals/);
+  assert.doesNotMatch(pagesPreview, /Northstar Technologies|Atlas Systems|Meridian Works|10K\+/i);
+  assert.equal((pagesPreview.match(/class="pages-ending-card"/g) || []).length, 4);
+  assert.equal((pagesPreview.match(/class="pages-story-card"/g) || []).length, 5);
 });
 
 test('About is a one-screen animated narrative on desktop with a mobile usability fallback', () => {
