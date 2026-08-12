@@ -63,6 +63,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: corporatex-prelaunch-visual-matrix-${{ github.run_number }}
-          path: test-results/prelaunch-matrix
+          path: |
+            test-results/prelaunch-matrix
+            prelaunch-artifacts/github-pages
           if-no-files-found: warn
           retention-days: 14
