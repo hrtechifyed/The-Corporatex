@@ -84,6 +84,21 @@
 .cx-feature-card__body h3 { margin: .55rem 0 .45rem; }
 .cx-feature-card__body p { margin: 0; }
 
+.cx-feature-grid--trust { align-items: stretch; gap: clamp(1rem,1.8vw,1.5rem); }
+.cx-feature-grid--trust .cx-feature-card {
+  min-height: 0 !important;
+  justify-content: flex-start !important;
+  padding: 1.15rem 1.2rem 1.25rem !important;
+}
+.cx-feature-grid--trust .cx-feature-card > span {
+  color: var(--cx-signal);
+  font-size: .65rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+.cx-feature-grid--trust .cx-feature-card h3 { margin: .65rem 0 .45rem; }
+.cx-feature-grid--trust .cx-feature-card p { margin: 0; line-height: 1.55; }
+
 /* A truthful zero-story state should look intentional, not like five broken placeholders. */
 .cx-frozen-archive-forming {
   position: absolute;
