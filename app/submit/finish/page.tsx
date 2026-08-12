@@ -1,5 +1,6 @@
-import { FinishSubmissionStep } from '@/components/contributor-journey';
+import { Suspense } from 'react';
+import { FinishSubmissionStep } from '@/components/finish-submission-step';
 
 export default function FinishSubmissionPage() {
-  return <FinishSubmissionStep />;
+  return <Suspense fallback={null}><FinishSubmissionStep /></Suspense>;
 }
