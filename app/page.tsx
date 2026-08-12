@@ -3,20 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { ENDINGS, endingFor } from '@/lib/endings';
 import { LiveSignalCloud } from '@/components/live-signal-cloud';
 
-function StoryCard({ story, index }: { story: any | null; index: number }) {
-  if (!story) {
-    return (
-      <article className="cx-frozen-card cx-frozen-card--placeholder" aria-label={`Archive story slot ${index + 1} is waiting for a confirmed story`}>
-        <div className="cx-frozen-card__image" aria-hidden="true" />
-        <div className="cx-frozen-card__body">
-          <h3>Archive forming</h3>
-          <p>Waiting for a confirmed workplace story</p>
-          <div className="cx-frozen-card__meta"><span className="cx-frozen-card__pill">Confirmed stories only</span><span>No demo account</span></div>
-        </div>
-      </article>
-    );
-  }
-
+function StoryCard({ story }: { story: any }) {
   const ending = endingFor(story.main_reason);
   const category = story.broad_function || ending.title;
   const context = story.broad_region || story.company_display_name || 'Workplace story';
@@ -51,7 +38,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
     receipt = data;
   }
 
-  const frozenCards = Array.from({ length: 5 }, (_, index) => stories?.[index] ?? null);
+  const frozenCards = (stories || []).slice(0, 5);
   const trustCount = publishedCount && publishedCount > 0
     ? `${publishedCount} published ${publishedCount === 1 ? 'signal' : 'signals'} and counting`
     : 'The confirmed archive is forming';
@@ -68,8 +55,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
             </h1>
             <p className="cx-frozen-lede">A rating gives you a reaction. A story shows what was promised, what changed and what to ask before joining.</p>
             <div className="cx-frozen-actions">
-              <Link className="cx-frozen-action cx-frozen-action--primary" href="/browse"><span aria-hidden="true">✦</span> Explore Stories <span aria-hidden="true">→</span></Link>
-              <Link className="cx-frozen-action cx-frozen-action--secondary" href="/submit"><span aria-hidden="true">□</span> Share Your Story</Link>
+              <Link data-cx-event="home_explore_stories" className="cx-frozen-action cx-frozen-action--primary" href="/browse"><span aria-hidden="true">✦</span> Explore Stories <span aria-hidden="true">→</span></Link>
+              <Link data-cx-event="home_share_story" className="cx-frozen-action cx-frozen-action--secondary" href="/submit"><span aria-hidden="true">□</span> Share Your Story</Link>
             </div>
             <div className="cx-frozen-trust" aria-label="CorporateX story archive">
               <span className="cx-frozen-trust-copy">Real stories. Real people. Real clarity.</span>
@@ -80,9 +67,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
 
           <div className="cx-frozen-art" role="img" aria-label="Anime-style professional overlooking a city as a golden story path connects workplace moments." />
 
-          <div className="cx-frozen-story-strip" aria-label="Latest confirmed workplace stories">
-            {frozenCards.map((story, index) => <StoryCard story={story} index={index} key={story?.id || `placeholder-${index}`} />)}
-          </div>
+          {frozenCards.length ? (
+            <div className="cx-frozen-story-strip" aria-label="Latest confirmed workplace stories">
+              {frozenCards.map((story: any) => <StoryCard story={story} key={story.id} />)}
+            </div>
+          ) : (
+            <div className="cx-frozen-archive-forming" aria-label="The confirmed story archive is forming">
+              <div className="cx-frozen-archive-forming__art" aria-hidden="true" />
+              <div><h3>Archive forming.</h3><p>CorporateX will show genuine, moderated workplace stories here as contributors choose to publish them. No demonstration account is presented as a real employee.</p></div>
+              <span className="cx-ending-badge">Confirmed stories only</span>
+            </div>
+          )}
         </div>
       </section>
 
@@ -107,6 +102,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
               <Link
                 className="cx-ending-card"
                 data-ending={ending.slug}
+                data-cx-event={`home_ending_${ending.slug}`}
                 href={`/submit/scene?ending=${ending.slug}&from=home`}
                 aria-label={`${ending.title}: begin sharing this story`}
                 key={ending.value}
