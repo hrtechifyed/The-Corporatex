@@ -36,8 +36,14 @@ for (let index = 1; index <= 5; index += 1) {
 
 // Overlay the current public-facing homepage specifically for GitHub Pages.
 // Server-only actions deliberately link back to the live Render app.
-await cp('pages-preview/index.html', 'dist/index.html');
+let pagesHtml = await readFile('pages-preview/index.html', 'utf8');
+pagesHtml = pagesHtml.replace(
+  '<link rel="stylesheet" href="prelaunch-pages-fixes.css" />',
+  '<link rel="stylesheet" href="prelaunch-pages-fixes.css" />\n  <link rel="stylesheet" href="navbar-fix.css" />',
+);
+await writeFile('dist/index.html', pagesHtml);
 await cp('pages-preview/github-pages-current.css', 'dist/github-pages-current.css');
 await cp('pages-preview/prelaunch-pages-fixes.css', 'dist/prelaunch-pages-fixes.css');
+await cp('pages-preview/navbar-fix.css', 'dist/navbar-fix.css');
 
-console.log('Built static site in dist/ with current CorporateX GitHub Pages preview.');
+console.log('Built static site in dist/ with the shared CorporateX homepage and navbar fix.');
