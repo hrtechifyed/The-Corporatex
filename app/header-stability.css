@@ -1,0 +1,29 @@
+/* Route-stable header geometry.
+   Keep the application header in the same top position on every Next.js route. */
+:root {
+  --cx-header-height: 82px;
+  --cx-header-height-mobile: 76px;
+}
+
+.site-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important;
+  min-height: var(--cx-header-height) !important;
+}
+
+.site-header .site-header-inner {
+  height: var(--cx-header-height) !important;
+  min-height: var(--cx-header-height) !important;
+}
+
+@media (max-width: 820px) {
+  .site-header {
+    min-height: var(--cx-header-height-mobile) !important;
+  }
+
+  .site-header .site-header-inner {
+    height: var(--cx-header-height-mobile) !important;
+    min-height: var(--cx-header-height-mobile) !important;
+  }
+}
