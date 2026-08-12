@@ -8,9 +8,15 @@ await cp('public', 'dist/public', { recursive: true });
 await cp('public', 'dist', { recursive: true });
 await cp('src', 'dist/src', { recursive: true });
 
+function withProductionRuntime(html, src = 'src/github-production.js') {
+  if (html.includes('github-production.js')) return html;
+  return html.replace('</body>', `<script type="module" src="${src}"></script>\n</body>`);
+}
+
 for (const file of await readdir('.')) {
   if (file.endsWith('.html')) {
-    await cp(file, `dist/${file}`);
+    const html = await readFile(file, 'utf8');
+    await writeFile(`dist/${file}`, withProductionRuntime(html));
   }
 }
 
@@ -35,15 +41,15 @@ for (let index = 1; index <= 5; index += 1) {
 }
 
 // Overlay the current public-facing homepage specifically for GitHub Pages.
-// Server-only actions deliberately link back to the live Render app.
 let pagesHtml = await readFile('pages-preview/index.html', 'utf8');
 pagesHtml = pagesHtml.replace(
   '<link rel="stylesheet" href="prelaunch-pages-fixes.css" />',
   '<link rel="stylesheet" href="prelaunch-pages-fixes.css" />\n  <link rel="stylesheet" href="navbar-fix.css" />',
 );
+pagesHtml = withProductionRuntime(pagesHtml);
 await writeFile('dist/index.html', pagesHtml);
 await cp('pages-preview/github-pages-current.css', 'dist/github-pages-current.css');
 await cp('pages-preview/prelaunch-pages-fixes.css', 'dist/prelaunch-pages-fixes.css');
 await cp('pages-preview/navbar-fix.css', 'dist/navbar-fix.css');
 
-console.log('Built static site in dist/ with the shared CorporateX homepage and navbar fix.');
+console.log('Built GitHub Pages production frontend with direct Supabase runtime.');
