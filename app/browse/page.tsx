@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { ENDINGS, endingFor } from '@/lib/endings';
+
+export const metadata: Metadata = {
+  title: 'Workplace Stories',
+  description: 'Explore genuine published workplace stories by ending, broad region and confirmed signal.',
+  alternates: { canonical: '/browse' },
+};
 
 export default async function Browse({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
   const q = await searchParams;
@@ -13,6 +20,13 @@ export default async function Browse({ searchParams }: { searchParams: Promise<R
   if (q.company) query = query.ilike('company_display_name', `%${q.company.replaceAll('%', '').slice(0, 80)}%`);
   if (q.region) query = query.ilike('broad_region', `%${q.region.replaceAll('%', '').slice(0, 80)}%`);
 
+  const signal = (q.signal || '').trim().slice(0, 40);
+  if (signal) {
+    const { data: matchingLabels } = await supabase.from('experience_labels').select('experience_id').eq('label', signal).limit(500);
+    const ids = Array.from(new Set((matchingLabels || []).map((row) => String(row.experience_id)).filter(Boolean)));
+    query = ids.length ? query.in('id', ids) : query.eq('id', '00000000-0000-0000-0000-000000000000');
+  }
+
   const { data, error } = await query.order('published_at', { ascending: q.date === 'oldest' }).limit(60);
 
   return (
@@ -22,10 +36,12 @@ export default async function Browse({ searchParams }: { searchParams: Promise<R
           <p className="cx-kicker">Signal Archive</p>
           <h1 className="cx-display">Stories for the <em>decision ahead.</em></h1>
           <p className="cx-lede">See what worked, what changed and what future candidates should ask.</p>
+          {signal ? <p className="cx-note">Confirmed signal filter: <strong>{signal}</strong> · <Link href="/browse">Clear signal</Link></p> : null}
           <form className="cx-filter-panel" aria-label="Filter workplace stories">
+            {signal ? <input type="hidden" name="signal" value={signal} /> : null}
             <label className="cx-field">
               <span>Search</span>
-              <input className="cx-input" type="search" name="q" defaultValue={q.q} placeholder="Employer, signal or story" />
+              <input className="cx-input" type="search" name="q" defaultValue={q.q} placeholder="Employer or story wording" />
             </label>
             <label className="cx-field">
               <span>Ending</span>
@@ -47,13 +63,13 @@ export default async function Browse({ searchParams }: { searchParams: Promise<R
         {error ? (
           <div className="cx-journey-panel" role="alert">
             <h2>The archive could not load.</h2>
-            <p className="cx-note">{error.message}</p>
+            <p className="cx-note">Please try again. CorporateX does not replace missing archive data with demonstration stories.</p>
           </div>
         ) : !data?.length ? (
           <div className="cx-journey-panel">
             <p className="cx-kicker">No matching signals</p>
             <h2 className="cx-title">Try a wider search.</h2>
-            <p className="cx-lede">The archive only displays genuine, published contributor stories.</p>
+            <p className="cx-lede">The archive only displays genuine, published contributor stories{signal ? ` carrying the confirmed “${signal}” signal` : ''}.</p>
             <div className="cx-actions"><Link className="cx-button cx-button--ghost" href="/browse">Clear filters</Link><Link className="cx-button cx-button--signal" href="/submit">Share Your Story</Link></div>
           </div>
         ) : data.map((story: any) => {
