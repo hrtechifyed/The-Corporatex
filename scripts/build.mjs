@@ -28,6 +28,10 @@ for (const file of await readdir('.')) {
   }
 }
 
+// Keep the historical More URL working, but never expose the retired visual treatment.
+// Both URLs serve the exact same How It Works document on GitHub Pages.
+await cp('dist/how-it-works.html', 'dist/more-info.html');
+
 // GitHub Pages is static, so materialize the same frozen WebP artwork used by the live Next.js app.
 const frozenSourceDir = 'lib/frozen-home-assets';
 const frozenOutputDir = 'dist/frozen-assets';
