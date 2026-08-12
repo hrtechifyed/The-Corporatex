@@ -8,9 +8,12 @@ await cp('public', 'dist/public', { recursive: true });
 await cp('public', 'dist', { recursive: true });
 await cp('src', 'dist/src', { recursive: true });
 
-function withProductionRuntime(html, src = 'src/github-production.js') {
+function withProductionRuntime(html) {
   if (html.includes('github-production.js')) return html;
-  return html.replace('</body>', `<script type="module" src="${src}"></script>\n</body>`);
+  return html.replace(
+    '</body>',
+    '<script type="module" src="src/github-production.js"></script>\n<script type="module" src="src/github-submit.js"></script>\n</body>',
+  );
 }
 
 for (const file of await readdir('.')) {
