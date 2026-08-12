@@ -1,8 +1,6 @@
 import { redirect } from 'next/navigation';
-import { ownedExperience } from '@/lib/auth';
 
-export default async function Directors({ params }: { params: Promise<{ id: string }> }) {
+export default async function LegacyDirectorsCut({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await ownedExperience(id);
-  redirect(`/submit/${id}/guided`);
+  redirect(`/account/story/${id}`);
 }
