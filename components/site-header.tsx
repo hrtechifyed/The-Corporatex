@@ -3,6 +3,7 @@
 import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
 
 const primaryLinks = [
   ['Home', '/'],
@@ -26,6 +27,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const [signedIn, setSignedIn] = useState(false);
   const isHome = pathname === '/';
 
   useEffect(() => {
@@ -45,6 +47,28 @@ export function SiteHeader() {
     const safetyTimer = window.setTimeout(() => setPendingHref(null), 5000);
     return () => window.clearTimeout(safetyTimer);
   }, [pendingHref]);
+
+  useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !anonKey) return;
+
+    const supabase = createBrowserClient(url, anonKey);
+    let mounted = true;
+
+    void supabase.auth.getSession().then(({ data }) => {
+      if (mounted) setSignedIn(Boolean(data.session?.user));
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) setSignedIn(Boolean(session?.user));
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   function normalizedPath(href: string) {
     return href.split('#')[0] || '/';
@@ -101,6 +125,9 @@ export function SiteHeader() {
     );
   }
 
+  const accountHref = signedIn ? '/account' : '/login';
+  const accountLabel = signedIn ? 'My Stories' : 'Sign In';
+
   return (
     <header className="site-header" data-home={isHome ? 'true' : 'false'} data-route-pending={pendingHref ? 'true' : 'false'}>
       <div className="site-header-inner">
@@ -122,7 +149,7 @@ export function SiteHeader() {
 
         <nav className="cx-primary-nav" aria-label="Primary navigation">
           {primaryLinks.map(([label, href]) => navLink(label, href))}
-          {navLink(<><UserIcon /><span>Sign In</span></>, '/login', 'cx-sign-in')}
+          {navLink(<><UserIcon /><span>{accountLabel}</span></>, accountHref, 'cx-sign-in')}
         </nav>
 
         <details className="cx-menu">
@@ -130,8 +157,7 @@ export function SiteHeader() {
           <nav aria-label="Mobile navigation">
             {primaryLinks.map(([label, href]) => navLink(label, href))}
             {navLink('Privacy & Safety', '/privacy')}
-            {navLink('Sign In', '/login')}
-            {navLink('My drafts', '/account')}
+            {navLink(accountLabel, accountHref)}
             {navLink('Share Your Story', '/submit')}
           </nav>
         </details>
