@@ -47,7 +47,7 @@ export default function More() {
         <div className="cx-shell">
           <p className="cx-kicker">The trust model</p>
           <h2 className="cx-title">Your meaning stays yours.</h2>
-          <div className="cx-feature-grid">
+          <div className="cx-feature-grid cx-feature-grid--trust">
             <article className="cx-feature-card"><span>ONE PERSPECTIVE</span><h3>Clearly labelled.</h3><p>A contributor describes their experience—not an entire organisation.</p></article>
             <article className="cx-feature-card"><span>SAFETY ONLY</span><h3>No opinion score.</h3><p>The automated screen checks basic contact details, direct slurs, targeted abuse and a narrow set of threat or self-harm expressions. Human moderation remains the final publication review.</p></article>
             <article className="cx-feature-card"><span>FINAL CONTROL</span><h3>The contributor edits.</h3><p>CorporateX guides the sequence but never writes or judges the person’s story.</p></article>
