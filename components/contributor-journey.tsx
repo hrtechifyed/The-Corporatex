@@ -1,19 +1,18 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ENDINGS } from '@/lib/endings';
 import { SCENES } from '@/lib/types';
 import {
   buildInitialFinalCut,
-  clearContributionDraft,
   draftHasRequiredContext,
+  hasSubstantiveStory,
   loadContributionDraft,
   saveContributionDraft,
-  type ContributionContext,
+  substantiveStoryLength,
   type ContributionDraft,
   type FinalCut,
-  type SafetyResult,
   type ShiftTopic,
 } from '@/lib/contribution-draft';
 
@@ -28,29 +27,26 @@ const SHIFT_TOPICS: Array<{ value: ShiftTopic; label: string }> = [
   { value: 'other', label: 'Something else' },
 ];
 
-const DEFAULT_CONTEXT: ContributionContext = {
-  companyName: '',
-  broadRegion: '',
-  broadFunction: '',
-  approximateTenure: '1–2 years',
-  workArrangement: 'Hybrid',
-};
+const JOURNEY_LABELS = ['Opening Signal', 'Setting the Scene', 'Story Beats', 'Final Cut', 'Submit'] as const;
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 function JourneyProgress({ active }: { active: 1 | 2 | 3 | 4 | 5 }) {
-  const labels = ['Opening Signal', 'Set the Scene', 'Story Beats', 'Final Cut', 'Submit'];
   return (
     <ol className="cx-flow-progress" aria-label="Contribution journey">
-      {labels.map((label, index) => (
+      {JOURNEY_LABELS.map((label, index) => (
         <li key={label} aria-current={active === index + 1 ? 'step' : undefined} data-complete={active > index + 1 ? 'true' : 'false'}>
           <span>{index + 1}</span>{label}
         </li>
       ))}
     </ol>
   );
+}
+
+function emitFunnel(event: string) {
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('corporatex:funnel', { detail: { event } }));
 }
 
 export function OpeningSignalStep() {
@@ -68,6 +64,7 @@ export function OpeningSignalStep() {
     saveContributionDraft({ ...draft, ending: value, finalCut: undefined, safety: undefined });
     setSelected(value);
     setMoving(true);
+    emitFunnel('ending_chosen');
     window.setTimeout(() => router.push('/submit/scene'), prefersReducedMotion() ? 0 : 280);
   }
 
@@ -104,67 +101,7 @@ export function OpeningSignalStep() {
           })}
         </div>
         <div className="cx-flow-signal" data-moving={moving ? 'true' : 'false'} aria-hidden="true"><span /></div>
-        <p className="cx-note cx-flow-privacy-note">Your story is not uploaded yet. Until the final safety check and verification, this draft stays in this browser.</p>
-      </section>
-    </div>
-  );
-}
-
-export function SceneStep() {
-  const router = useRouter();
-  const [context, setContext] = useState<ContributionContext>(DEFAULT_CONTEXT);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const draft = loadContributionDraft();
-    if (!draft.ending) {
-      router.replace('/submit');
-      return;
-    }
-    setContext(draft.context);
-    setLoaded(true);
-  }, [router]);
-
-  useEffect(() => {
-    if (!loaded) return;
-    const draft = loadContributionDraft();
-    saveContributionDraft({ ...draft, context, finalCut: undefined, safety: undefined });
-  }, [context, loaded]);
-
-  function change<K extends keyof ContributionContext>(key: K, value: ContributionContext[K]) {
-    setContext((current) => ({ ...current, [key]: value }));
-    setError('');
-  }
-
-  function next() {
-    if (context.companyName.trim().length < 2 || context.broadRegion.trim().length < 2) {
-      setError('Add the company and a broad location before continuing.');
-      return;
-    }
-    const draft = loadContributionDraft();
-    saveContributionDraft({ ...draft, context, finalCut: undefined, safety: undefined });
-    router.push('/submit/story?beat=0');
-  }
-
-  if (!loaded) return <FlowLoading label="Opening the first scene…" />;
-
-  return (
-    <div className="cx-flow-shell">
-      <JourneyProgress active={2} />
-      <section className="cx-flow-card">
-        <p className="cx-kicker">Scene 01 · Set the Scene</p>
-        <h1 className="cx-title">Where did this story unfold?</h1>
-        <p className="cx-lede">Give readers the setting, not anyone’s identity. Names of colleagues and confidential records should stay out.</p>
-        <div className="cx-form-grid cx-flow-form">
-          <label className="cx-field"><span>Company · required</span><input className="cx-input" value={context.companyName} onChange={(event) => change('companyName', event.target.value)} maxLength={120} autoComplete="organization" /></label>
-          <label className="cx-field"><span>Location · required</span><input className="cx-input" value={context.broadRegion} onChange={(event) => change('broadRegion', event.target.value)} maxLength={80} placeholder="e.g. Bengaluru, India or Remote — Europe" /></label>
-          <label className="cx-field"><span>Team or function · optional</span><input className="cx-input" value={context.broadFunction} onChange={(event) => change('broadFunction', event.target.value)} maxLength={80} /></label>
-          <label className="cx-field"><span>Approximate tenure</span><select className="cx-select" value={context.approximateTenure} onChange={(event) => change('approximateTenure', event.target.value)}><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>More than 10 years</option></select></label>
-          <label className="cx-field"><span>Work arrangement</span><select className="cx-select" value={context.workArrangement} onChange={(event) => change('workArrangement', event.target.value)}><option>On-site</option><option>Hybrid</option><option>Remote</option></select></label>
-        </div>
-        {error ? <p className="cx-flow-error" role="alert">{error}</p> : null}
-        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push('/submit')}>← Back</button><button type="button" className="cx-button cx-button--signal" onClick={next}>Next →</button></div>
+        <p className="cx-note cx-flow-privacy-note">Your story is not uploaded yet. Until the final safety check and verification step, this draft stays in this browser.</p>
       </section>
     </div>
   );
@@ -184,7 +121,8 @@ export function StoryStep() {
       return;
     }
     setDraft(current);
-  }, [router]);
+    if (sceneIndex === 0) emitFunnel('story_beats_started');
+  }, [router, sceneIndex]);
 
   useEffect(() => {
     if (draft) saveContributionDraft(draft);
@@ -217,8 +155,12 @@ export function StoryStep() {
 
   function next() {
     saveContributionDraft(activeDraft);
-    if (sceneIndex === SCENES.length - 1) router.push('/submit/final-cut');
-    else router.push(`/submit/story?beat=${sceneIndex + 1}`);
+    if (sceneIndex === SCENES.length - 1) {
+      emitFunnel('final_cut_reached');
+      router.push('/submit/final-cut');
+    } else {
+      router.push(`/submit/story?beat=${sceneIndex + 1}`);
+    }
   }
 
   return (
@@ -231,7 +173,7 @@ export function StoryStep() {
         <label className="cx-field cx-flow-writing-field">
           <span>Your experience</span>
           <textarea autoFocus className="cx-textarea" maxLength={1800} value={activeDraft.answers[key] || ''} onChange={(event) => updateAnswer(event.target.value)} placeholder="Write only what belongs in this moment." />
-          <small>{(activeDraft.answers[key] || '').length} / 1800</small>
+          <small>{(activeDraft.answers[key] || '').length} / 1800 · Saved on this device as you move between beats</small>
         </label>
 
         {key === 'shift' ? (
@@ -262,6 +204,7 @@ export function FinalCutStep() {
   const router = useRouter();
   const [draft, setDraft] = useState<ContributionDraft | null>(null);
   const [finalCut, setFinalCut] = useState<FinalCut | null>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const current = loadContributionDraft();
@@ -280,10 +223,17 @@ export function FinalCutStep() {
   if (!draft || !finalCut) return <FlowLoading label="Preparing your Final Cut…" />;
   const activeDraft = draft;
   const activeCut = finalCut;
+  const storyLength = substantiveStoryLength(activeCut.beats);
 
   function saveAndCheck() {
     if (activeCut.headline.trim().length < 3 || activeCut.summary.trim().length < 20) return;
+    if (!hasSubstantiveStory(activeCut.beats)) {
+      setError('Add at least one or two sentences of your own experience across any Story Beat before continuing. You choose which moment matters.');
+      return;
+    }
+    setError('');
     saveContributionDraft({ ...activeDraft, finalCut: activeCut, safety: undefined });
+    emitFunnel('safety_check_started');
     router.push('/submit/safety');
   }
 
@@ -293,7 +243,7 @@ export function FinalCutStep() {
       <section className="cx-flow-card">
         <p className="cx-kicker">The Final Cut · Private</p>
         <h1 className="cx-title">Read it as someone else will.</h1>
-        <p className="cx-lede">Nothing is submitted yet. Edit or remove anything before the safety check.</p>
+        <p className="cx-lede">Nothing is submitted yet. Edit or remove anything before the narrow safety check.</p>
 
         <div className="cx-flow-summary-grid">
           <div><span>Ending</span><strong>{activeDraft.ending}</strong></div>
@@ -309,106 +259,14 @@ export function FinalCutStep() {
           {SCENES.map(([beatKey, beatTitle]) => (
             <label className="cx-field cx-flow-final-beat" key={beatKey}>
               <span>{beatTitle}</span>
-              <textarea className="cx-textarea" maxLength={1800} value={activeCut.beats[beatKey] || ''} onChange={(event) => setFinalCut({ ...activeCut, beats: { ...activeCut.beats, [beatKey]: event.target.value } })} placeholder="Leave blank to remove this Story Beat from the Final Cut." />
+              <textarea className="cx-textarea" maxLength={1800} value={activeCut.beats[beatKey] || ''} onChange={(event) => { setError(''); setFinalCut({ ...activeCut, beats: { ...activeCut.beats, [beatKey]: event.target.value } }); }} placeholder="Leave blank to remove this Story Beat from the Final Cut." />
             </label>
           ))}
           {activeDraft.shiftTopics.includes('technology-ai') ? <label className="cx-field cx-flow-final-beat"><span>Technology / AI follow-up · optional</span><textarea className="cx-textarea" maxLength={1800} value={activeCut.technologyFollowUp} onChange={(event) => setFinalCut({ ...activeCut, technologyFollowUp: event.target.value })} /></label> : null}
         </div>
+        <p className="cx-note">Story substance: {Math.min(storyLength, 60)} / 60 characters across any Story Beat. No specific beat is mandatory.</p>
+        {error ? <p className="cx-flow-error" role="alert">{error}</p> : null}
         <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push(`/submit/story?beat=${SCENES.length - 1}`)}>← Back to Story Beats</button><button type="button" className="cx-button cx-button--signal" onClick={saveAndCheck} disabled={activeCut.headline.trim().length < 3 || activeCut.summary.trim().length < 20}>Run safety check →</button></div>
-      </section>
-    </div>
-  );
-}
-
-export function SafetyStep() {
-  const router = useRouter();
-  const ran = useRef(false);
-  const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [result, setResult] = useState<SafetyResult | null>(null);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (ran.current) return;
-    ran.current = true;
-    const draft = loadContributionDraft();
-    if (!draft.finalCut || !draftHasRequiredContext(draft)) {
-      router.replace('/submit/final-cut');
-      return;
-    }
-
-    void (async () => {
-      try {
-        const response = await fetch('/api/submission/safety', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(draft) });
-        const body = await response.json();
-        if (!response.ok) throw new Error(body.error || 'The safety check could not complete.');
-        const safety: SafetyResult = { ...body, checkedAt: Date.now() };
-        saveContributionDraft({ ...draft, safety });
-        setResult(safety);
-        setState('ready');
-      } catch (reason) {
-        setError(reason instanceof Error ? reason.message : 'The safety check could not complete.');
-        setState('error');
-      }
-    })();
-  }, [router]);
-
-  const flags = useMemo(() => result ? [...result.possibleIdentifyingDetails, ...result.possibleAbusiveContent] : [], [result]);
-
-  return (
-    <div className="cx-flow-shell">
-      <JourneyProgress active={5} />
-      <section className="cx-flow-card">
-        <p className="cx-kicker">Safety Check</p>
-        <h1 className="cx-title">A narrow screen. No opinion score.</h1>
-        <p className="cx-lede">CorporateX checks identifying details and a small set of harmful expressions. Employer criticism, praise and uncomfortable opinions are not scored.</p>
-        {state === 'loading' ? <div className="cx-flow-status"><span className="cx-flow-spinner" aria-hidden="true" /><strong>Checking the Final Cut…</strong><p>The text is processed on the CorporateX server for this check and is not written to the story database at this stage.</p></div> : null}
-        {state === 'error' ? <div className="cx-flow-status cx-flow-status--error" role="alert"><strong>Safety check unavailable.</strong><p>{error}</p><button type="button" className="cx-button cx-button--ghost" onClick={() => window.location.reload()}>Try again</button></div> : null}
-        {state === 'ready' && result && flags.length === 0 ? <div className="cx-flow-status cx-flow-status--success"><strong>Your story is ready to verify.</strong><p>No identifying-detail or targeted-abuse indicators were found. The submission will still enter the normal private review path.</p>{result.suggestedLabels.length ? <p className="cx-note">Signals detected from your own wording: {result.suggestedLabels.join(' · ')}</p> : null}</div> : null}
-        {state === 'ready' && flags.length > 0 ? <div className="cx-flow-status cx-flow-status--warning" role="alert"><strong>Please review the Final Cut before submission.</strong><p>The screen found:</p><ul>{flags.map((flag) => <li key={flag}>{flag}</li>)}</ul><p className="cx-note">This is a safety prompt, not a judgment of your employer opinion.</p></div> : null}
-        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push('/submit/final-cut')}>← Edit Final Cut</button><button type="button" className="cx-button cx-button--signal" disabled={state !== 'ready' || flags.length > 0} onClick={() => router.push('/submit/verify')}>Verify &amp; submit →</button></div>
-      </section>
-    </div>
-  );
-}
-
-export function FinishSubmissionStep() {
-  const router = useRouter();
-  const started = useRef(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-    const draft = loadContributionDraft();
-    if (!draft.finalCut || !draft.safety || draft.safety.possibleAbusiveContent.length || draft.safety.possibleIdentifyingDetails.length) {
-      router.replace('/submit/safety');
-      return;
-    }
-
-    void (async () => {
-      try {
-        const response = await fetch('/api/submission/finalize', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(draft) });
-        const body = await response.json();
-        if (response.status === 401) {
-          router.replace('/submit/verify');
-          return;
-        }
-        if (!response.ok) throw new Error(body.error || 'Your story could not be submitted.');
-        clearContributionDraft();
-        router.replace(`/submit/complete?id=${encodeURIComponent(body.id)}`);
-      } catch (reason) {
-        setError(reason instanceof Error ? reason.message : 'Your story could not be submitted.');
-      }
-    })();
-  }, [router]);
-
-  return (
-    <div className="cx-flow-shell">
-      <JourneyProgress active={5} />
-      <section className="cx-flow-card cx-flow-card--center">
-        <p className="cx-kicker">Verification complete</p>
-        <h1 className="cx-title">Submitting your signal safely.</h1>
-        {error ? <div className="cx-flow-status cx-flow-status--error" role="alert"><strong>Submission paused.</strong><p>{error}</p><div className="cx-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push('/submit/final-cut')}>Review Final Cut</button><button type="button" className="cx-button cx-button--signal" onClick={() => window.location.reload()}>Try submission again</button></div></div> : <div className="cx-flow-status"><span className="cx-flow-spinner" aria-hidden="true" /><strong>Saving your verified contribution…</strong><p>Your draft will be cleared from this browser only after the server confirms the submission.</p></div>}
       </section>
     </div>
   );

@@ -1,4 +1,4 @@
-import { SafetyStep } from '@/components/contributor-journey';
+import { SafetyStep } from '@/components/safety-step';
 
 export default function SafetyPage() {
   return <SafetyStep />;

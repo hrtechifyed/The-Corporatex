@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ENDINGS, type EndingValue } from '@/lib/endings';
 import {
+  clearContributionDraft,
   loadContributionDraft,
   saveContributionDraft,
   type ContributionContext,
@@ -13,8 +14,8 @@ const DEFAULT_CONTEXT: ContributionContext = {
   companyName: '',
   broadRegion: '',
   broadFunction: '',
-  approximateTenure: '1–2 years',
-  workArrangement: 'Hybrid',
+  approximateTenure: '',
+  workArrangement: '',
 };
 
 const ENDING_SCENE_CONTENT: Record<EndingValue, { headline: string; message: string; artLabel: string }> = {
@@ -59,7 +60,7 @@ export function ValidatedSceneStep({ endingSlug, fromHome = false }: { endingSlu
   const [endingValue, setEndingValue] = useState<EndingValue | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState('');
-  const [placeState, setPlaceState] = useState<'idle' | 'checking' | 'verified'>('idle');
+  const [placeState, setPlaceState] = useState<'idle' | 'checking' | 'verified' | 'fallback'>('idle');
   const [verifiedPlace, setVerifiedPlace] = useState('');
 
   useEffect(() => {
@@ -96,9 +97,20 @@ export function ValidatedSceneStep({ endingSlug, fromHome = false }: { endingSlu
     }
   }
 
+  function continueWithEnteredLocation() {
+    const draft = loadContributionDraft();
+    saveContributionDraft({ ...draft, context, finalCut: undefined, safety: undefined });
+    setPlaceState('fallback');
+    router.push('/submit/story?beat=0');
+  }
+
   async function next() {
     if (context.companyName.trim().length < 2 || context.broadRegion.trim().length < 2) {
       setError('Add the company and a valid city, region or country before continuing.');
+      return;
+    }
+    if (!context.approximateTenure || !context.workArrangement) {
+      setError('Choose an approximate tenure and work arrangement, or select “Prefer not to say”.');
       return;
     }
 
@@ -110,8 +122,13 @@ export function ValidatedSceneStep({ endingSlug, fromHome = false }: { endingSlu
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
-      const body = await response.json();
+      const body = await response.json().catch(() => ({}));
       if (!response.ok || !body.valid) {
+        if (response.status >= 500) {
+          setPlaceState('fallback');
+          setError('Place verification is temporarily unavailable. You can continue with the broad location exactly as entered and CorporateX will normalize it later if needed.');
+          return;
+        }
         setPlaceState('idle');
         setError(body.error || 'We could not verify that location. Use a real city, region or country.');
         return;
@@ -123,9 +140,15 @@ export function ValidatedSceneStep({ endingSlug, fromHome = false }: { endingSlu
       saveContributionDraft({ ...draft, context, finalCut: undefined, safety: undefined });
       router.push('/submit/story?beat=0');
     } catch {
-      setPlaceState('idle');
-      setError('Place verification is temporarily unavailable. Please try again.');
+      setPlaceState('fallback');
+      setError('Place verification is temporarily unavailable. You can continue with the broad location exactly as entered and CorporateX will normalize it later if needed.');
     }
+  }
+
+  function discard() {
+    if (!window.confirm('Discard this local CorporateX draft? This cannot be undone.')) return;
+    clearContributionDraft();
+    router.replace('/submit');
   }
 
   if (!loaded || !endingValue) {
@@ -170,16 +193,17 @@ export function ValidatedSceneStep({ endingSlug, fromHome = false }: { endingSlu
             <span>Location · required</span>
             <input className="cx-input" value={context.broadRegion} onChange={(event) => change('broadRegion', event.target.value)} maxLength={80} placeholder="e.g. Bengaluru, India" autoComplete="address-level2" />
             <small className="cx-location-state" data-state={placeState} aria-live="polite">
-              {placeState === 'checking' ? 'Checking that this is a real place…' : placeState === 'verified' ? `Verified place: ${verifiedPlace}` : 'Use a real city, region or country. Remote work is captured separately below.'}
+              {placeState === 'checking' ? 'Checking that this is a real place…' : placeState === 'verified' ? `Verified place: ${verifiedPlace}` : placeState === 'fallback' ? 'Verification service unavailable — the location can be kept exactly as entered.' : 'Use a real city, region or country. Remote work is captured separately below.'}
               <a className="cx-location-attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">Place data © OpenStreetMap contributors</a>
             </small>
           </label>
           <label className="cx-field"><span>Team or function · optional</span><input className="cx-input" value={context.broadFunction} onChange={(event) => change('broadFunction', event.target.value)} maxLength={80} /></label>
-          <label className="cx-field"><span>Approximate tenure</span><select className="cx-select" value={context.approximateTenure} onChange={(event) => change('approximateTenure', event.target.value)}><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>More than 10 years</option></select></label>
-          <label className="cx-field"><span>Work arrangement</span><select className="cx-select" value={context.workArrangement} onChange={(event) => change('workArrangement', event.target.value)}><option>On-site</option><option>Hybrid</option><option>Remote</option></select></label>
+          <label className="cx-field"><span>Approximate tenure · required</span><select className="cx-select" value={context.approximateTenure} onChange={(event) => change('approximateTenure', event.target.value)}><option value="">Choose tenure</option><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>6–10 years</option><option>More than 10 years</option><option>Prefer not to say</option></select></label>
+          <label className="cx-field"><span>Work arrangement · required</span><select className="cx-select" value={context.workArrangement} onChange={(event) => change('workArrangement', event.target.value)}><option value="">Choose arrangement</option><option>On-site</option><option>Hybrid</option><option>Remote</option><option>Prefer not to say</option></select></label>
         </div>
         {error ? <p className="cx-flow-error" role="alert">{error}</p> : null}
-        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push(fromHome ? '/#ending-title' : '/submit')}>← Back</button><button type="button" className="cx-button cx-button--signal" onClick={next} disabled={placeState === 'checking'}>{placeState === 'checking' ? 'Checking location…' : 'Next →'}</button></div>
+        <div className="cx-flow-actions"><button type="button" className="cx-button cx-button--ghost" onClick={() => router.push(fromHome ? '/#ending-title' : '/submit')}>← Back</button>{placeState === 'fallback' ? <button type="button" className="cx-button cx-button--ghost" onClick={continueWithEnteredLocation}>Continue with this location</button> : null}<button type="button" className="cx-button cx-button--signal" onClick={next} disabled={placeState === 'checking'}>{placeState === 'checking' ? 'Checking location…' : 'Next →'}</button></div>
+        <div className="cx-draft-assurance"><span><strong>Saved on this device.</strong> Your local draft updates as you type and expires after 7 days.</span><button type="button" className="cx-link-button" onClick={discard}>Discard this draft</button></div>
       </section>
 
       <style>{`

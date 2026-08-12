@@ -1,6 +1,15 @@
 'use client';
 
-export default function ErrorPage({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+import { useEffect } from 'react';
+
+export default function ErrorPage({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => {
+    const payload = JSON.stringify({ event: 'application_error', path: window.location.pathname.slice(0, 160), at: Date.now() });
+    if (navigator.sendBeacon) navigator.sendBeacon('/api/telemetry', new Blob([payload], { type: 'application/json' }));
+    else void fetch('/api/telemetry', { method: 'POST', headers: { 'content-type': 'application/json' }, body: payload, keepalive: true });
+    console.error('CorporateX application error', { digest: error.digest || 'none' });
+  }, [error.digest]);
+
   return (
     <div className="cx-page">
       <section className="cx-system-shell">

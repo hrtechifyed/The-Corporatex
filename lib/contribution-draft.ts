@@ -3,6 +3,7 @@ import { SCENES } from './types';
 
 export const CONTRIBUTION_DRAFT_KEY = 'corporatex:contribution:v3';
 const DRAFT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+export const MIN_SUBSTANTIVE_STORY_CHARS = 60;
 
 export type StoryBeatKey = (typeof SCENES)[number][0];
 export type ShiftTopic =
@@ -56,17 +57,29 @@ function emptyContext(): ContributionContext {
     companyName: '',
     broadRegion: '',
     broadFunction: '',
-    approximateTenure: '1–2 years',
-    workArrangement: 'Hybrid',
+    approximateTenure: '',
+    workArrangement: '',
   };
+}
+
+function fallbackUuid() {
+  const bytes = new Uint8Array(16);
+  if (typeof crypto !== 'undefined' && 'getRandomValues' in crypto) crypto.getRandomValues(bytes);
+  else for (let index = 0; index < bytes.length; index += 1) bytes[index] = Math.floor(Math.random() * 256);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (value) => value.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+function newDraftId() {
+  return typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : fallbackUuid();
 }
 
 export function createContributionDraft(): ContributionDraft {
   return {
     version: 3,
-    draftId: typeof crypto !== 'undefined' && 'randomUUID' in crypto
-      ? crypto.randomUUID()
-      : `draft-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    draftId: newDraftId(),
     updatedAt: Date.now(),
     context: emptyContext(),
     answers: {},
@@ -91,7 +104,7 @@ export function loadContributionDraft(): ContributionDraft {
       ...createContributionDraft(),
       ...parsed,
       version: 3,
-      draftId: parsed.draftId || createContributionDraft().draftId,
+      draftId: /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(parsed.draftId || '') ? String(parsed.draftId) : newDraftId(),
       context: { ...emptyContext(), ...(parsed.context || {}) },
       answers: parsed.answers || {},
       shiftTopics: parsed.shiftTopics || [],
@@ -116,6 +129,14 @@ export function clearContributionDraft() {
 
 function compact(value: string) {
   return value.replace(/\s+/g, ' ').trim();
+}
+
+export function substantiveStoryLength(beats: Partial<Record<StoryBeatKey, string>>) {
+  return Object.values(beats).map((value) => compact(String(value || ''))).join(' ').length;
+}
+
+export function hasSubstantiveStory(beats: Partial<Record<StoryBeatKey, string>>) {
+  return substantiveStoryLength(beats) >= MIN_SUBSTANTIVE_STORY_CHARS;
 }
 
 export function buildInitialFinalCut(draft: ContributionDraft): FinalCut {
@@ -153,6 +174,8 @@ export function draftHasRequiredContext(draft: ContributionDraft) {
   return Boolean(
     draft.ending
     && draft.context.companyName.trim().length >= 2
-    && draft.context.broadRegion.trim().length >= 2,
+    && draft.context.broadRegion.trim().length >= 2
+    && draft.context.approximateTenure.trim().length > 0
+    && draft.context.workArrangement.trim().length > 0,
   );
 }

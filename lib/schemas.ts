@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MIN_SUBSTANTIVE_STORY_CHARS } from './contribution-draft';
 
 const text = z.string().max(12000);
 export const uuidSchema = z.string().uuid();
@@ -7,8 +8,8 @@ export const draftSchema = z.object({
   companyName: z.string().trim().min(2).max(120),
   broadFunction: z.string().trim().max(80),
   broadRegion: z.string().trim().min(2).max(80),
-  approximateTenure: z.string().max(50),
-  workArrangement: z.string().max(50),
+  approximateTenure: z.string().trim().min(1).max(50),
+  workArrangement: z.string().trim().min(1).max(50),
   mainReason: endingSchema,
 });
 export const answerSchema = z.object({ questionKey: z.string().min(2).max(60), answer: text, sortOrder: z.number().int().min(0).max(100) });
@@ -54,17 +55,25 @@ const beatRecord = z.record(z.string(), z.string().max(1800)).superRefine((value
   }
 });
 
+const contributionSafetySchema = z.object({
+  possibleIdentifyingDetails: z.array(z.string().max(300)).max(20),
+  possibleAbusiveContent: z.array(z.string().max(300)).max(20),
+  seriousTopic: z.boolean(),
+  suggestedLabels: z.array(z.string().max(40)).max(12),
+  checkedAt: z.number().int().positive(),
+});
+
 export const contributionSubmissionSchema = z.object({
   version: z.literal(3),
-  draftId: z.string().min(8).max(120),
+  draftId: z.string().uuid(),
   updatedAt: z.number().int().positive(),
   ending: endingSchema,
   context: z.object({
     companyName: z.string().trim().min(2).max(120),
     broadRegion: z.string().trim().min(2).max(80),
     broadFunction: z.string().trim().max(80),
-    approximateTenure: z.string().max(50),
-    workArrangement: z.string().max(50),
+    approximateTenure: z.string().trim().min(1).max(50),
+    workArrangement: z.string().trim().min(1).max(50),
   }),
   answers: beatRecord,
   shiftTopics: z.array(z.enum(['leadership','team','workload','structure','compensation','technology-ai','expectations','other'])).max(8),
@@ -75,5 +84,17 @@ export const contributionSubmissionSchema = z.object({
     beats: beatRecord,
     technologyFollowUp: z.string().max(1800),
   }),
-  safety: z.unknown().optional(),
+  safety: contributionSafetySchema.optional(),
+}).superRefine((value, ctx) => {
+  const storyLength = Object.values(value.finalCut.beats)
+    .map((answer) => String(answer || '').replace(/\s+/g, ' ').trim())
+    .join(' ')
+    .length;
+  if (storyLength < MIN_SUBSTANTIVE_STORY_CHARS) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['finalCut', 'beats'],
+      message: 'Add at least one or two sentences of your own experience across any Story Beat before submitting.',
+    });
+  }
 });

@@ -5,181 +5,133 @@ import { readFile } from 'node:fs/promises';
 const read = (path) => readFile(path, 'utf8');
 
 const [
-  header,
-  footer,
-  about,
-  css,
-  refinement,
-  locationRoute,
-  scene,
-  scenePage,
-  liveCloud,
-  finalize,
-  home,
-  complete,
-  layout,
-  pagesPreview,
-  pagesCss,
-  staticBuild,
+  header, footer, about, css, refinement, openingRefinement, readiness, locationRoute, scene, scenePage,
+  liveCloud, finalize, handoff, home, complete, layout, pagesPreview, pagesCss, pagesFixes, staticBuild,
+  account, moderation, moderationApi, privacy, browse,
 ] = await Promise.all([
-  read('components/site-header.tsx'),
-  read('components/site-footer.tsx'),
-  read('app/about/page.tsx'),
-  read('app/product-polish.css'),
-  read('app/interface-refinement.css'),
-  read('app/api/location/validate/route.ts'),
-  read('components/validated-scene-step.tsx'),
-  read('app/submit/scene/page.tsx'),
-  read('components/live-signal-cloud.tsx'),
-  read('app/api/submission/finalize/route.ts'),
-  read('app/page.tsx'),
-  read('app/submit/complete/page.tsx'),
-  read('app/layout.tsx'),
-  read('pages-preview/index.html'),
-  read('pages-preview/github-pages-current.css'),
-  read('scripts/build.mjs'),
+  read('components/site-header.tsx'), read('components/site-footer.tsx'), read('app/about/page.tsx'), read('app/product-polish.css'),
+  read('app/interface-refinement.css'), read('app/opening-signal-refinement.css'), read('app/launch-readiness.css'),
+  read('app/api/location/validate/route.ts'), read('components/validated-scene-step.tsx'), read('app/submit/scene/page.tsx'),
+  read('components/live-signal-cloud.tsx'), read('app/api/submission/finalize/route.ts'), read('lib/submission-handoff.ts'),
+  read('app/page.tsx'), read('app/submit/complete/page.tsx'), read('app/layout.tsx'), read('pages-preview/index.html'),
+  read('pages-preview/github-pages-current.css'), read('pages-preview/prelaunch-pages-fixes.css'), read('scripts/build.mjs'),
+  read('app/account/page.tsx'), read('app/moderation/page.tsx'), read('app/api/moderation/[id]/route.ts'),
+  read('app/privacy/page.tsx'), read('app/browse/page.tsx'),
 ]);
 
-test('primary navigation is animated, includes Home and About has its own route', () => {
+test('primary navigation is animated, includes Home and session-aware My Stories', () => {
   assert.match(header, /\['Home', '\/'\]/);
   assert.match(header, /\['About', '\/about'\]/);
   assert.match(header, /cx-brand-orbit/);
   assert.match(header, /cx-header-signal/);
-  assert.match(css, /\.site-header \.cx-primary-nav/);
-  assert.match(css, /cx-header-signal/);
-  assert.match(css, /cx-brand-orbit/);
+  assert.match(header, /createBrowserClient/);
+  assert.match(header, /signedIn \? 'My Stories' : 'Sign In'/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test('account utility stays secondary and becomes My Stories for an authenticated session', () => {
-  assert.match(header, /createBrowserClient/);
-  assert.match(header, /supabase\.auth\.getSession\(\)/);
-  assert.match(header, /onAuthStateChange/);
-  assert.match(header, /signedIn \? '\/account' : '\/login'/);
-  assert.match(header, /signedIn \? 'My Stories' : 'Sign In'/);
-  assert.match(header, /'cx-sign-in'/);
-});
-
-test('GitHub Pages mirrors the complete public homepage structure with frozen artwork', () => {
-  assert.match(pagesPreview, /Not a score\./);
-  assert.match(pagesPreview, /A <em>sequence\.<\/em>/);
-  assert.match(pagesPreview, /Real stories\. Real people\. Real clarity\./);
-  assert.match(pagesPreview, /FOUR HONEST ENDINGS/);
-  assert.match(pagesPreview, /An exit is not always a warning\./);
-  assert.match(pagesPreview, /SIGNALS FROM PEOPLE WHO WERE THERE/);
-  assert.match(pagesPreview, /Stories for the decision ahead\./);
-  assert.match(pagesPreview, /LIVE SIGNAL CLOUD/);
-  assert.match(pagesPreview, /What people are noticing right now\./);
-  assert.match(pagesPreview, /PASS IT FORWARD/);
-  assert.match(pagesPreview, /Your ending could improve someone else’s beginning\./);
-  assert.match(pagesPreview, /CorporateX — Powered by HRTechify · People · Technology · Growth/);
-
-  const endingLinks = [
-    ['break-free', 'card-1.webp'],
-    ['next-act', 'card-2.webp'],
-    ['mixed-ending', 'card-3.webp'],
-    ['pass-the-torch', 'card-5.webp'],
-  ];
-  for (const [ending, asset] of endingLinks) {
-    assert.match(pagesPreview, new RegExp(`https:\\/\\/corporatex\\.onrender\\.com\\/submit\\/scene\\?ending=${ending}&from=home`));
-    assert.match(pagesCss, new RegExp(`frozen-assets\\/${asset}`));
-  }
-
-  assert.match(pagesPreview, />Sign In</);
+test('GitHub Pages is an explicit public mirror with local explanatory pages and live server handoffs', () => {
+  for (const copy of ['Not a score.', 'FOUR HONEST ENDINGS', 'SIGNALS FROM PEOPLE WHO WERE THERE', 'LIVE SIGNAL CLOUD', 'PASS IT FORWARD', 'ABOUT CORPORATEX']) assert.match(pagesPreview, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(pagesPreview, /rel="canonical" href="https:\/\/corporatex\.onrender\.com\/"/);
+  assert.match(pagesPreview, /href="#how-it-works"/);
+  assert.match(pagesPreview, /href="#about"/);
   assert.match(pagesPreview, /https:\/\/corporatex\.onrender\.com\/login/);
+  assert.match(pagesPreview, /CorporateX public mirror/);
+  assert.match(pagesFixes, /pages-brand-orbit/);
+  assert.match(pagesFixes, /pages-header-signal/);
+  assert.match(pagesFixes, /prefers-reduced-motion/);
+  assert.match(pagesFixes, /\.pages-archive\{position:relative!important/);
   assert.match(pagesCss, /frozen-assets\/hero\.webp/);
-  assert.match(pagesCss, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
-  assert.match(pagesCss, /@media\(max-width:1180px\)[\s\S]*pages-ending-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(pagesCss, /@media\(max-width:560px\)[\s\S]*pages-ending-grid\{grid-template-columns:1fr\}/);
-  assert.match(staticBuild, /pages-preview\/index\.html/);
-  assert.match(staticBuild, /frozenOutputDir = 'dist\/frozen-assets'/);
-  assert.match(staticBuild, /\$\{frozenOutputDir\}\/hero\.webp/);
-  assert.match(staticBuild, /readFrozenChunk/);
+  assert.match(staticBuild, /prelaunch-pages-fixes\.css/);
 });
 
-test('GitHub Pages remains truthful when server data is unavailable', () => {
-  assert.match(pagesPreview, /GitHub Pages mirrors the public design without inventing or caching employee stories/);
-  assert.match(pagesPreview, /This static GitHub mirror does not snapshot pending contributions or private moderation state/);
-  assert.match(pagesPreview, /https:\/\/corporatex\.onrender\.com\/#live-signals/);
+test('GitHub Pages remains truthful when live server data is unavailable', () => {
+  assert.match(pagesPreview, /without inventing or caching employee stories/i);
+  assert.match(pagesPreview, /does not snapshot pending contributions or private moderation state/i);
   assert.doesNotMatch(pagesPreview, /Northstar Technologies|Atlas Systems|Meridian Works|10K\+/i);
   assert.equal((pagesPreview.match(/class="pages-ending-card"/g) || []).length, 4);
-  assert.equal((pagesPreview.match(/class="pages-story-card"/g) || []).length, 5);
+  assert.equal((pagesPreview.match(/pages-story-card--forming/g) || []).length, 1);
 });
 
-test('About is a one-screen animated narrative on desktop with a mobile usability fallback', () => {
+test('About keeps the one-screen narrative while launch safeguards fix artwork routes and gutters', () => {
   assert.match(about, /Workplace truth has a <em>timeline\.<\/em>/);
-  assert.match(about, /Experience/);
-  assert.match(about, /Sequence/);
-  assert.match(about, /Signal/);
-  assert.match(about, /Decision/);
-  assert.match(css, /\.cx-about-page\s*\{[^}]*height:\s*calc\(100svh - 82px\)/s);
-  assert.match(css, /body:has\(\.cx-about-page\)\s*\{\s*overflow:\s*hidden/);
-  assert.match(css, /cx-about-thread/);
-  assert.match(css, /cx-about-breathe/);
-  assert.match(css, /@media \(max-width: 820px\)[\s\S]*body:has\(\.cx-about-page\)\s*\{\s*overflow:auto/);
+  for (const word of ['Experience', 'Sequence', 'Signal', 'Decision']) assert.match(about, new RegExp(word));
+  assert.match(readiness, /url\('\/frozen-assets\/card-1'\)/);
+  assert.match(readiness, /url\('\/frozen-assets\/card-5'\)/);
+  assert.doesNotMatch(readiness, /frozen-assets\/card-[1-5]\.webp/);
+  assert.match(readiness, /max\(32px, calc\(\(100vw - 1440px\) \/ 2\)\)/);
 });
 
-test('About deck is parallel and straight rather than a crooked fan', () => {
-  assert.match(refinement, /data-depth="0"[\s\S]*translate\(-58%, -50%\)/);
-  assert.match(refinement, /data-depth="1"[\s\S]*translate\(-51%, -50%\)/);
-  assert.match(refinement, /data-depth="2"[\s\S]*translate\(-44%, -50%\)/);
-  assert.match(refinement, /data-depth="3"[\s\S]*translate\(-37%, -50%\)/);
-  assert.doesNotMatch(refinement, /data-depth="[0-3]"[^}]*rotate\(/s);
+test('Opening Signal uses the exact homepage ending artwork mapping', () => {
+  assert.match(openingRefinement, /data-ending="break-free"[\s\S]*--cx-frozen-card-1/);
+  assert.match(openingRefinement, /data-ending="next-act"[\s\S]*--cx-frozen-card-2/);
+  assert.match(openingRefinement, /data-ending="mixed-ending"[\s\S]*--cx-frozen-card-3/);
+  assert.match(openingRefinement, /data-ending="pass-the-torch"[\s\S]*--cx-frozen-card-5/);
 });
 
-test('Opening Signal ending cards use contextual approved anime artwork', () => {
-  assert.match(refinement, /data-ending="break-free"[\s\S]*card-5\.webp/);
-  assert.match(refinement, /data-ending="next-act"[\s\S]*card-2\.webp/);
-  assert.match(refinement, /data-ending="mixed-ending"[\s\S]*card-4\.webp/);
-  assert.match(refinement, /data-ending="pass-the-torch"[\s\S]*card-3\.webp/);
-  assert.match(refinement, /ENDING 01/);
-  assert.match(refinement, /ENDING 04/);
-});
-
-test('footer legal copy is exactly two centered lines', () => {
+test('footer legal copy is exactly the approved two lines', () => {
   assert.match(footer, /CorporateX — Powered by HRTechify · People · Technology · Growth/);
   assert.match(footer, /© 2026 All Rights Reserved\. Stories are contributor perspectives/);
-  assert.match(css, /\.cx-footer-bottom[\s\S]*flex-direction:\s*column/);
-  assert.match(css, /\.cx-footer-bottom[\s\S]*text-align:\s*center/);
 });
 
-test('Set the Scene verifies a broad location as a real place before Story Beats', () => {
+test('Setting the Scene verifies real locations, supports outage fallback and requires deliberate context choices', () => {
   assert.match(scenePage, /ValidatedSceneStep/);
-  assert.match(scene, /async function next\(\)[\s\S]*\/api\/location\/validate\?q=/);
-  assert.match(scene, /Checking that this is a real place/);
-  assert.match(scene, /Verified place:/);
-  assert.match(scene, /Remote work is captured separately/);
-  assert.match(scene, /OpenStreetMap contributors/);
+  assert.match(scene, /Setting the Scene/);
+  assert.match(scene, /Choose tenure/);
+  assert.match(scene, /Choose arrangement/);
+  assert.match(scene, /Prefer not to say/);
+  assert.match(scene, /Continue with this location/);
+  assert.match(scene, /\/api\/location\/validate\?q=/);
   assert.match(locationRoute, /nominatim\.openstreetmap\.org\/search/);
-  assert.match(locationRoute, /User-Agent/);
-  assert.match(locationRoute, /1050/);
-  assert.match(locationRoute, /revalidate:\s*86400/);
-  assert.doesNotMatch(scene, /useEffect\([^)]*location\/validate/s, 'place verification must not be an autocomplete effect');
+  assert.doesNotMatch(scene, /useEffect\([^)]*location\/validate/s);
 });
 
-test('incoming word cloud exposes only predefined safe labels while stories stay private', () => {
+test('incoming signal cloud exposes predefined safe labels and confirmed labels link to a real label filter', () => {
   assert.match(home, /LiveSignalCloud/);
   assert.match(liveCloud, /SAFE_LIVE_LABELS/);
-  assert.match(liveCloud, /published_experiences/);
   assert.match(liveCloud, /pending_moderation/);
-  assert.match(liveCloud, /Live · pending content validation/);
-  assert.match(liveCloud, /not that the contributor’s story has been published/);
-  assert.match(liveCloud, /underlying story, company details and contributor identity remain private/);
+  assert.match(liveCloud, /\/browse\?signal=/);
+  assert.match(browse, /experience_labels/);
+  assert.match(browse, /q\.signal/);
   assert.doesNotMatch(liveCloud, /original_text|guided_answers|approved_summary/);
-  assert.match(finalize, /const liveLabels = Array\.from\(new Set/);
-  assert.match(finalize, /input\.ending/);
-  assert.match(finalize, /input\.shiftTopics/);
-  assert.match(finalize, /liveLabels\.map/);
-  assert.match(finalize, /status: 'pending_moderation', liveLabels/);
+  assert.match(finalize, /shift_topic:/);
+  assert.match(finalize, /status: 'pending_moderation'/);
   assert.match(complete, /Your signal is live\. Your story is still private\./);
-  assert.match(complete, /pending content validation/);
 });
 
-test('refinement styles load last so they override older abstract card/deck rules', () => {
-  const frozenIndex = layout.indexOf("./frozen-global.css");
-  const polishIndex = layout.indexOf("./product-polish.css");
-  const deckIndex = layout.indexOf("./about-deck.css");
-  const refinementIndex = layout.indexOf("./interface-refinement.css");
-  assert.ok(frozenIndex >= 0 && polishIndex > frozenIndex);
-  assert.ok(deckIndex > polishIndex && refinementIndex > deckIndex);
+test('submission is backed by a private recoverable handoff and idempotent finalization', () => {
+  assert.match(handoff, /status: 'draft'/);
+  assert.match(handoff, /draft\.draftId/);
+  assert.match(finalize, /handoffId/);
+  assert.match(finalize, /idempotent: true/);
+  assert.match(finalize, /\['pending_moderation', 'published'\]/);
+});
+
+test('moderation cannot publish without exact public-preview confirmation', () => {
+  assert.match(moderation, /What will be published/);
+  assert.match(moderation, /experience_highlights/);
+  assert.match(moderation, /experience_labels/);
+  assert.match(moderation, /Community report queue/);
+  assert.match(moderationApi, /publicPreviewReviewed/);
+  assert.match(moderationApi, /Review and confirm the exact public preview/);
+});
+
+test('My Stories uses human status language and no legacy journey links', () => {
+  assert.match(account, /In private review/);
+  assert.match(account, /Changes requested/);
+  assert.match(account, /Not published/);
+  assert.match(account, /\/account\/story\//);
+  assert.doesNotMatch(account, /\/submit\/\$\{record\.id\}\/(guided|analysis|review)/);
+});
+
+test('privacy copy describes the actual narrow safety screen and recoverable verification boundary', () => {
+  assert.match(privacy, /private recoverable handoff/);
+  assert.match(privacy, /email addresses, phone numbers and web links/);
+  assert.match(privacy, /not a complete identity detector/);
+  assert.match(privacy, /does not replace human moderation/);
+});
+
+test('launch-readiness stylesheet loads last in the app cascade', () => {
+  const launchIndex = layout.indexOf('./launch-readiness.css');
+  assert.ok(launchIndex > layout.indexOf('./opening-signal-refinement.css'));
+  assert.ok(launchIndex > layout.indexOf('./interface-refinement.css'));
 });

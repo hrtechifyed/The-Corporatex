@@ -5,6 +5,8 @@ import { readFile } from 'node:fs/promises';
 const read = (path) => readFile(path, 'utf8');
 
 const authEmail = await read('lib/auth-email.ts');
+const submissionAuthEmail = await read('lib/submission-auth-email.ts');
+const submissionHandoff = await read('lib/submission-handoff.ts');
 const siteOrigin = await read('lib/site-origin.ts');
 const submitVerifyAction = await read('app/submit/verify/actions.ts');
 const loginAction = await read('app/login/actions.ts');
@@ -16,27 +18,32 @@ test('user auth emails are sent through the HRTechify Gmail transport with Corpo
   assert.match(authEmail, /GMAIL_USER/);
   assert.match(authEmail, /google\.gmail\(\{ version: 'v1'/);
   assert.match(authEmail, /HRTechify · CorporateX/);
-  assert.match(authEmail, /Thank you for sharing your story — one last step/);
   assert.match(authEmail, /Your CorporateX sign-in link/);
   assert.match(authEmail, /auth\.admin\.generateLink/);
   assert.match(authEmail, /hashed_token/);
   assert.match(authEmail, /new URL\('\/auth\/confirm'/);
+
+  assert.match(submissionAuthEmail, /GMAIL_USER/);
+  assert.match(submissionAuthEmail, /google\.gmail\(\{ version: 'v1'/);
+  assert.match(submissionAuthEmail, /Thank you for sharing your story — one last step/);
+  assert.match(submissionAuthEmail, /auth\.admin\.generateLink/);
+  assert.match(submissionAuthEmail, /hashed_token/);
 });
 
-test('submission verification email thanks contributors and makes the privacy/review promise explicit', () => {
-  assert.match(authEmail, /Thank you for trusting us with your story\./);
-  assert.match(authEmail, /That experience matters\./);
-  assert.match(authEmail, /Your perspective can help someone else ask a better question/);
-  assert.match(authEmail, /Verify my email & submit my story/);
-  assert.match(authEmail, /It will not be published automatically\./);
-  assert.match(authEmail, /It will never appear on the public story\./);
-  assert.match(authEmail, /You were there\. Your experience counts\. And your story deserves more than a rating\./);
-  assert.match(authEmail, /People · Technology · Growth/);
+test('submission verification email creates a private recoverable handoff before email delivery', () => {
+  assert.match(submissionAuthEmail, /prepareSubmissionHandoff/);
+  assert.match(submissionAuthEmail, /another browser or device/);
+  assert.match(submissionAuthEmail, /not public/);
+  assert.match(submissionAuthEmail, /not entered moderation/);
+  assert.match(submissionAuthEmail, /\/submit\/finish\?id=/);
+  assert.match(submissionHandoff, /status: 'draft'/);
+  assert.match(submissionHandoff, /guided_answers/);
 });
 
-test('verification links no longer depend on a localhost or Supabase email redirect', () => {
-  assert.match(submitVerifyAction, /sendCorporateXAuthEmail/);
+test('verification links no longer depend on localhost, Supabase redirect configuration or same-browser localStorage', () => {
+  assert.match(submitVerifyAction, /sendRecoverableSubmissionLink/);
   assert.match(submitVerifyAction, /getSiteOrigin/);
+  assert.match(submitVerifyAction, /draftPayload/);
   assert.doesNotMatch(submitVerifyAction, /signInWithOtp|emailRedirectTo|localhost:3000/);
   assert.match(loginAction, /sendCorporateXAuthEmail/);
   assert.doesNotMatch(loginAction, /signInWithOtp|emailRedirectTo|localhost:3000/);

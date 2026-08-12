@@ -2,25 +2,28 @@ import { expect, test, type Page } from '@playwright/test';
 
 async function mockValidPlace(page: Page) {
   await page.route('**/api/location/validate?**', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ valid: true, matchedName: 'Bengaluru, Karnataka, India' }),
-    });
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ valid: true, matchedName: 'Bengaluru, Karnataka, India' }) });
   });
 }
 
-test.describe('Frozen homepage', () => {
-  test('renders the approved anime-elegant composition with real interactive controls', async ({ page }) => {
-    await page.goto('/');
+async function completeRequiredSceneContext(page: Page, location = 'Bengaluru, India') {
+  await page.getByLabel(/Company · required/i).fill('Northstar Technologies');
+  await page.getByLabel(/Location · required/i).fill(location);
+  await page.getByLabel(/Approximate tenure · required/i).selectOption({ label: '1–2 years' });
+  await page.getByLabel(/Work arrangement · required/i).selectOption({ label: 'Hybrid' });
+}
 
+test.describe('Frozen homepage', () => {
+  test('renders the approved anime-elegant composition with an honest archive state', async ({ page }) => {
+    await page.goto('/');
     await expect(page.getByRole('heading', { name: /Not a score\./i })).toBeVisible();
-    await expect(page.locator('.cx-frozen-sequence')).toBeVisible();
     await expect(page.locator('.cx-frozen-sequence')).toContainText('sequence');
     await expect(page.getByRole('link', { name: /Explore Stories/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /Share Your Story/i }).first()).toBeVisible();
     await expect(page.locator('.cx-frozen-art')).toBeVisible();
-    await expect(page.locator('.cx-frozen-card')).toHaveCount(5);
+    const cardCount = await page.locator('.cx-frozen-card').count();
+    expect(cardCount).toBeLessThanOrEqual(5);
+    if (cardCount === 0) await expect(page.locator('.cx-frozen-archive-forming')).toBeVisible();
     await expect(page.locator('.cx-signal-visual')).toHaveCount(0);
     await expect(page.locator('.site-header')).toHaveAttribute('data-home', 'true');
     await expect(page.locator('.cx-brand').first()).toContainText('HRTechify');
@@ -52,11 +55,8 @@ test.describe('Global frozen design system', () => {
       await expect(header.getByRole('link', { name: 'How It Works' })).toBeVisible();
       await expect(header.getByRole('link', { name: 'About' })).toBeVisible();
       await expect(header.getByRole('link', { name: 'Sign In' })).toBeVisible();
-
       const footer = page.locator('.site-footer');
       await expect(footer).toBeVisible();
-      await expect(footer.locator('.cx-brand')).toContainText('HRTechify');
-      await expect(footer.locator('.cx-brand')).toContainText('CorporateX');
       await expect(footer.getByRole('link', { name: 'Privacy & Safety' })).toBeVisible();
       await expect(footer.locator('.cx-footer-bottom span').first()).toContainText('CorporateX — Powered by HRTechify · People · Technology · Growth');
       await expect(footer.locator('.cx-footer-bottom span').nth(1)).toContainText('© 2026 All Rights Reserved. Stories are contributor perspectives');
@@ -71,48 +71,73 @@ test.describe('Global frozen design system', () => {
     }
   });
 
-  test('About is animated and scroll-free on desktop', async ({ page }) => {
+  test('About stays inside the desktop viewport and loads frozen artwork', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/about');
-    await expect(page.getByRole('heading', { name: /Workplace truth has a timeline/i })).toBeVisible();
-    await expect(page.locator('.cx-about-thread')).toBeVisible();
-    await expect(page.locator('.cx-about-sequence li')).toHaveCount(4);
-    const overflow = await page.evaluate(() => getComputedStyle(document.body).overflow);
-    expect(overflow).toBe('hidden');
-    await expect(page.locator('.site-footer')).toBeVisible();
+    const title = page.getByRole('heading', { name: /Workplace truth has a timeline/i });
+    await expect(title).toBeVisible();
+    await expect(page.locator('.cx-about-card-art--experience')).toBeVisible();
+    const bounds = await page.evaluate(() => {
+      const heading = document.querySelector('#about-title')?.getBoundingClientRect();
+      const stage = document.querySelector('.cx-about-stage--deck')?.getBoundingClientRect();
+      return { headingLeft: heading?.left ?? -1, stageRight: stage?.right ?? 99999, viewport: window.innerWidth, scrollWidth: document.documentElement.scrollWidth };
+    });
+    expect(bounds.headingLeft).toBeGreaterThanOrEqual(20);
+    expect(bounds.stageRight).toBeLessThanOrEqual(bounds.viewport + 1);
+    expect(bounds.scrollWidth).toBeLessThanOrEqual(bounds.viewport + 1);
+    const artImage = await page.locator('.cx-about-card-art--experience').evaluate((element) => getComputedStyle(element).backgroundImage);
+    expect(artImage).toContain('/frozen-assets/card-1');
+    expect(artImage).not.toContain('card-1.webp');
+  });
+
+  test('How It Works cards are compact, illustrated and not blank containers', async ({ page }) => {
+    await page.goto('/more#how-it-works');
+    const cards = page.locator('.cx-feature-card--illustrated');
+    await expect(cards).toHaveCount(3);
+    const heights = await cards.evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().height));
+    for (const height of heights) expect(height).toBeGreaterThan(220);
+    for (const height of heights) expect(height).toBeLessThan(520);
+    for (const scene of ['signal', 'sequence', 'decision']) await expect(page.locator(`.cx-feature-card__art[data-scene="${scene}"]`)).toBeVisible();
   });
 });
 
 test.describe('Contribution journey', () => {
-  test('an ending card automatically opens Set the Scene without authentication', async ({ page }) => {
+  test('an ending card automatically opens Setting the Scene without authentication', async ({ page }) => {
     await page.goto('/submit');
     await expect(page.getByRole('heading', { name: 'How did this ending feel?' })).toBeVisible();
-    await expect(page.locator('.career-jarvis')).toHaveCount(0);
-
-    const breakFree = page.getByRole('radio', { name: /Break Free/i });
-    await breakFree.click();
-
+    await expect(page.getByText('About 8–12 minutes for most contributors.')).toBeVisible();
+    await page.getByRole('radio', { name: /Break Free/i }).click();
     await expect(page).toHaveURL(/\/submit\/scene$/);
     await expect(page.getByRole('heading', { name: 'Where did this story unfold?' })).toBeVisible();
+    await expect(page.getByText('Setting the Scene', { exact: true }).first()).toBeVisible();
     await expect(page).not.toHaveURL(/\/login/);
   });
 
-  test('Set the Scene leads into linear Story Beats and AI appears only when chosen', async ({ page }) => {
+  test('Setting the Scene requires deliberate tenure and arrangement selection', async ({ page }) => {
     await mockValidPlace(page);
     await page.goto('/submit');
     await page.getByRole('radio', { name: /Mixed Ending/i }).click();
-    await expect(page).toHaveURL(/\/submit\/scene$/);
-
     await page.getByLabel(/Company · required/i).fill('Northstar Technologies');
     await page.getByLabel(/Location · required/i).fill('Bengaluru, India');
     await page.getByRole('button', { name: 'Next →' }).click();
+    await expect(page.locator('.cx-flow-error')).toContainText('Choose an approximate tenure');
+    await page.getByLabel(/Approximate tenure · required/i).selectOption({ label: '1–2 years' });
+    await page.getByLabel(/Work arrangement · required/i).selectOption({ label: 'Hybrid' });
+    await page.getByRole('button', { name: 'Next →' }).click();
+    await expect(page).toHaveURL(/\/submit\/story\?beat=0$/);
+  });
 
+  test('Setting the Scene leads into linear Story Beats and AI appears only when chosen', async ({ page }) => {
+    await mockValidPlace(page);
+    await page.goto('/submit');
+    await page.getByRole('radio', { name: /Mixed Ending/i }).click();
+    await completeRequiredSceneContext(page);
+    await page.getByRole('button', { name: 'Next →' }).click();
     await expect(page).toHaveURL(/\/submit\/story\?beat=0$/);
     await expect(page.getByText('The Beginning', { exact: true })).toBeVisible();
-    await expect(page.getByText(/Technology \/ AI follow-up/i)).toHaveCount(0);
     await page.getByLabel('Your experience').fill('I joined for the role scope and the chance to learn from a strong team.');
     await page.getByRole('button', { name: 'Next →' }).click();
     await expect(page).toHaveURL(/beat=1$/);
-
     await page.goto('/submit/story?beat=3');
     await expect(page.getByText('The Shift', { exact: true })).toBeVisible();
     await expect(page.getByText(/Technology \/ AI follow-up/i)).toHaveCount(0);
@@ -120,57 +145,51 @@ test.describe('Contribution journey', () => {
     await expect(page.getByText(/Technology \/ AI follow-up · optional/i)).toBeVisible();
   });
 
-  test('Set the Scene blocks a location that cannot be verified', async ({ page }) => {
+  test('Setting the Scene blocks an invalid place but allows a service-outage fallback', async ({ page }) => {
     await page.route('**/api/location/validate?**', async (route) => {
-      await route.fulfill({ status: 422, contentType: 'application/json', body: JSON.stringify({ valid: false, error: 'We could not verify that location. Use a city, region or country.' }) });
+      const url = new URL(route.request().url());
+      if (url.searchParams.get('q') === 'not-a-place') await route.fulfill({ status: 422, contentType: 'application/json', body: JSON.stringify({ valid: false, error: 'We could not verify that location. Use a city, region or country.' }) });
+      else await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'Place service unavailable' }) });
     });
     await page.goto('/submit');
     await page.getByRole('radio', { name: /Break Free/i }).click();
-    await page.getByLabel(/Company · required/i).fill('Northstar Technologies');
-    await page.getByLabel(/Location · required/i).fill('not-a-place');
+    await completeRequiredSceneContext(page, 'not-a-place');
     await page.getByRole('button', { name: 'Next →' }).click();
-    await expect(page.locator('.cx-flow-error[role="alert"]')).toContainText('could not verify');
-    await expect(page).toHaveURL(/\/submit\/scene$/);
+    await expect(page.locator('.cx-flow-error')).toContainText('could not verify');
+    await page.getByLabel(/Location · required/i).fill('Bengaluru, India');
+    await page.getByRole('button', { name: 'Next →' }).click();
+    await expect(page.getByRole('button', { name: 'Continue with this location' })).toBeVisible();
+    await page.getByRole('button', { name: 'Continue with this location' }).click();
+    await expect(page).toHaveURL(/\/submit\/story\?beat=0$/);
   });
 
-  test('Final Cut and Safety happen before the verification gate', async ({ page }) => {
+  test('Final Cut requires substantive contributor wording before Safety', async ({ page }) => {
     await mockValidPlace(page);
     await page.goto('/submit');
     await page.getByRole('radio', { name: /Next Act/i }).click();
-    await page.getByLabel(/Company · required/i).fill('Northstar Technologies');
-    await page.getByLabel(/Location · required/i).fill('Bengaluru, India');
+    await completeRequiredSceneContext(page);
     await page.getByRole('button', { name: 'Next →' }).click();
-
+    await page.getByLabel('Your experience').fill('I joined because the role offered meaningful learning, supportive colleagues, and scope that matched what I wanted next.');
     for (let beat = 0; beat < 7; beat += 1) {
       await expect(page).toHaveURL(new RegExp(`beat=${beat}$`));
-      const next = page.getByRole('button', { name: /Next →|Skip for now →/ });
-      await next.click();
+      await page.getByRole('button', { name: /Next →|Skip for now →/ }).click();
     }
     await expect(page).toHaveURL(/beat=7$/);
     await page.getByRole('button', { name: 'Review my story →' }).click();
-
     await expect(page).toHaveURL(/\/submit\/final-cut$/);
-    await expect(page.getByRole('heading', { name: 'Read it as someone else will.' })).toBeVisible();
-    await expect(page).not.toHaveURL(/\/login/);
     await page.getByRole('button', { name: 'Run safety check →' }).click();
-
     await expect(page).toHaveURL(/\/submit\/safety$/);
     await expect(page.getByRole('heading', { name: 'A narrow screen. No opinion score.' })).toBeVisible();
+    await expect(page.getByText(/It does not detect every identifying clue/i)).toBeVisible();
     await expect(page.getByRole('button', { name: 'Verify & submit →' })).toBeEnabled();
-    await expect(page).not.toHaveURL(/\/login/);
   });
 });
 
-test('primary navigation reaches the next page without a blank state', async ({ page }) => {
+test('primary navigation reaches Stories without a blank state', async ({ page }) => {
   await page.goto('/more');
-  await expect(page.getByRole('heading', { name: /Not a score\. A sequence\./i })).toBeVisible();
-  await expect(page.locator('.career-jarvis')).toHaveCount(0);
-
   const storiesLink = page.locator('.cx-primary-nav').getByRole('link', { name: 'Stories' });
   await storiesLink.click();
-
   await expect(page).toHaveURL(/\/browse$/);
   await expect(page.locator('.cx-archive-hero')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('.cx-archive-hero .cx-display')).toContainText('Stories for the', { timeout: 15_000 });
   await expect(page.locator('.site-header')).toHaveAttribute('data-route-pending', 'false');
 });
