@@ -1,0 +1,45 @@
+/* Launch-readiness overrides for the GitHub Pages mirror. */
+
+.pages-brand-mark{position:relative;display:grid;place-items:center;width:58px;height:58px;flex:0 0 auto}
+.pages-brand-mark img{position:relative;z-index:2}
+.pages-brand-orbit{position:absolute;inset:1px;border:1px solid rgba(245,195,77,.34);border-radius:50%;box-shadow:0 0 22px rgba(245,195,77,.11);animation:pages-brand-orbit 8s linear infinite}
+.pages-brand-orbit::before,.pages-brand-orbit::after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#f5c34d;box-shadow:0 0 12px rgba(245,195,77,.9)}
+.pages-brand-orbit::before{top:-3px;left:50%;transform:translateX(-50%)}
+.pages-brand-orbit::after{right:4px;bottom:7px;width:4px;height:4px;opacity:.7}
+.pages-header-signal{position:absolute;left:clamp(190px,18vw,330px);top:50%;width:clamp(90px,12vw,190px);height:1px;overflow:visible;background:linear-gradient(90deg,transparent,rgba(245,195,77,.24),transparent);pointer-events:none}
+.pages-header-signal i{position:absolute;top:-2px;width:5px;height:5px;border-radius:50%;background:#f5c34d;box-shadow:0 0 11px rgba(245,195,77,.85);opacity:0;animation:pages-signal-travel 4.8s ease-in-out infinite}
+.pages-header-signal i:nth-child(2){animation-delay:1.6s}.pages-header-signal i:nth-child(3){animation-delay:3.2s}
+
+/* The hero and archive now occupy separate grid rows; no CTA/card collision. */
+.pages-hero{padding-bottom:38px!important;min-height:auto!important;grid-template-rows:auto auto!important;overflow:visible!important}
+.pages-copy{min-height:610px;padding-bottom:72px!important}
+.pages-hero-art{min-height:610px}
+.pages-archive{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;grid-column:1/-1!important;z-index:6!important;margin:-46px 0 0!important;display:block!important}
+.pages-story-card--forming{display:grid!important;grid-template-columns:minmax(250px,380px) minmax(0,1fr) auto;align-items:center;min-height:150px;border-color:rgba(245,195,77,.19)!important;background:linear-gradient(135deg,rgba(13,14,16,.98),rgba(7,8,9,.97))!important}
+.pages-story-card--forming .pages-story-image{height:150px}
+.pages-story-card--forming .pages-story-copy{padding:20px 24px}
+.pages-story-card--forming .pages-story-copy p{white-space:normal;overflow:visible;text-overflow:clip;max-width:720px;line-height:1.55}
+.pages-story-card--forming .pages-story-copy>div{justify-content:flex-start}
+.pages-preview-pill{margin-right:22px;padding:8px 12px;border:1px solid rgba(245,195,77,.25);border-radius:999px;color:#d9ba54;font-size:.68rem;font-weight:850;white-space:nowrap}
+
+.pages-preview-note{display:flex;align-items:center;justify-content:center;gap:.55rem;padding:8px 20px;border-bottom:1px solid rgba(245,195,77,.08);background:#08090a;color:#817b75;font-size:.68rem;text-align:center}
+.pages-preview-note strong{color:#bba65e}.pages-preview-note a{color:#e0c35d;text-underline-offset:3px}
+
+/* Public explanatory sections stay on GitHub Pages instead of jumping domains. */
+.pages-how,.pages-about{background:radial-gradient(circle at 82% 16%,rgba(211,141,45,.06),transparent 28rem),#070809}
+.pages-how-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:32px}
+.pages-how-card{overflow:hidden;border:1px solid rgba(255,255,255,.11);border-radius:22px;background:#090a0b}
+.pages-how-art{height:165px;background-size:cover;background-position:center;filter:saturate(.88) contrast(1.04) brightness(.78);position:relative}
+.pages-how-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,#090a0b 100%)}
+.pages-how-art--signal{background-image:url('frozen-assets/card-1.webp')}.pages-how-art--sequence{background-image:url('frozen-assets/card-3.webp')}.pages-how-art--decision{background-image:url('frozen-assets/card-5.webp')}
+.pages-how-copy{padding:16px 18px 20px}.pages-how-copy span{color:#f5c34d;font-size:.62rem;font-weight:900;letter-spacing:.15em}.pages-how-copy h3{margin:8px 0 7px;color:#fff8ed;font-size:1.2rem}.pages-how-copy p{margin:0;color:#9e9892;line-height:1.55;font-size:.8rem}
+.pages-about-grid{display:grid;grid-template-columns:minmax(330px,.8fr) minmax(0,1.2fr);gap:clamp(28px,5vw,76px);align-items:center;margin-top:24px}
+.pages-about-copy h2{max-width:620px}.pages-about-copy p{max-width:620px;color:#aaa39d;line-height:1.7}.pages-about-deck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.pages-about-card{min-height:205px;padding:20px;border:1px solid rgba(245,195,77,.15);border-radius:20px;background:linear-gradient(180deg,rgba(18,19,21,.95),rgba(8,9,10,.98));position:relative;overflow:hidden}.pages-about-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,195,77,.035),transparent 55%);pointer-events:none}.pages-about-card span{color:#f5c34d;font-size:.62rem;font-weight:900;letter-spacing:.15em}.pages-about-card h3{margin:40px 0 8px;font-size:1.22rem}.pages-about-card p{margin:0;color:#99938d;line-height:1.55;font-size:.78rem}
+
+@keyframes pages-brand-orbit{to{transform:rotate(360deg)}}
+@keyframes pages-signal-travel{0%{left:0;opacity:0}15%{opacity:1}75%{opacity:.9}100%{left:100%;opacity:0}}
+
+@media(max-width:1180px){.pages-header-signal{display:none}.pages-how-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pages-story-card--forming{grid-template-columns:250px 1fr}.pages-preview-pill{display:none}}
+@media(max-width:820px){.pages-brand-mark{width:48px;height:48px}.pages-copy{min-height:auto;padding-bottom:34px!important}.pages-hero-art{min-height:420px}.pages-archive{margin:0!important;padding:0 18px}.pages-story-card--forming{grid-template-columns:1fr}.pages-story-card--forming .pages-story-image{height:175px}.pages-how-grid,.pages-about-grid,.pages-about-deck{grid-template-columns:1fr}.pages-preview-note{font-size:.62rem}.pages-about-card{min-height:165px}.pages-about-card h3{margin-top:26px}}
+@media(prefers-reduced-motion:reduce){.pages-brand-orbit,.pages-header-signal i{animation:none!important}.pages-header-signal{display:none}}
