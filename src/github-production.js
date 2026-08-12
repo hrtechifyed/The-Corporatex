@@ -7,24 +7,125 @@ function localHref(path = '') {
   return `${GITHUB_BASE}${normalized}`;
 }
 
-function rewriteProductionLinks() {
+function currentFile() {
+  return location.pathname.split('/').filter(Boolean).at(-1) || 'index.html';
+}
+
+function isRouteActive(route) {
+  const file = currentFile();
+  if (route === 'home') return (file === 'index.html' || file === 'The-Corporatex') && location.hash !== '#about';
+  if (route === 'stories') return file === 'stories.html' || file === 'story-detail.html';
+  if (route === 'how') return file === 'how-it-works.html' || file === 'more-info.html';
+  if (route === 'about') return (file === 'index.html' || file === 'The-Corporatex') && location.hash === '#about';
+  if (route === 'account') return file === 'account.html' || file === 'login.html';
+  return false;
+}
+
+function userIcon() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19.2c.7-3.3 3-5 6.5-5s5.8 1.7 6.5 5"/></svg>';
+}
+
+function navAnchor(label, href, route, className = '') {
+  const current = isRouteActive(route) ? ' aria-current="page"' : '';
+  const cls = className ? ` class="${className}"` : '';
+  return `<a href="${href}" data-cx-route="${route}"${cls}${current}>${label}</a>`;
+}
+
+function mountUnifiedHeader() {
   document.querySelector('.pages-preview-note')?.remove();
+  document.querySelector('.pages-header')?.remove();
+  document.querySelector('.ref-nav')?.remove();
+  document.querySelector('.ref-mobile-nav')?.remove();
+
   const main = document.querySelector('main#main');
   if (main) main.style.paddingTop = '0';
 
+  if (document.querySelector('.cx-unified-header')) return;
+
+  const accountPage = currentFile() === 'account.html';
+  const accountHref = accountPage ? localHref('account.html') : localHref('login.html');
+  const accountLabel = accountPage ? 'My Stories' : 'Sign In';
+
+  const header = document.createElement('header');
+  header.className = 'cx-unified-header';
+  header.innerHTML = `
+    <div class="cx-unified-header__inner">
+      <a class="cx-unified-brand" href="${localHref()}" aria-label="HRTechify CorporateX home">
+        <span class="cx-unified-brand__mark">
+          <img src="${localHref('hrtechify-logo.svg')}" alt="HRTechify" width="50" height="50" />
+          <span class="cx-unified-brand__orbit" aria-hidden="true"></span>
+        </span>
+        <span class="cx-unified-brand__parent">HRTechify</span>
+        <span class="cx-unified-brand__product">Corporate<b>X</b></span>
+      </a>
+      <span class="cx-unified-signal" aria-hidden="true"><i></i><i></i><i></i></span>
+      <nav class="cx-unified-nav" aria-label="Primary navigation">
+        ${navAnchor('Home', localHref(), 'home')}
+        ${navAnchor('Stories', localHref('stories.html'), 'stories')}
+        ${navAnchor('How It Works', localHref('how-it-works.html'), 'how')}
+        ${navAnchor('About', `${localHref()}#about`, 'about')}
+        ${navAnchor(`${userIcon()}<span>${accountLabel}</span>`, accountHref, 'account', 'cx-unified-account')}
+      </nav>
+      <details class="cx-unified-menu">
+        <summary aria-label="Open navigation"><span></span></summary>
+        <nav aria-label="Mobile navigation">
+          ${navAnchor('Home', localHref(), 'home')}
+          ${navAnchor('Stories', localHref('stories.html'), 'stories')}
+          ${navAnchor('How It Works', localHref('how-it-works.html'), 'how')}
+          ${navAnchor('About', `${localHref()}#about`, 'about')}
+          ${navAnchor('Privacy & Safety', localHref('privacy-safety.html'), 'privacy')}
+          ${navAnchor('Share Your Story', localHref('guided-story.html'), 'share', 'cx-mobile-primary')}
+          ${navAnchor(accountLabel, accountHref, 'account')}
+        </nav>
+      </details>
+    </div>`;
+
+  const skip = document.querySelector('.skip-link');
+  if (skip) skip.after(header);
+  else document.body.prepend(header);
+
+  const menu = header.querySelector('.cx-unified-menu');
+  menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => menu.removeAttribute('open')));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu?.hasAttribute('open')) {
+      menu.removeAttribute('open');
+      menu.querySelector('summary')?.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (menu?.hasAttribute('open') && !menu.contains(event.target)) menu.removeAttribute('open');
+  });
+}
+
+function refreshActiveNavigation() {
+  document.querySelectorAll('[data-cx-route]').forEach((link) => {
+    if (isRouteActive(link.dataset.cxRoute)) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+}
+
+function rewriteProductionLinks() {
   document.querySelectorAll('a[href*="corporatex.onrender.com"]').forEach((link) => {
     const href = link.getAttribute('href') || '';
     if (/\/browse(?:$|[?#])/.test(href)) link.setAttribute('href', localHref('stories.html'));
     else if (/\/submit/.test(href)) link.setAttribute('href', localHref('guided-story.html'));
     else if (/\/login/.test(href)) link.setAttribute('href', localHref('login.html'));
+    else if (/\/more/.test(href)) link.setAttribute('href', localHref('how-it-works.html'));
+    else if (/\/about/.test(href)) link.setAttribute('href', `${localHref()}#about`);
     else if (/#live-signals/.test(href)) link.setAttribute('href', localHref('stories.html#story-search'));
     else link.setAttribute('href', localHref());
   });
 
-  const storiesNav = [...document.querySelectorAll('nav a')].find((a) => a.textContent?.trim() === 'Stories');
-  if (storiesNav) storiesNav.setAttribute('href', localHref('stories.html'));
-  const signIn = [...document.querySelectorAll('nav a')].find((a) => /Sign In/i.test(a.textContent || ''));
-  if (signIn) signIn.setAttribute('href', localHref('login.html'));
+  document.querySelectorAll('a[href$="more-info.html"], a[href="more-info.html"]').forEach((link) => {
+    link.setAttribute('href', localHref('how-it-works.html'));
+    if (link.textContent?.trim() === 'More') link.textContent = 'How It Works';
+  });
+}
+
+function addAnimePresence() {
+  document.querySelectorAll('.ref-page .hero-space:not(.story-detail-layout), .ref-page .directory-hero').forEach((section) => {
+    section.dataset.animeShell = 'true';
+  });
 }
 
 async function rest(path) {
@@ -80,7 +181,7 @@ async function hydrateStoriesPage() {
   if (!companyList) return;
 
   const heroNotice = document.querySelector('.directory-hero .notice');
-  if (heroNotice) heroNotice.textContent = 'Published CorporateX stories are loaded directly from the live Supabase archive.';
+  if (heroNotice) heroNotice.textContent = 'Published CorporateX stories are loaded directly from the confirmed archive.';
   companyList.replaceChildren(make('div', 'glass-card', 'Loading published stories…'));
 
   try {
@@ -125,7 +226,7 @@ async function hydrateStoriesPage() {
     companyList.replaceChildren();
     const card = make('div', 'glass-card');
     card.append(make('h2', '', 'Stories are temporarily unavailable.'));
-    card.append(make('p', '', 'The GitHub Pages frontend could not reach the CorporateX archive. Please try again shortly.'));
+    card.append(make('p', '', 'The CorporateX archive could not be reached. Please try again shortly.'));
     companyList.append(card);
     console.error(error);
   }
@@ -175,6 +276,10 @@ async function hydrateStoryDetail() {
   }
 }
 
+mountUnifiedHeader();
 rewriteProductionLinks();
+addAnimePresence();
+refreshActiveNavigation();
+window.addEventListener('hashchange', refreshActiveNavigation);
 hydrateStoriesPage();
 hydrateStoryDetail();
