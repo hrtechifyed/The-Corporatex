@@ -9,12 +9,16 @@ await cp('public', 'dist', { recursive: true });
 await cp('src', 'dist/src', { recursive: true });
 
 function withProductionRuntime(html, { submit = false } = {}) {
-  if (html.includes('github-production.js')) return html;
+  let output = html;
+  if (!output.includes('src/github-shell.css')) {
+    output = output.replace('</head>', '  <link rel="stylesheet" href="src/github-shell.css" />\n</head>');
+  }
+  if (output.includes('github-production.js')) return output;
   const scripts = [
     '<script type="module" src="src/github-production.js"></script>',
     submit ? '<script type="module" src="src/github-submit.js"></script>' : '',
   ].filter(Boolean).join('\n');
-  return html.replace('</body>', `${scripts}\n</body>`);
+  return output.replace('</body>', `${scripts}\n</body>`);
 }
 
 for (const file of await readdir('.')) {
@@ -23,6 +27,10 @@ for (const file of await readdir('.')) {
     await writeFile(`dist/${file}`, withProductionRuntime(html, { submit: file === 'guided-story.html' }));
   }
 }
+
+// Keep the historical More URL working, but never expose the retired visual treatment.
+// Both URLs serve the exact same How It Works document on GitHub Pages.
+await cp('dist/how-it-works.html', 'dist/more-info.html');
 
 // GitHub Pages is static, so materialize the same frozen WebP artwork used by the live Next.js app.
 const frozenSourceDir = 'lib/frozen-home-assets';
@@ -56,4 +64,4 @@ await cp('pages-preview/github-pages-current.css', 'dist/github-pages-current.cs
 await cp('pages-preview/prelaunch-pages-fixes.css', 'dist/prelaunch-pages-fixes.css');
 await cp('pages-preview/navbar-fix.css', 'dist/navbar-fix.css');
 
-console.log('Built GitHub Pages production frontend with direct Supabase runtime.');
+console.log('Built GitHub Pages production frontend with one responsive anime shell and direct Supabase runtime.');
