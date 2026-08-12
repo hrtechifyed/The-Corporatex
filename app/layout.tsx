@@ -17,6 +17,7 @@ import './home-ending-cards.css';
 import './scene-form-alignment.css';
 import './global-home-character.css';
 import './opening-signal-refinement.css';
+import './header-stability.css';
 import './launch-readiness.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
