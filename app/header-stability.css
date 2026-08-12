@@ -9,20 +9,20 @@
   position: sticky !important;
   top: 0 !important;
   z-index: 50 !important;
-  min-height: var(--cx-header-height) !important;
-}
-
-.site-header .site-header-inner {
+  box-sizing: border-box !important;
   height: var(--cx-header-height) !important;
   min-height: var(--cx-header-height) !important;
 }
 
+/* The header owns the fixed geometry, including its 1px border. The inner row fills
+   that box instead of adding another 82px plus the border. */
+.site-header .site-header-inner {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
 @media (max-width: 820px) {
   .site-header {
-    min-height: var(--cx-header-height-mobile) !important;
-  }
-
-  .site-header .site-header-inner {
     height: var(--cx-header-height-mobile) !important;
     min-height: var(--cx-header-height-mobile) !important;
   }
