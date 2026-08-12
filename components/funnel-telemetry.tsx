@@ -26,8 +26,16 @@ export function FunnelTelemetry() {
       const name = target?.dataset.cxEvent;
       if (name) send(name, window.location.pathname);
     }
+    function funnel(event: Event) {
+      const detail = (event as CustomEvent<{ event?: string }>).detail;
+      if (detail?.event && /^[a-z0-9_:-]{3,64}$/i.test(detail.event)) send(detail.event, window.location.pathname);
+    }
     document.addEventListener('click', click, { capture: true });
-    return () => document.removeEventListener('click', click, { capture: true });
+    window.addEventListener('corporatex:funnel', funnel);
+    return () => {
+      document.removeEventListener('click', click, { capture: true });
+      window.removeEventListener('corporatex:funnel', funnel);
+    };
   }, []);
 
   return null;
