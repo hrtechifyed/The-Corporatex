@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="description" content="Sign in to your private CorporateX account." />
+  <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="src/app-v2.css" />
+  <link rel="stylesheet" href="src/reference-exact.css" />
+  <link rel="stylesheet" href="src/reference-functional.css" />
+  <title>Sign In | CorporateX</title>
+</head>
+<body class="ref-page" data-ref-page="account">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="ref-nav"><a class="ref-brand" href="index.html" aria-label="CorporateX home"><img src="public/hrtechify-logo.svg" alt="" width="34" height="34" /><strong>CorporateX</strong></a><nav class="ref-primary-nav" aria-label="Primary navigation"><a data-ref-nav="home" href="index.html">Home</a><a data-ref-nav="share" class="ref-share-link" href="guided-story.html">Share Your Story</a><a data-ref-nav="stories" href="stories.html">Stories</a><a data-ref-nav="more" href="more-info.html">More</a><a href="account.html">My Stories</a></nav></header>
+<main id="main"><section class="page-shell hero-space"><p class="eyebrow">PRIVATE ENTRANCE</p><h1 class="display-title">Continue without<br /><em>a password.</em></h1><p class="lede">CorporateX uses a secure Supabase magic link. Your email stays private and is not shown with published stories.</p><form class="glass-card" data-login-form style="max-width:720px"><label class="field"><span>Email address</span><input required type="email" name="email" autocomplete="email" /></label><div class="actions"><button class="button button-primary" type="submit">Email my private link →</button></div><p data-login-status role="status" aria-live="polite"></p></form></section></main>
+<footer class="site-footer"><p class="footer-line">CorporateX — Powered by HRTechify · People · Technology · Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved. Stories are contributor perspectives</p></footer>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient('https://otgnnkaawwwwqxlzrfpx.supabase.co','sb_publishable_bYYz3uHOE9py4E84KpEpiw_A4HGdcoX');
+const form = document.querySelector('[data-login-form]');
+const status = document.querySelector('[data-login-status]');
+const params = new URLSearchParams(location.search);
+const next = params.get('next') || 'account.html';
+const { data: { session } } = await supabase.auth.getSession();
+if (session) location.replace(next);
+form?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const email = new FormData(form).get('email');
+  status.textContent = 'Sending your private sign-in link…';
+  const redirect = new URL(next, location.href).href;
+  const { error } = await supabase.auth.signInWithOtp({ email: String(email), options: { emailRedirectTo: redirect } });
+  status.textContent = error ? error.message : 'Check your inbox. The link will return you directly to CorporateX on GitHub Pages.';
+});
+</script>
+</body>
+</html>
