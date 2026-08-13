@@ -58,6 +58,9 @@ jobs:
       - name: Visually validate GitHub Pages mirror
         run: node scripts/static-visual-smoke.mjs
 
+      - name: Validate complete contributor flow
+        run: node scripts/static-contributor-flow-smoke.mjs
+
       - name: Run browser regression suite
         run: npm run test:e2e
 
