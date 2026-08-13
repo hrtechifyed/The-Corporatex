@@ -1,0 +1,37 @@
+/* Final contributor-flow polish: cinematic anime beats + compact password account step. */
+.ref-journey-card{height:470px!important;overflow:hidden!important}
+.ref-journey-card .ref-art-svg{display:none!important}
+.ref-journey-card::before{inset:0 0 34%!important;background-size:cover!important;filter:brightness(1.12) saturate(1.08) contrast(1.04)!important;transform:scale(1.025)}
+.ref-journey-card::after{background:linear-gradient(180deg,rgba(5,6,8,.02) 28%,rgba(5,6,8,.22) 43%,rgba(7,8,9,.82) 63%,#070809 74%)!important}
+.ref-journey-card[data-guided-chapter="beginning"]::before{background-image:url('../frozen-assets/hero.webp')!important;background-position:61% 38%!important}
+.ref-journey-card[data-guided-chapter="promise"]::before{background-image:url('../frozen-assets/card-5.webp')!important;background-position:54% 34%!important}
+.ref-journey-card[data-guided-chapter="good"]::before{background-image:url('../frozen-assets/hero.webp')!important;background-position:72% 45%!important;filter:brightness(1.22) saturate(1.12)!important}
+.ref-journey-card[data-guided-chapter="shift"]::before{background-image:url('../frozen-assets/card-5.webp')!important;background-position:70% 42%!important;filter:brightness(.98) saturate(.96) contrast(1.08)!important}
+.ref-journey-card[data-guided-chapter="tipping"]::before{background-image:url('../frozen-assets/hero.webp')!important;background-position:45% 58%!important;filter:brightness(.9) saturate(1.04) contrast(1.1)!important}
+.ref-journey-card[data-guided-chapter="lesson"]::before{background-image:url('../frozen-assets/card-5.webp')!important;background-position:42% 36%!important;filter:brightness(1.16) saturate(1.06)!important}
+.ref-journey-card[data-guided-chapter="ai"]::before{background-image:url('../frozen-assets/hero.webp')!important;background-position:82% 36%!important;filter:brightness(1.04) saturate(1.18) contrast(1.1)!important}
+.ref-journey-card[data-guided-chapter="fit"]::before{background-image:url('../frozen-assets/card-5.webp')!important;background-position:58% 46%!important;filter:brightness(1.18) saturate(1.08)!important}
+.ref-journey-card .ref-card-icon{top:254px!important}
+
+.cx-submit-account{margin:26px 0 18px;padding:clamp(20px,3vw,30px);border:1px solid rgba(246,200,79,.24);border-radius:22px;background:radial-gradient(circle at 92% 0,rgba(246,200,79,.08),transparent 18rem),linear-gradient(145deg,rgba(24,13,12,.96),rgba(8,8,10,.98));box-shadow:0 28px 75px rgba(0,0,0,.35)}
+.cx-submit-account[hidden]{display:none!important}
+.cx-submit-account__head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.cx-submit-account__head h3{margin:5px 0 0;color:#fff7ec;font-size:clamp(1.35rem,2.4vw,2rem);line-height:1.12}
+.cx-submit-account__head>span{flex:0 0 auto;border:1px solid rgba(246,200,79,.28);border-radius:999px;padding:7px 10px;color:#f6c84f;font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.cx-submit-account__intro{max-width:760px;margin:12px 0 20px;color:#bbb3aa;line-height:1.65}
+.cx-submit-account form{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cx-submit-account label{display:grid;gap:8px;color:#f4eee5;font-size:.76rem;font-weight:800}
+.cx-submit-account input{width:100%;box-sizing:border-box;border:1px solid rgba(246,200,79,.22);border-radius:14px;background:#0b090a;color:#fff7ec;padding:14px 15px;font:inherit;outline:none}
+.cx-submit-account input:focus{border-color:rgba(246,200,79,.7);box-shadow:0 0 0 3px rgba(246,200,79,.08)}
+.cx-submit-account label small{color:#8f8780;font-size:.66rem;font-weight:500;line-height:1.45}
+.cx-submit-account__actions,.cx-submit-account__status,.cx-submit-next{grid-column:1/-1}
+.cx-submit-account__actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.cx-submit-account__status{min-height:1.3em;margin:0;color:#f0ca67;font-size:.76rem;line-height:1.55}
+.cx-submit-next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;margin-top:4px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07);color:#aaa29a;font-size:.72rem;line-height:1.5}
+.cx-submit-next strong{grid-column:1/-1;color:#fff3df;font-size:.76rem}
+.cx-submit-next span{position:relative;padding-left:14px}
+.cx-submit-next span::before{content:'✦';position:absolute;left:0;color:#f6c84f;font-size:.58rem;top:.18em}
+.cx-submit-status{font-size:.8rem!important;line-height:1.55!important}
+
+@media(max-width:700px){.cx-submit-account form{grid-template-columns:1fr}.cx-submit-account__actions,.cx-submit-account__status,.cx-submit-next{grid-column:1}.cx-submit-next{grid-template-columns:1fr}.cx-submit-next strong{grid-column:1}.cx-submit-account__head{display:grid}.cx-submit-account__head>span{justify-self:start}}
+@media(max-width:600px){.ref-journey-card{height:440px!important}.ref-journey-card .ref-card-icon{top:236px!important}.cx-submit-account{margin-inline:-2px;padding:18px 14px;border-radius:18px}.cx-submit-account__actions .ref-action{width:100%;justify-content:center}}
