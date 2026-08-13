@@ -25,53 +25,33 @@
 
   <section class="page-shell policy-grid" aria-label="CorporateX privacy and data practices">
     <details class="policy-card" open>
-      <summary><div class="info-icon">1</div><div><p class="eyebrow">ACCOUNT &amp; ACCESS</p><h2>Your email is for private access.</h2><p>Readers can browse without an account.</p></div></summary>
-      <div class="card-detail"><p>CorporateX uses email-based authentication when you save or follow stories, ask a follow-up question, contribute a workplace story, or open My Space. Your email is used to identify your private account and deliver access links. It is not displayed with a published workplace story, saved-story list, follow, question or response.</p></div>
+      <summary><div class="info-icon">1</div><div><p class="eyebrow">ACCOUNT &amp; MY SPACE</p><h2>Your email is for private access.</h2><p>Saved and Following are private.</p></div></summary>
+      <div class="card-detail"><p>Readers can browse without an account. CorporateX uses email-based authentication when you save or follow stories, ask a follow-up question, contribute a workplace story, or open My Space. Your email is used to identify your private account and deliver access links; it is not displayed with a published workplace story, saved-story list, follow, question or response.</p><p>Saved and Following store the private account identifier, the relevant published story identifier and a timestamp so the relationship can appear in My Space. Those relationships are not shown to other readers or included in public story output. Database access controls are designed so authenticated users can read and change only their own Saved and Following records.</p></div>
     </details>
 
     <details class="policy-card">
-      <summary><div class="info-icon">2</div><div><p class="eyebrow">MY SPACE</p><h2>Saved and Following are private.</h2><p>Your reading shortlist is not a public profile.</p></div></summary>
-      <div class="card-detail"><p>When you save or follow a story, CorporateX stores the account identifier, the story identifier and a timestamp so the item can appear in My Space. Those relationships are not included in public story views and are not shown to other readers.</p><p>Database access controls are designed so authenticated users can read and change only their own Saved and Following records. Authorized backend administrators may access operational data where necessary for security, support or system maintenance.</p></div>
+      <summary><div class="info-icon">2</div><div><p class="eyebrow">SUBMISSIONS &amp; PUBLICATION</p><h2>Your draft and public story are separate.</h2><p>Submitting does not make a story public.</p></div></summary>
+      <div class="card-detail"><p>CorporateX stores contributor-approved Story Beats, broad workplace context, moderation status and related private submission records after an authenticated submission is created. New submissions enter review rather than publishing automatically.</p><p>Only moderator-approved public fields are exposed through the published story view. Private email, original private records, Saved/Following relationships and moderator-only data are excluded from that public view.</p></div>
     </details>
 
     <details class="policy-card">
-      <summary><div class="info-icon">3</div><div><p class="eyebrow">SUBMISSIONS</p><h2>Your draft and public story are separate.</h2><p>Submitting does not make a story public.</p></div></summary>
-      <div class="card-detail"><p>CorporateX stores contributor-approved Story Beats, broad workplace context, moderation status and related private submission records after an authenticated submission is created. New submissions enter moderation rather than publishing automatically.</p><p>Only moderator-approved public fields are exposed through the published story view. Private email, original private records and moderator-only data are excluded from that public view.</p></div>
+      <summary><div class="info-icon">3</div><div><p class="eyebrow">MODERATED FOLLOW-UP Q&amp;A</p><h2>Questions and answers are moderated.</h2><p>No unrestricted comments or private DMs.</p></div></summary>
+      <div class="card-detail"><p>A signed-in reader may ask a follow-up question on a published story. The question is privately tied to the reader account and enters moderation before it can appear publicly. A contributor response is privately tied to the responder account and must also be moderated before publication.</p><p>Public Q&amp;A contains only approved question/response text and public timestamps. Private asker/responder account identifiers are not exposed in the public Q&amp;A view, and contributors are not required to answer a follow-up.</p></div>
     </details>
 
     <details class="policy-card">
-      <summary><div class="info-icon">4</div><div><p class="eyebrow">FOLLOW-UP Q&amp;A</p><h2>Questions and answers are moderated.</h2><p>No unrestricted comments or private DMs.</p></div></summary>
-      <div class="card-detail"><p>A signed-in reader may ask a follow-up question on a published story. The question is tied privately to the reader account and enters moderation before it can appear publicly. A contributor response is also tied privately to the responder account and must be moderated before publication.</p><p>Public Q&amp;A contains only approved question and response text plus public timestamps. Private asker/responder account identifiers are not exposed in the public Q&amp;A view.</p></div>
-    </details>
-
-    <details class="policy-card">
-      <summary><div class="info-icon">5</div><div><p class="eyebrow">SAFETY SCREEN</p><h2>Safety checks are narrow, not truth scoring.</h2><p>Criticism is not removed merely for being negative.</p></div></summary>
-      <div class="card-detail"><p>CorporateX checks for basic contact-detail indicators such as email addresses, phone numbers and web links, along with a narrow set of direct slurs, targeted abusive terms, threats, violent expressions and self-harm expressions. These checks do not establish truth, detect every identifying detail, replace human moderation or score employer sentiment.</p></div>
+      <summary><div class="info-icon">4</div><div><p class="eyebrow">SAFETY SCREEN ONLY</p><h2>Safety checks are narrow, not truth scoring.</h2><p>Protect people and confidential information.</p></div></summary>
+      <div class="card-detail"><p>CorporateX checks for basic contact-detail indicators such as email addresses, phone numbers and web links, along with a narrow set of direct slurs, targeted abusive terms, threats, violent expressions and self-harm expressions. These checks do not establish truth, detect every identifying detail or replace review.</p><p>The safety screen does not defend employers from criticism, score whether a story is positive or negative, or remove a perspective merely because it is uncomfortable. Contributors should still leave out names, unnecessary identifying descriptions, private contact/account details, confidential customer/employee records, medical/payroll/disciplinary information, trade secrets, source code and material they do not have the right to share.</p></div>
     </details>
 
     <details class="policy-card" data-tone="purple">
-      <summary><div class="info-icon">6</div><div><p class="eyebrow">WHAT TO LEAVE OUT</p><h2>Protect people and confidential information.</h2><p>Share the experience, not private records.</p></div></summary>
-      <div class="card-detail"><ul><li>Names or unnecessary identifying descriptions</li><li>Private email addresses, phone numbers or account details</li><li>Customer, employee, medical, payroll or disciplinary records</li><li>Trade secrets, source code or proprietary documents</li><li>Material you do not have the right to share</li></ul></div>
+      <summary><div class="info-icon">5</div><div><p class="eyebrow">SERVICE &amp; RETENTION BOUNDARIES</p><h2>Know where data lives and what we promise.</h2><p>The frontend and private data layer are separated.</p></div></summary>
+      <div class="card-detail"><p>GitHub Pages serves the public CorporateX frontend. Supabase provides authentication, database storage and trusted backend functions used by the GitHub Pages experience. Authentication emails are delivered through HRTechify's configured email provider. Render is used for testing/staging and is not the normal user-facing production destination.</p><p>CorporateX does not currently publish an automatic retention period for account records, Saved/Following relationships, submissions or moderated Q&amp;A. Records may remain while needed to operate the service, preserve moderation history, respond to safety issues or support an active account. Authorized backend administrators may access operational data where necessary for security, support or system maintenance.</p></div>
     </details>
 
     <details class="policy-card">
-      <summary><div class="info-icon">7</div><div><p class="eyebrow">SERVICE BOUNDARIES</p><h2>Where the product runs.</h2><p>The website and the private data layer are separated.</p></div></summary>
-      <div class="card-detail"><p>GitHub Pages serves the public CorporateX frontend. Supabase provides authentication, database storage and trusted backend functions used by the GitHub Pages experience. Authentication emails are delivered through HRTechify's configured email provider. Render is used for testing/staging and is not the normal user-facing production destination.</p></div>
-    </details>
-
-    <details class="policy-card">
-      <summary><div class="info-icon">8</div><div><p class="eyebrow">RETENTION &amp; REMOVAL</p><h2>We do not invent a deletion schedule.</h2><p>Current product behavior is stated as it exists.</p></div></summary>
-      <div class="card-detail"><p>CorporateX does not currently publish an automatic retention period for account records, Saved/Following relationships, submissions or moderated Q&amp;A. Records may remain while needed to operate the service, preserve moderation history, respond to safety issues or support an active account.</p><p>To request account-data review, correction, removal or withdrawal of a contribution, contact <a href="mailto:hrtechifyed@gmail.com">hrtechifyed@gmail.com</a>. Requests may require verification that you control the relevant account.</p></div>
-    </details>
-
-    <details class="policy-card">
-      <summary><div class="info-icon">9</div><div><p class="eyebrow">YOUR CONTROLS</p><h2>Save, unfollow, withdraw, report.</h2><p>Private actions should be reversible where the product supports them.</p></div></summary>
-      <div class="card-detail"><p>You can remove a story from Saved or Following from the story controls/My Space. Contributors can track submission status privately. Readers can report published content for review. For account-level deletion, correction or a withdrawal request that is not available directly in the interface, contact HRTechify.</p></div>
-    </details>
-
-    <details class="policy-card">
-      <summary><div class="info-icon">10</div><div><p class="eyebrow">POLICY SET</p><h2>Privacy works with community rules.</h2><p>Data handling and content behavior are separate responsibilities.</p></div></summary>
-      <div class="card-detail"><p>Read the <a href="community-guidelines.html">Community Guidelines</a> for content and conversation rules, and the <a href="terms.html">Terms</a> for account, submission and platform-use expectations.</p><p>This page describes the current product design and handling practices. Formal legal/privacy terms should be reviewed by qualified counsel before a broad public launch.</p></div>
+      <summary><div class="info-icon">6</div><div><p class="eyebrow">YOUR CONTROLS &amp; POLICY SET</p><h2>Save, unfollow, withdraw, report.</h2><p>Private actions should be reversible where supported.</p></div></summary>
+      <div class="card-detail"><p>You can remove a story from Saved or Following from story controls/My Space. Contributors can track submission status privately, and readers can report published content for review.</p><p>To request account-data review, correction, removal or withdrawal of a contribution when a control is not available directly in the interface, contact <a href="mailto:hrtechifyed@gmail.com">hrtechifyed@gmail.com</a>. Requests may require verification that you control the relevant account.</p><p>Read the <a href="community-guidelines.html">Community Guidelines</a> for content and conversation rules and the <a href="terms.html">Terms</a> for account, submission and platform-use expectations. This page describes current product behavior; formal legal/privacy terms should be reviewed by qualified counsel before broad public launch.</p></div>
     </details>
   </section>
 </main>
