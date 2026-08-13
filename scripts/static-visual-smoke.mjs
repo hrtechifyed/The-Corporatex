@@ -37,6 +37,7 @@ const routes = [
   { slug: 'stories.html', name: 'stories' },
   { slug: 'how-it-works.html', name: 'how-it-works' },
   { slug: 'privacy-safety.html', name: 'privacy' },
+  { slug: 'login.html', name: 'login' },
 ];
 
 let browser;
@@ -114,6 +115,19 @@ try {
         if (illustrated.heroArt !== 1 || illustrated.plotArt !== 3 || illustrated.trustArt !== 3) throw new Error(`${viewport.name}: How It Works lost its anime illustration system.`);
         if (illustrated.sections.some((value) => !value)) throw new Error(`${viewport.name}: How It Works contains a plain text-only section.`);
       }
+
+      if (route.name === 'login') {
+        const authUi = await page.evaluate(() => ({
+          visual: document.querySelectorAll('.cx-auth-visual img').length,
+          purposeCards: document.querySelectorAll('.cx-auth-purpose article').length,
+          form: Boolean(document.querySelector('.cx-auth-card[data-login-form]')),
+          titleSize: parseFloat(getComputedStyle(document.querySelector('.cx-auth-title')).fontSize),
+          accountLabel: document.querySelector('.cx-unified-account span')?.textContent?.trim(),
+        }));
+        if (authUi.visual !== 1 || authUi.purposeCards !== 3 || !authUi.form) throw new Error(`${viewport.name}: contributor access lost its balanced anime/card composition.`);
+        if (authUi.titleSize > 86) throw new Error(`${viewport.name}: contributor access title regressed to an oversized text wall.`);
+        if (authUi.accountLabel !== 'My Stories') throw new Error(`${viewport.name}: contributor navigation must explain the account purpose as My Stories.`);
+      }
     }
 
     for (const asset of ['hero', 'card-1', 'card-2', 'card-3', 'card-4', 'card-5']) {
@@ -130,10 +144,30 @@ try {
     await page.waitForSelector('.cx-unified-header');
     await prime(page);
     await page.screenshot({ path: `${artifactDir}/${viewport.name}-how-it-works.png`, fullPage: true });
+
+    await page.goto(`${base}/login.html`, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.cx-auth-page');
+    await page.screenshot({ path: `${artifactDir}/${viewport.name}-contributor-access.png`, fullPage: true });
     await page.close();
+
+    // Account content is auth-protected at runtime, so validate its static composition with JS disabled.
+    const accountContext = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, javaScriptEnabled: false });
+    const accountPage = await accountContext.newPage();
+    await accountPage.goto(`${base}/account.html`, { waitUntil: 'domcontentloaded' });
+    const accountUi = await accountPage.evaluate(() => ({
+      visual: document.querySelectorAll('.cx-auth-visual img').length,
+      purposeCards: document.querySelectorAll('.cx-auth-purpose article').length,
+      accountList: Boolean(document.querySelector('.cx-account-list')),
+      scrollWidth: document.documentElement.scrollWidth,
+      viewport: window.innerWidth,
+    }));
+    if (accountUi.visual !== 1 || accountUi.purposeCards !== 3 || !accountUi.accountList) throw new Error(`${viewport.name}: My Stories lost its anime/card composition.`);
+    if (accountUi.scrollWidth > accountUi.viewport + 2) throw new Error(`${viewport.name}: My Stories has horizontal overflow.`);
+    await accountPage.screenshot({ path: `${artifactDir}/${viewport.name}-my-stories.png`, fullPage: true });
+    await accountContext.close();
   }
 
-  console.log('GitHub Pages static visual smoke passed: shared header geometry, visible logo orbit and illustrated How It Works page are stable across desktop, laptop and mobile.');
+  console.log('GitHub Pages static visual smoke passed: shared shell, contributor access, My Stories and anime visual system are stable across desktop, laptop and mobile.');
 } finally {
   if (browser) await browser.close();
   server.kill('SIGTERM');
