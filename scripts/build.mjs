@@ -9,19 +9,21 @@ await cp('src', 'dist/src', { recursive: true });
 
 function withProductionRuntime(html, { submit = false } = {}) {
   let output = html;
-  if (!output.includes('src/github-shell.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/github-shell.css" />\n</head>');
-  if (!output.includes('src/visual-fixes-guide.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/visual-fixes-guide.css" />\n</head>');
-  if (!output.includes('src/guided-anime-fix.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/guided-anime-fix.css" />\n</head>');
-  if (!output.includes('src/stories-polish.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/stories-polish.css" />\n</head>');
-  if (output.includes('github-production.js')) return output;
-  const scripts = [
-    '<script type="module" src="src/github-production.js"></script>',
-    '<script type="module" src="src/feedback-nav.js"></script>',
-    '<script type="module" src="src/contributor-nav.js"></script>',
-    '<script type="module" src="src/stories-polish.js"></script>',
-    submit ? '<script type="module" src="src/github-submit.js"></script>' : '',
-  ].filter(Boolean).join('\n');
-  return output.replace('</body>', `${scripts}\n</body>`);
+  for (const stylesheet of ['src/github-shell.css','src/visual-fixes-guide.css','src/guided-anime-fix.css','src/stories-polish.css','src/guided-production.css','src/home-live-signals.css']) {
+    if (!output.includes(stylesheet)) output = output.replace('</head>', `  <link rel="stylesheet" href="${stylesheet}" />\n</head>`);
+  }
+  const candidates = [
+    'src/github-production.js',
+    'src/feedback-nav.js',
+    'src/contributor-nav.js',
+    'src/stories-polish.js',
+    'src/home-live-signals.js',
+    'src/account-arrival.js',
+    submit ? 'src/guided-production.js' : '',
+    submit ? 'src/github-submit.js' : '',
+  ].filter(Boolean);
+  const scripts = candidates.filter((source) => !output.includes(source)).map((source) => `<script type="module" src="${source}"></script>`).join('\n');
+  return scripts ? output.replace('</body>', `${scripts}\n</body>`) : output;
 }
 
 for (const file of await readdir('.')) {
@@ -48,4 +50,4 @@ await writeFile('dist/index.html', pagesHtml);
 await cp('pages-preview/github-pages-current.css', 'dist/github-pages-current.css');
 await cp('pages-preview/prelaunch-pages-fixes.css', 'dist/prelaunch-pages-fixes.css');
 await cp('pages-preview/navbar-fix.css', 'dist/navbar-fix.css');
-console.log('Built GitHub Pages production frontend with one responsive anime shell and direct Supabase runtime.');
+console.log('Built GitHub Pages production frontend with contributor ending selection, submission arrival status, live signals, one responsive anime shell and direct Supabase runtime.');
