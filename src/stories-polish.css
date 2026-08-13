@@ -53,6 +53,33 @@
   padding-top: clamp(28px, 3.5vw, 46px);
 }
 
+/* Runtime archive states should read like a contained card, not a full-width section. */
+.ref-page[data-ref-page='stories'] .company-list > .glass-card {
+  width: min(100%, 820px);
+  margin: 28px auto 0;
+  padding: clamp(22px, 3vw, 32px);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 8% 0, rgba(246,200,79,.07), transparent 18rem),
+    linear-gradient(145deg, rgba(38,15,14,.92), rgba(10,8,10,.96));
+  box-shadow: 0 22px 58px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.035);
+}
+
+.ref-page[data-ref-page='stories'] .company-list > .glass-card h2 {
+  margin: 0;
+  color: #fff7ec;
+  font-size: clamp(1.25rem, 2.1vw, 1.7rem);
+  line-height: 1.2;
+}
+
+.ref-page[data-ref-page='stories'] .company-list > .glass-card p {
+  max-width: 650px;
+  margin: 10px 0 0;
+  color: #c9c1b8;
+  font-size: clamp(.88rem, 1.2vw, 1rem);
+  line-height: 1.65;
+}
+
 @media (max-width: 900px) {
   .ref-page[data-ref-page='stories'] .directory-hero {
     min-height: auto;
@@ -93,5 +120,11 @@
 
   .ref-page[data-ref-page='stories'] #story-search {
     padding-top: 24px;
+  }
+
+  .ref-page[data-ref-page='stories'] .company-list > .glass-card {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 18px;
   }
 }
