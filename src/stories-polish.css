@@ -1,0 +1,97 @@
+/* Stories page balance: keep anime art prominent while bringing the archive into the first viewport. */
+.ref-page[data-ref-page='stories'] .directory-hero {
+  min-height: clamp(500px, 58vh, 610px);
+  padding-top: clamp(58px, 7vh, 78px);
+  padding-bottom: clamp(44px, 5vh, 60px);
+}
+
+.ref-page[data-ref-page='stories'] .directory-hero::after {
+  top: 8%;
+  right: max(22px, calc((100vw - 1460px) / 2));
+  width: min(40vw, 560px);
+  height: 84%;
+  border-radius: 30px;
+  background:
+    linear-gradient(90deg, rgba(5,6,8,.46), rgba(5,6,8,.06) 56%),
+    linear-gradient(180deg, rgba(5,6,8,.02), rgba(5,6,8,.45)),
+    url('../frozen-assets/hero.webp') 64% center / cover no-repeat;
+  opacity: .78;
+  box-shadow: 0 30px 86px rgba(0,0,0,.38), 0 0 0 1px rgba(246,200,79,.05) inset;
+}
+
+.ref-page[data-ref-page='stories'] .directory-hero > * {
+  max-width: min(690px, 52vw);
+}
+
+.ref-page[data-ref-page='stories'] .directory-hero .display-title {
+  margin-top: .55rem;
+  margin-bottom: .8rem;
+  font-size: clamp(3rem, 5.15vw, 5.9rem);
+}
+
+.ref-page[data-ref-page='stories'] .directory-hero .lede {
+  margin: 0 0 1rem;
+  max-width: 660px;
+  line-height: 1.58;
+}
+
+.ref-page[data-ref-page='stories'] .directory-hero .notice {
+  display: inline-block;
+  max-width: 650px;
+  margin: 0;
+  padding: .68rem .88rem;
+  border: 1px solid rgba(246,200,79,.18);
+  border-left: 2px solid rgba(246,200,79,.72);
+  border-radius: 0 12px 12px 0;
+  background: linear-gradient(90deg, rgba(246,200,79,.055), rgba(246,200,79,.012));
+  color: #c9c2b8;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
+.ref-page[data-ref-page='stories'] #story-search {
+  padding-top: clamp(28px, 3.5vw, 46px);
+}
+
+@media (max-width: 900px) {
+  .ref-page[data-ref-page='stories'] .directory-hero {
+    min-height: auto;
+    padding-top: 52px;
+    padding-bottom: 330px;
+  }
+
+  .ref-page[data-ref-page='stories'] .directory-hero > * {
+    max-width: min(680px, 92vw);
+  }
+
+  .ref-page[data-ref-page='stories'] .directory-hero::after {
+    top: auto;
+    right: 18px;
+    bottom: 26px;
+    width: min(620px, calc(100% - 36px));
+    height: 276px;
+    opacity: .76;
+    background-position: 62% 43%;
+  }
+}
+
+@media (max-width: 560px) {
+  .ref-page[data-ref-page='stories'] .directory-hero {
+    padding-top: 38px;
+    padding-bottom: 282px;
+  }
+
+  .ref-page[data-ref-page='stories'] .directory-hero .display-title {
+    font-size: clamp(2.8rem, 15vw, 4.6rem);
+  }
+
+  .ref-page[data-ref-page='stories'] .directory-hero::after {
+    height: 230px;
+    bottom: 22px;
+    border-radius: 22px;
+  }
+
+  .ref-page[data-ref-page='stories'] #story-search {
+    padding-top: 24px;
+  }
+}
