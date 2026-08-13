@@ -18,6 +18,7 @@ function withProductionRuntime(html, { submit = false } = {}) {
     'src/contributor-nav.js',
     'src/stories-polish.js',
     'src/home-live-signals.js',
+    'src/account-arrival.js',
     submit ? 'src/guided-production.js' : '',
     submit ? 'src/github-submit.js' : '',
   ].filter(Boolean);
@@ -49,4 +50,4 @@ await writeFile('dist/index.html', pagesHtml);
 await cp('pages-preview/github-pages-current.css', 'dist/github-pages-current.css');
 await cp('pages-preview/prelaunch-pages-fixes.css', 'dist/prelaunch-pages-fixes.css');
 await cp('pages-preview/navbar-fix.css', 'dist/navbar-fix.css');
-console.log('Built GitHub Pages production frontend with contributor ending selection, live signals, one responsive anime shell and direct Supabase runtime.');
+console.log('Built GitHub Pages production frontend with contributor ending selection, submission arrival status, live signals, one responsive anime shell and direct Supabase runtime.');
