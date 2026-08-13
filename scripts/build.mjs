@@ -12,11 +12,13 @@ function withProductionRuntime(html, { submit = false } = {}) {
   if (!output.includes('src/github-shell.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/github-shell.css" />\n</head>');
   if (!output.includes('src/visual-fixes-guide.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/visual-fixes-guide.css" />\n</head>');
   if (!output.includes('src/guided-anime-fix.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/guided-anime-fix.css" />\n</head>');
+  if (!output.includes('src/stories-polish.css')) output = output.replace('</head>', '  <link rel="stylesheet" href="src/stories-polish.css" />\n</head>');
   if (output.includes('github-production.js')) return output;
   const scripts = [
     '<script type="module" src="src/github-production.js"></script>',
     '<script type="module" src="src/feedback-nav.js"></script>',
     '<script type="module" src="src/contributor-nav.js"></script>',
+    '<script type="module" src="src/stories-polish.js"></script>',
     submit ? '<script type="module" src="src/github-submit.js"></script>' : '',
   ].filter(Boolean).join('\n');
   return output.replace('</body>', `${scripts}\n</body>`);
