@@ -28,7 +28,8 @@ test.describe('Frozen homepage', () => {
     await expect(page.locator('.pages-brand').first()).toContainText('CorporateX');
     await expect(page.locator('#live-signals')).toBeVisible();
     await expect(page.getByText('Live · pending content validation')).toBeVisible();
-    await expect(page.getByText('CorporateX public mirror')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Feedback' }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'My Space' }).first()).toBeVisible();
   });
 
   test('serves the frozen artwork as cached WebP resources', async ({ request }) => {
