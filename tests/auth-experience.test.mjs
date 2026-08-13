@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const read = (path) => readFile(path, 'utf8');
-const [login, account, authCss, navRuntime, confirmation, magicLink, build] = await Promise.all([
+const [login, account, authCss, navRuntime, confirmation, magicLink, build, productionRuntime] = await Promise.all([
   read('login.html'),
   read('account.html'),
   read('src/auth-experience.css'),
@@ -10,32 +10,41 @@ const [login, account, authCss, navRuntime, confirmation, magicLink, build] = aw
   read('supabase/templates/confirmation.html'),
   read('supabase/templates/magic-link.html'),
   read('scripts/build.mjs'),
+  read('src/github-production.js'),
 ]);
 
-assert.match(login, /Reading published stories is always open and never requires an account/i);
+assert.match(login, /Reading published stories stays open to everyone/i);
 assert.match(login, /Email my access link/);
 assert.match(login, /shouldCreateUser:\s*true/);
-assert.match(login, /data:\s*\{\s*product:\s*'CorporateX'/);
+assert.match(login, /product:\s*'CorporateX'/);
+assert.match(login, /Open My Space/);
 assert.match(login, /class="cx-auth-visual"/);
-assert.equal((login.match(/<article>/g) || []).length, 3, 'contributor access must keep three concise purpose cards');
-assert.doesNotMatch(login, /secure Supabase magic link/i, 'implementation-provider language must not lead the contributor experience');
+assert.equal((login.match(/<article>/g) || []).length, 3, 'My Space access must keep three concise purpose cards');
+assert.doesNotMatch(login, /secure Supabase magic link/i, 'implementation-provider language must not lead the user experience');
 
-assert.match(account, /Your story\.\s*<br \/><em>Your timeline\.<\/em>/);
-assert.match(account, /Only you see this archive/);
-assert.match(account, /Browsing never needs sign-in/);
-assert.match(account, /class="cx-account-list"/);
+assert.match(account, /Keep what matters\.\s*<br \/><em>Follow what changes\.<\/em>/);
+assert.match(account, /data-space-tab="saved"/);
+assert.match(account, /data-space-tab="following"/);
+assert.match(account, /data-space-tab="submissions"/);
+assert.match(account, /saved_experiences/);
+assert.match(account, /experience_follows/);
 assert.match(account, /class="cx-auth-visual"/);
 assert.doesNotMatch(account, /Your stories,<br \/><em>your status\.<\/em>/i, 'oversized legacy private archive title must not return');
 
 assert.match(authCss, /\.cx-auth-shell/);
-assert.match(authCss, /grid-template-columns:\s*minmax\(0, \.96fr\) minmax\(380px, \.84fr\)/);
-assert.match(authCss, /@media \(max-width: 820px\)/);
+assert.match(authCss, /grid-template-columns:minmax\(0,\.96fr\) minmax\(380px,\.84fr\)/);
+assert.match(authCss, /@media\(max-width:820px\)/);
 assert.match(authCss, /\.cx-auth-visual/);
-assert.match(authCss, /\.cx-account-state/);
+assert.match(authCss, /\.cx-space-tabs/);
+assert.match(authCss, /\.cx-story-action/);
 
-assert.match(navRuntime, /My Stories/);
-assert.doesNotMatch(navRuntime, /textContent\s*=\s*'Sign In'/);
+assert.match(navRuntime, /My Space/);
+assert.doesNotMatch(navRuntime, /label\.textContent = 'My Stories'/);
 assert.match(build, /src\/contributor-nav\.js/);
+assert.match(productionRuntime, /saved_experiences/);
+assert.match(productionRuntime, /experience_follows/);
+assert.match(productionRuntime, /story_questions/);
+assert.match(productionRuntime, /Ask a useful follow-up/);
 
 for (const [name, template] of [['confirmation', confirmation], ['magic link', magicLink]]) {
   assert.match(template, /HRTechify · CorporateX/, `${name}: HRTechify/CorporateX brand missing`);
@@ -45,4 +54,4 @@ for (const [name, template] of [['confirmation', confirmation], ['magic link', m
   assert.doesNotMatch(template, /powered by Supabase|Supabase Auth/i, `${name}: provider branding must not appear in user-facing email copy`);
 }
 
-console.log('Contributor auth experience checks passed: purpose clarity, anime UI and HRTechify email branding are stable.');
+console.log('My Space auth experience checks passed: saved/following/submissions, anime UI and HRTechify email branding are stable.');
