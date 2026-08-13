@@ -40,7 +40,6 @@ function mountUnifiedHeader() {
 }
 function refreshActiveNavigation(){document.querySelectorAll('[data-cx-route]').forEach(link=>isRouteActive(link.dataset.cxRoute)?link.setAttribute('aria-current','page'):link.removeAttribute('aria-current'));}
 function rewriteProductionLinks(){
-  document.querySelectorAll('a[href*="corporatex.onrender.com"]').forEach(link=>{const href=link.getAttribute('href')||''; if(/\/browse(?:$|[?#])/.test(href))link.href=localHref('stories.html'); else if(/\/submit/.test(href))link.href=localHref('guided-story.html'); else if(/\/login/.test(href))link.href=localHref('account.html'); else if(/\/more/.test(href))link.href=localHref('how-it-works.html'); else if(/\/about/.test(href))link.href=`${localHref()}#about`; else if(/#live-signals/.test(href))link.href=localHref('stories.html#story-search'); else link.href=localHref();});
   document.querySelectorAll('a[href$="more-info.html"],a[href="more-info.html"]').forEach(link=>{link.href=localHref('how-it-works.html');if(link.textContent?.trim()==='More')link.textContent='How It Works';});
 }
 function addAnimePresence(){document.querySelectorAll('.ref-page .hero-space:not(.story-detail-layout),.ref-page .directory-hero').forEach(section=>section.dataset.animeShell='true');}
