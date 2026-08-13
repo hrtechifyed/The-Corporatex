@@ -7,7 +7,7 @@ const endings = [
   { slug: 'pass-the-torch', value: 'Pass the Torch', headline: 'Some chapters end with something worth passing on.', asset: 'card-5' },
 ];
 
-test('homepage ending cards enter Setting the Scene directly instead of browsing stories', async ({ page }) => {
+test('homepage ending cards enter the GitHub Pages contribution flow', async ({ page }) => {
   await page.goto('/');
   const cards = page.locator('.pages-ending-grid .pages-ending-card');
   await expect(cards).toHaveCount(4);
@@ -15,11 +15,11 @@ test('homepage ending cards enter Setting the Scene directly instead of browsing
   for (let index = 0; index < endings.length; index += 1) {
     await expect(cards.nth(index)).toHaveAttribute(
       'href',
-      `https://corporatex.onrender.com/submit/scene?ending=${endings[index].slug}&from=home`,
+      `guided-story.html?ending=${endings[index].slug}&from=home`,
     );
   }
 
-  // Keep CI on the local branch while validating the server-backed handoff destination.
+  // The Next.js staging implementation keeps its own local scene-entry regression coverage.
   await page.goto('/submit/scene?ending=break-free&from=home');
   await expect(page).toHaveURL(/\/submit\/scene\?ending=break-free&from=home$/);
   await expect(page.getByRole('heading', { name: 'Setting the Scene', exact: true })).toBeVisible();

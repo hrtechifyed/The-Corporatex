@@ -31,13 +31,13 @@ jobs:
           nvm use 22
           node --version
 
-      - name: Wait for production deployment
+      - name: Wait for GitHub Pages deployment
         if: github.event_name == 'push'
-        run: sleep 90
+        run: sleep 60
 
       - name: Run production availability and load smoke
         env:
-          CORPORATEX_BASE_URL: https://corporatex.onrender.com
+          CORPORATEX_BASE_URL: https://hrtechifyed.github.io/The-Corporatex
           CORPORATEX_SMOKE_REQUESTS: 10
           CORPORATEX_SMOKE_CONCURRENCY: 5
           CORPORATEX_SMOKE_TIMEOUT_MS: 15000
