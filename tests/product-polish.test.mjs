@@ -29,13 +29,16 @@ test('primary navigation is animated, includes Home and session-aware My Stories
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test('GitHub Pages is an explicit public mirror with local explanatory pages and live server handoffs', () => {
+test('GitHub Pages is the canonical public product with local interactive routes', () => {
   for (const copy of ['Not a score.', 'FOUR HONEST ENDINGS', 'SIGNALS FROM PEOPLE WHO WERE THERE', 'LIVE SIGNAL CLOUD', 'PASS IT FORWARD', 'ABOUT CORPORATEX']) assert.match(pagesPreview, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  assert.match(pagesPreview, /rel="canonical" href="https:\/\/corporatex\.onrender\.com\/"/);
+  assert.match(pagesPreview, /rel="canonical" href="https:\/\/hrtechifyed\.github\.io\/The-Corporatex\/"/);
   assert.match(pagesPreview, /href="#how-it-works"/);
   assert.match(pagesPreview, /href="#about"/);
-  assert.match(pagesPreview, /https:\/\/corporatex\.onrender\.com\/login/);
-  assert.match(pagesPreview, /CorporateX public mirror/);
+  assert.match(pagesPreview, /href="stories\.html"/);
+  assert.match(pagesPreview, /href="guided-story\.html"/);
+  assert.match(pagesPreview, /href="account\.html"/);
+  assert.match(pagesPreview, /href="feedback\.html"/);
+  assert.doesNotMatch(pagesPreview, /public mirror|Open live CorporateX/i);
   assert.match(pagesFixes, /pages-brand-orbit/);
   assert.match(pagesFixes, /pages-header-signal/);
   assert.match(pagesFixes, /prefers-reduced-motion/);
@@ -44,9 +47,9 @@ test('GitHub Pages is an explicit public mirror with local explanatory pages and
   assert.match(staticBuild, /prelaunch-pages-fixes\.css/);
 });
 
-test('GitHub Pages remains truthful when live server data is unavailable', () => {
-  assert.match(pagesPreview, /without inventing or caching employee stories/i);
-  assert.match(pagesPreview, /does not snapshot pending contributions or private moderation state/i);
+test('GitHub Pages remains truthful while the confirmed archive is forming', () => {
+  assert.match(pagesPreview, /genuine, moderated workplace stories/i);
+  assert.match(pagesPreview, /Private moderation stays private/i);
   assert.doesNotMatch(pagesPreview, /Northstar Technologies|Atlas Systems|Meridian Works|10K\+/i);
   assert.equal((pagesPreview.match(/class="pages-ending-card"/g) || []).length, 4);
   assert.equal((pagesPreview.match(/pages-story-card--forming/g) || []).length, 1);

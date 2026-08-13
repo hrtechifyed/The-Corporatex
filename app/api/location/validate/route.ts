@@ -63,8 +63,8 @@ export async function GET(request: Request) {
     const rows = await runRateLimited(async () => {
       const response = await fetch(endpoint, {
         headers: {
-          'User-Agent': 'CorporateX/1.0 (https://corporatex.onrender.com; contact: hrtechifyed@gmail.com)',
-          Referer: 'https://corporatex.onrender.com/',
+          'User-Agent': 'CorporateX/1.0 (https://hrtechifyed.github.io/The-Corporatex/; contact: hrtechifyed@gmail.com)',
+          Referer: 'https://hrtechifyed.github.io/The-Corporatex/',
           Accept: 'application/json',
         },
         next: { revalidate: 86400 },

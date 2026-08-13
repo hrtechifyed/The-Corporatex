@@ -4,13 +4,14 @@ This runbook turns the prelaunch audit into operational launch gates. It deliber
 
 ## Canonical production surface
 
-- Canonical product origin: `https://corporatex.onrender.com`
-- GitHub Pages: public static mirror only. It declares the canonical Render origin and hands live stories, sign-in and contribution actions to the live application.
-- Do not publish private or pending story content to the static mirror.
+- Canonical product origin: `https://hrtechifyed.github.io/The-Corporatex/`
+- GitHub Pages is the only normal user-facing production frontend.
+- Supabase provides authentication, database storage and trusted backend functions used by the GitHub Pages experience.
+- Do not publish private or pending story content into public static assets.
 
-## Production health and load gate
+## Production availability and load gate
 
-Run `.github/workflows/prelaunch-smoke.yml` after every `main` deployment that changes launch-critical code. It warms the service, then measures `/api/health`, `/`, `/browse` and `/more` with controlled concurrency.
+Run `.github/workflows/prelaunch-smoke.yml` after every `main` deployment that changes launch-critical code. It waits for GitHub Pages, warms the public production pages, then measures Home, Stories, How It Works and Feedback with controlled concurrency.
 
 Current prelaunch ceilings:
 
@@ -19,110 +20,68 @@ Current prelaunch ceilings:
 - warm steady-state p95: at most 12 seconds
 - concurrency: 5
 
-If the smoke gate fails because Render is still deploying, rerun after the deployment finishes. If it fails after deployment is stable, do not approve broad launch until the failure is explained and fixed. If repeated warm p95 is near the ceiling under this light load, upgrade hosting before adding public traffic.
+If the smoke gate fails while GitHub Pages is still deploying, rerun after deployment finishes. If it fails after deployment is stable, do not approve broad launch until the failure is explained and fixed.
 
-## Privacy-safe funnel telemetry
+## Privacy-safe product telemetry
 
-`/api/telemetry` accepts only an event name, a path and a timestamp. Query strings are removed before server logging. Never add story text, email addresses, company names, locations or other contributor-entered fields to funnel events.
+Do not add story text, email addresses, company names, locations or other contributor-entered fields to analytics or incident logs. Use aggregate counts and page-level operational signals only.
 
-Launch funnel events/pages to monitor:
+Key invite-beta journeys to watch:
 
-1. home page view and `home_share_story`
-2. `ending_chosen`
-3. `/submit/scene`
-4. `story_beats_started`
-5. `final_cut_reached`
-6. `safety_check_started`
-7. `safety_passed` or `safety_blocked`
-8. `verification_gate_reached`
-9. `verification_email_requested`
-10. `/submit/finish`
-11. `submission_completed`
-12. `/account` return visits
+1. Home and Stories browsing
+2. Save / Follow actions
+3. My Space access
+4. Share Your Story entry
+5. Story Beats completion
+6. Final Cut review
+7. safety review and submission
+8. passwordless access-link delivery
+9. moderated follow-up Q&A
+10. Feedback submission
 
-Use aggregate counts only. Do not correlate telemetry with private story content.
+## Feedback operations
+
+The Feedback page allows testers to rate one or more product sections and optionally leave a short note. Feedback is sent through the `submit-feedback` Supabase Edge Function and stored in the private `beta_feedback_submissions` table.
+
+- Feedback does not require sign-in.
+- Do not expose beta feedback as a public feed.
+- Do not ask testers to include passwords, private access links, confidential employer material or sensitive personal data.
+- Review reports using the `new`, `reviewing`, `resolved` and `archived` statuses.
 
 ## Email delivery monitoring
 
-CorporateX logs Gmail API acknowledgement for sign-in, submission verification and moderation-outcome mail using `corporatex_email_delivery` structured logs. Monitor for `status: failed` and for a sustained gap between verification-email requests and successful submission completions.
+CorporateX uses Supabase authentication with the configured HRTechify email sender for passwordless account access. During invitation testing, participants should report missing or spam-folder mail without posting their email address or access link publicly.
 
-A Gmail API send acknowledgement is not a guarantee of inbox delivery. During invitation alpha, participants should report missing/spam-folder mail as outcome-level findings in issue #54 without posting their email address publicly.
-
-If email delivery fails:
-
-1. verify `GMAIL_USER`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `GOOGLE_REFRESH_TOKEN` on Render;
-2. verify Gmail API OAuth token validity;
-3. check server logs for the structured delivery error;
-4. do not ask contributors to paste private magic links into support channels;
-5. after credentials are repaired, use the resend control on the verification page.
-
-## Abuse controls
-
-Current single-instance controls rate-limit:
-
-- passwordless sign-in email requests: 5 per 15 minutes per IP + email hash
-- submission verification email requests: 5 per 15 minutes per IP + email hash
-- public story reports: 8 per hour per IP + story
-
-Identifiers are SHA-256 hashed before in-memory bucket storage. These limits are suitable only while the application runs as a single Render process. Before horizontal scaling, replace them with a shared rate-limit store.
+If email delivery fails, inspect Supabase Auth logs and the configured SMTP provider. Never ask contributors to paste private magic links or SMTP credentials into support channels.
 
 ## Moderation operating procedure
 
-A moderator must not publish until the “What will be published” preview has been reviewed and explicitly confirmed. The preview must include:
+A moderator must not publish until the public preview has been reviewed and explicitly confirmed. Review broad context, public headline/summary, anonymous contributor identity, approved Story Beats, themes and labels. Employer criticism, praise or an uncomfortable opinion is not a removal reason by itself.
 
-- Ending
-- public headline and summary
-- company display name
-- broad role/function
-- broad region
-- approximate tenure
-- work arrangement
-- anonymous HRT contributor identity
-- every public Story Beat/highlight
-- every public label
-
-Employer criticism, praise or an uncomfortable opinion is not a removal reason by itself.
-
-Changes requested, rejection and unpublish require a private moderation reason. CorporateX sends the contributor an outcome email; the story remains private unless and until a moderator confirms publication.
+Changes requested, rejection and unpublish require a private moderation reason. The story remains private unless and until a moderator confirms publication.
 
 ## Community report procedure
 
-The moderator workspace exposes `open` and `reviewing` reports. For each report:
+For each report:
 
 1. open the public story;
 2. compare the concern against Community Guidelines and the exact moderated public content;
 3. mark `reviewing` while investigation is active;
 4. use `resolved` when action/review is complete or `dismissed` when the report is not substantiated;
-5. if public content needs to be removed, use the story moderation unpublish path so the action is audited.
+5. if public content needs removal, use the moderation/unpublish path so the action is auditable.
 
 ## Contributor withdrawal and deletion
 
-- A contributor can withdraw a pending or published story from My Stories.
-- A withdrawn or otherwise private record can be permanently deleted by the owning account.
+- A contributor can manage their own submission from My Space.
 - Do not manually expose a contributor email in support notes or public issue trackers.
+- Account/data removal requests should be verified against the relevant account before action.
 
 ## Visual acceptance
 
-The browser suite creates a retained visual matrix for:
-
-- 1920×1080
-- 1440×900
-- 768×1024
-- 390×844
-
-Pages: Home, How It Works, About, Submit, Setting the Scene and Browse.
-
-Review the retained artifact when a visual launch-critical PR changes layout or artwork. A green DOM assertion alone is not proof of visual acceptance.
+The browser suite creates a retained visual matrix across desktop, laptop/tablet and mobile widths. Review the artifact whenever a launch-critical PR changes layout or artwork. A green DOM assertion alone is not proof of visual acceptance.
 
 ## Invitation rehearsal
 
-Issue #54 is the authoritative final human gate. Do not close it until 10–20 real invited participants have completed the defined contributor, reader and return-user tasks and the forced failure scenarios. Do not post their private story text in GitHub.
+Issue #54 remains the authoritative final human gate for broad launch. Do not close it until the required invited participants have completed the defined contributor, reader and return-user tasks and the forced failure scenarios. Do not post their private story text in GitHub.
 
-Broad launch remains blocked until:
-
-- PR #53 (or its documented successor) is merged;
-- Site quality is green on final `main`;
-- GitHub Pages deployment is green;
-- production smoke is green;
-- issue #54 is closed with `PRELAUNCH_REHEARSAL_COMPLETE`;
-- no linked P0/P1 launch defect remains unresolved.
+Broad launch remains blocked until Site Quality, GitHub Pages deployment and production smoke are green, the rehearsal is complete, and no linked P0/P1 launch defect remains unresolved.
