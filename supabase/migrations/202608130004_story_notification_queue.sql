@@ -16,6 +16,7 @@ create index if not exists story_notification_jobs_pending_idx on public.story_n
 create or replace function public.enqueue_story_notifications()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.status = 'pending_moderation' and old.status is distinct from 'pending_moderation' then
