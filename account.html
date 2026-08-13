@@ -4,93 +4,85 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050608" />
-  <meta name="description" content="Privately track your CorporateX workplace story drafts and moderation status." />
+  <meta name="description" content="Your private CorporateX space for saved stories, followed stories and your own submissions." />
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="src/app-v2.css" />
   <link rel="stylesheet" href="src/reference-exact.css" />
   <link rel="stylesheet" href="src/reference-functional.css" />
   <link rel="stylesheet" href="src/github-shell.css" />
   <link rel="stylesheet" href="src/auth-experience.css" />
-  <title>My Stories | CorporateX</title>
+  <title>My Space | CorporateX</title>
 </head>
 <body class="ref-page" data-ref-page="account">
 <a class="skip-link" href="#main">Skip to main content</a>
-<header class="cx-unified-header">
-  <div class="cx-unified-header__inner">
-    <a class="cx-unified-brand" href="index.html" aria-label="HRTechify CorporateX home">
-      <span class="cx-unified-brand__mark"><img src="hrtechify-logo.svg" alt="HRTechify" width="50" height="50" /><span class="cx-unified-brand__orbit" aria-hidden="true"></span></span>
-      <span class="cx-unified-brand__parent">HRTechify</span><span class="cx-unified-brand__product">Corporate<b>X</b></span>
-    </a>
-    <span class="cx-unified-signal" aria-hidden="true"><i></i><i></i><i></i></span>
-    <nav class="cx-unified-nav" aria-label="Primary navigation">
-      <a href="index.html">Home</a><a href="stories.html">Stories</a><a href="how-it-works.html">How It Works</a><a href="index.html#about">About</a>
-      <a class="cx-unified-account" href="account.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19.2c.7-3.3 3-5 6.5-5s5.8 1.7 6.5 5"/></svg><span>My Stories</span></a>
-    </nav>
-    <details class="cx-unified-menu"><summary aria-label="Open navigation"><span></span></summary><nav aria-label="Mobile navigation"><a href="index.html">Home</a><a href="stories.html">Stories</a><a href="how-it-works.html">How It Works</a><a href="index.html#about">About</a><a href="privacy-safety.html">Privacy &amp; Safety</a><a class="cx-mobile-primary" href="guided-story.html">Share Your Story</a><a href="account.html" aria-current="page">My Stories</a></nav></details>
-  </div>
-</header>
-
-<main id="main" class="cx-auth-page">
+<main id="main" class="cx-auth-page cx-space-page">
   <div class="cx-auth-shell">
-    <section class="cx-auth-copy" aria-labelledby="account-title">
-      <p class="cx-auth-kicker">PRIVATE CONTRIBUTOR SPACE</p>
-      <h1 class="cx-auth-title" id="account-title">Your story.<br /><em>Your timeline.</em></h1>
-      <p class="cx-auth-lede">Track drafts, review status and publication progress in one private place. Your email protects access to this archive; it is never displayed with a published workplace story.</p>
+    <section class="cx-auth-copy" aria-labelledby="space-title">
+      <p class="cx-auth-kicker">YOUR PRIVATE CORPORATEX SPACE</p>
+      <h1 class="cx-auth-title" id="space-title">Keep what matters.<br /><em>Follow what changes.</em></h1>
+      <p class="cx-auth-lede">Save useful workplace stories, follow conversations you want to return to, and privately track the stories you have contributed.</p>
 
-      <div class="cx-auth-purpose" aria-label="What My Stories is for">
-        <article><span>Private access</span><strong>Only you see this archive.</strong><p>Your account is tied to your email, not to the public story.</p></article>
-        <article><span>Status tracking</span><strong>Know where your story is.</strong><p>Draft, review and publication states stay visible here.</p></article>
-        <article><span>Reader friendly</span><strong>Browsing never needs sign-in.</strong><p>Authentication is only for contributors and their submissions.</p></article>
+      <div class="cx-auth-purpose" aria-label="What My Space is for">
+        <article><span>Saved</span><strong>Your reading shortlist.</strong><p>Star published stories you want to revisit before a career decision.</p></article>
+        <article><span>Following</span><strong>Stay with the conversation.</strong><p>Follow a story for moderated questions, answers and future updates.</p></article>
+        <article><span>My submissions</span><strong>Track what you shared.</strong><p>See draft, review and publication status without exposing your email publicly.</p></article>
       </div>
 
-      <div class="cx-account-list" data-account-list aria-live="polite">
-        <div class="cx-account-state"><span class="cx-account-state__mark">✦</span><div><h2>Loading your private archive…</h2><p>Checking your contributor session and story status.</p></div></div>
-      </div>
+      <nav class="cx-space-tabs" aria-label="My Space sections">
+        <button type="button" class="is-active" data-space-tab="saved">★ Saved <span data-count-saved>0</span></button>
+        <button type="button" data-space-tab="following">◎ Following <span data-count-following>0</span></button>
+        <button type="button" data-space-tab="submissions">✦ My Submissions <span data-count-submissions>0</span></button>
+      </nav>
+
+      <section class="cx-space-panel" data-space-panel="saved" aria-live="polite"><div class="cx-account-state"><span class="cx-account-state__mark">★</span><div><h2>Loading saved stories…</h2><p>Building your private shortlist.</p></div></div></section>
+      <section class="cx-space-panel" data-space-panel="following" hidden aria-live="polite"><div class="cx-account-state"><span class="cx-account-state__mark">◎</span><div><h2>Loading followed stories…</h2><p>Checking stories you chose to keep up with.</p></div></div></section>
+      <section class="cx-space-panel" data-space-panel="submissions" hidden aria-live="polite"><div class="cx-account-state"><span class="cx-account-state__mark">✦</span><div><h2>Loading your submissions…</h2><p>Checking drafts and moderation status.</p></div></div></section>
 
       <div class="cx-auth-actions">
-        <a class="cx-auth-button cx-auth-button--primary" href="guided-story.html">Share another story →</a>
+        <a class="cx-auth-button cx-auth-button--primary" href="stories.html">Browse stories →</a>
+        <a class="cx-auth-button" href="guided-story.html">Share a story</a>
         <button class="cx-auth-button" type="button" data-sign-out>Sign out</button>
       </div>
     </section>
 
-    <aside class="cx-auth-visual" aria-label="CorporateX contributor journey">
+    <aside class="cx-auth-visual" aria-label="CorporateX personal story space">
       <img src="frozen-assets/card-5.webp" alt="Anime-style professional looking toward a new career chapter." style="object-position:center 38%;opacity:.96;filter:brightness(1.12) saturate(1.08) contrast(1.03)" />
-      <div class="cx-auth-visual__overlay"><span>YOUR PRIVATE STORY PATH</span><h2>From experience to a useful signal.</h2><p>CorporateX keeps the contributor connected to the story while identity stays separate from what readers see.</p><div class="cx-auth-timeline"><span>Draft</span><span>Review</span><span>Published</span></div></div>
+      <div class="cx-auth-visual__overlay"><span>YOUR DECISION DESK</span><h2>Read. Save. Follow. Contribute.</h2><p>My Space keeps your reading activity and contributor activity together privately, while published stories remain anonymous to other readers.</p><div class="cx-auth-timeline"><span>Saved</span><span>Following</span><span>Shared</span></div></div>
     </aside>
   </div>
 </main>
-
 <footer class="site-footer"><p class="footer-line">CorporateX — Powered by HRTechify · People · Technology · Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved. Stories are contributor perspectives</p></footer>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase = createClient('https://otgnnkaawwwwqxlzrfpx.supabase.co','sb_publishable_bYYz3uHOE9py4E84KpEpiw_A4HGdcoX');
-const list = document.querySelector('[data-account-list]');
 const { data: { session } } = await supabase.auth.getSession();
-if (!session) {
-  location.replace(`login.html?next=${encodeURIComponent('account.html')}`);
-} else {
-  const { data, error } = await supabase.from('experiences').select('id,approved_headline,status,created_at,updated_at').order('updated_at', { ascending: false });
-  list.replaceChildren();
-  if (error) {
-    const card = document.createElement('div'); card.className='cx-account-state';
-    const mark = document.createElement('span'); mark.className='cx-account-state__mark'; mark.textContent='!';
-    const copy = document.createElement('div'); const title = document.createElement('h2'); title.textContent='Your archive could not be loaded.'; const text = document.createElement('p'); text.textContent='Please refresh the page or sign in again.'; copy.append(title,text); card.append(mark,copy); list.append(card);
-  } else if (!data?.length) {
-    const card = document.createElement('div'); card.className='cx-account-state';
-    const mark = document.createElement('span'); mark.className='cx-account-state__mark'; mark.textContent='✦';
-    const copy = document.createElement('div'); const title = document.createElement('h2'); title.textContent='No submissions yet.'; const text = document.createElement('p'); text.textContent='When you share a workplace story, its private status will appear here.'; copy.append(title,text); card.append(mark,copy); list.append(card);
-  } else {
-    for (const row of data) {
-      const card = document.createElement('article'); card.className='cx-account-story';
-      const title = document.createElement('h2'); title.textContent=row.approved_headline || 'Workplace story';
-      const meta = document.createElement('div'); meta.className='cx-account-story__meta';
-      const status = document.createElement('span'); status.textContent=String(row.status).replaceAll('_',' ');
-      const updated = document.createElement('span'); updated.textContent=`Updated ${new Date(row.updated_at || row.created_at).toLocaleDateString()}`;
-      meta.append(status,updated); card.append(title,meta); list.append(card);
-    }
-  }
+if (!session) location.replace(`login.html?next=${encodeURIComponent('account.html')}`);
+
+const panels = Object.fromEntries([...document.querySelectorAll('[data-space-panel]')].map(el => [el.dataset.spacePanel, el]));
+const tabs = [...document.querySelectorAll('[data-space-tab]')];
+function showTab(name){ tabs.forEach(b=>b.classList.toggle('is-active',b.dataset.spaceTab===name)); Object.entries(panels).forEach(([key,p])=>p.hidden=key!==name); }
+tabs.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.spaceTab)));
+
+function empty(panel, mark, title, text){ panel.replaceChildren(); const card=document.createElement('div'); card.className='cx-account-state'; card.innerHTML=`<span class="cx-account-state__mark">${mark}</span><div><h2></h2><p></p></div>`; card.querySelector('h2').textContent=title; card.querySelector('p').textContent=text; panel.append(card); }
+function storyCard(story, extra=''){ const card=document.createElement('article'); card.className='cx-account-story'; const link=document.createElement('a'); link.href=`story-detail.html?id=${encodeURIComponent(story.id)}`; link.className='cx-space-story-link'; const h=document.createElement('h2'); h.textContent=story.approved_headline||'Workplace story'; const p=document.createElement('p'); p.textContent=[story.company_display_name,story.broad_function,story.broad_region].filter(Boolean).join(' · ')||'Published workplace story'; link.append(h,p); card.append(link); if(extra){const meta=document.createElement('div'); meta.className='cx-account-story__meta'; const s=document.createElement('span'); s.textContent=extra; meta.append(s); card.append(meta);} return card; }
+async function publishedFor(ids){ if(!ids.length)return[]; const {data,error}=await supabase.from('published_experiences').select('id,approved_headline,company_display_name,broad_function,broad_region,published_at').in('id',ids); if(error)throw error; return data||[]; }
+async function loadSpace(){
+  if(!session)return;
+  const [savedRes,followRes,subRes]=await Promise.all([
+    supabase.from('saved_experiences').select('experience_id,created_at').order('created_at',{ascending:false}),
+    supabase.from('experience_follows').select('experience_id,created_at').order('created_at',{ascending:false}),
+    supabase.from('experiences').select('id,approved_headline,status,created_at,updated_at').order('updated_at',{ascending:false})
+  ]);
+  const saved=savedRes.data||[], followed=followRes.data||[], submissions=subRes.data||[];
+  document.querySelector('[data-count-saved]').textContent=saved.length;
+  document.querySelector('[data-count-following]').textContent=followed.length;
+  document.querySelector('[data-count-submissions]').textContent=submissions.length;
+  if(savedRes.error) empty(panels.saved,'!','Saved stories could not be loaded.','Refresh the page or sign in again.'); else if(!saved.length) empty(panels.saved,'★','Nothing saved yet.','Use the star on a published story to keep it here.'); else { const rows=await publishedFor(saved.map(x=>x.experience_id)); const map=new Map(rows.map(x=>[x.id,x])); panels.saved.replaceChildren(...saved.map(x=>map.get(x.experience_id)).filter(Boolean).map(x=>storyCard(x,'Saved'))); }
+  if(followRes.error) empty(panels.following,'!','Followed stories could not be loaded.','Refresh the page or sign in again.'); else if(!followed.length) empty(panels.following,'◎','You are not following a story yet.','Follow a published story to keep its moderated conversation in this space.'); else { const rows=await publishedFor(followed.map(x=>x.experience_id)); const map=new Map(rows.map(x=>[x.id,x])); panels.following.replaceChildren(...followed.map(x=>map.get(x.experience_id)).filter(Boolean).map(x=>storyCard(x,'Following'))); }
+  if(subRes.error) empty(panels.submissions,'!','Your submissions could not be loaded.','Refresh the page or sign in again.'); else if(!submissions.length) empty(panels.submissions,'✦','No submissions yet.','When you share a workplace story, its private status will appear here.'); else { panels.submissions.replaceChildren(...submissions.map(row=>{const card=document.createElement('article'); card.className='cx-account-story'; const h=document.createElement('h2'); h.textContent=row.approved_headline||'Workplace story'; const meta=document.createElement('div'); meta.className='cx-account-story__meta'; const s=document.createElement('span'); s.textContent=String(row.status).replaceAll('_',' '); const u=document.createElement('span'); u.textContent=`Updated ${new Date(row.updated_at||row.created_at).toLocaleDateString()}`; meta.append(s,u); card.append(h,meta); return card;})); }
 }
-document.querySelector('[data-sign-out]')?.addEventListener('click', async () => { await supabase.auth.signOut(); location.replace('index.html'); });
+loadSpace().catch(()=>{ empty(panels.saved,'!','My Space could not be loaded.','Please refresh and try again.'); });
+document.querySelector('[data-sign-out]')?.addEventListener('click', async()=>{ await supabase.auth.signOut(); location.replace('index.html'); });
 </script>
 <script type="module" src="src/github-production.js"></script>
 </body>
