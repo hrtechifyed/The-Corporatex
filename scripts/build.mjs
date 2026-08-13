@@ -16,6 +16,7 @@ function withProductionRuntime(html, { submit = false } = {}) {
   if (output.includes('github-production.js')) return output;
   const scripts = [
     '<script type="module" src="src/github-production.js"></script>',
+    '<script type="module" src="src/contributor-nav.js"></script>',
     submit ? '<script type="module" src="src/github-submit.js"></script>' : '',
   ].filter(Boolean).join('\n');
   return output.replace('</body>', `${scripts}\n</body>`);
