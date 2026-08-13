@@ -3,42 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#050505" />
-  <meta name="description" content="View your private CorporateX story archive." />
+  <meta name="theme-color" content="#050608" />
+  <meta name="description" content="Privately track your CorporateX workplace story drafts and moderation status." />
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="src/app-v2.css" />
   <link rel="stylesheet" href="src/reference-exact.css" />
   <link rel="stylesheet" href="src/reference-functional.css" />
+  <link rel="stylesheet" href="src/github-shell.css" />
+  <link rel="stylesheet" href="src/auth-experience.css" />
   <title>My Stories | CorporateX</title>
 </head>
 <body class="ref-page" data-ref-page="account">
 <a class="skip-link" href="#main">Skip to main content</a>
-<header class="ref-nav"><a class="ref-brand" href="index.html" aria-label="CorporateX home"><img src="public/hrtechify-logo.svg" alt="" width="34" height="34" /><strong>CorporateX</strong></a><nav class="ref-primary-nav" aria-label="Primary navigation"><a data-ref-nav="home" href="index.html">Home</a><a data-ref-nav="share" class="ref-share-link" href="guided-story.html">Share Your Story</a><a data-ref-nav="stories" href="stories.html">Stories</a><a data-ref-nav="more" href="more-info.html">More</a><a aria-current="page" href="account.html">My Stories</a></nav></header>
-<main id="main"><section class="page-shell hero-space"><p class="eyebrow">PRIVATE ARCHIVE</p><h1 class="display-title">Your stories,<br /><em>your status.</em></h1><p class="lede">Only you can see drafts and moderation status here.</p><div data-account-list><div class="glass-card">Loading your private archive…</div></div><div class="actions"><a class="button button-primary" href="guided-story.html">Share another story →</a><button class="button button-secondary" type="button" data-sign-out>Sign out</button></div></section></main>
+<header class="cx-unified-header">
+  <div class="cx-unified-header__inner">
+    <a class="cx-unified-brand" href="index.html" aria-label="HRTechify CorporateX home">
+      <span class="cx-unified-brand__mark"><img src="hrtechify-logo.svg" alt="HRTechify" width="50" height="50" /><span class="cx-unified-brand__orbit" aria-hidden="true"></span></span>
+      <span class="cx-unified-brand__parent">HRTechify</span><span class="cx-unified-brand__product">Corporate<b>X</b></span>
+    </a>
+    <span class="cx-unified-signal" aria-hidden="true"><i></i><i></i><i></i></span>
+    <nav class="cx-unified-nav" aria-label="Primary navigation">
+      <a href="index.html">Home</a><a href="stories.html">Stories</a><a href="how-it-works.html">How It Works</a><a href="index.html#about">About</a>
+      <a class="cx-unified-account" href="account.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19.2c.7-3.3 3-5 6.5-5s5.8 1.7 6.5 5"/></svg><span>My Stories</span></a>
+    </nav>
+    <details class="cx-unified-menu"><summary aria-label="Open navigation"><span></span></summary><nav aria-label="Mobile navigation"><a href="index.html">Home</a><a href="stories.html">Stories</a><a href="how-it-works.html">How It Works</a><a href="index.html#about">About</a><a href="privacy-safety.html">Privacy &amp; Safety</a><a class="cx-mobile-primary" href="guided-story.html">Share Your Story</a><a href="account.html" aria-current="page">My Stories</a></nav></details>
+  </div>
+</header>
+
+<main id="main" class="cx-auth-page">
+  <div class="cx-auth-shell">
+    <section class="cx-auth-copy" aria-labelledby="account-title">
+      <p class="cx-auth-kicker">PRIVATE CONTRIBUTOR SPACE</p>
+      <h1 class="cx-auth-title" id="account-title">Your story.<br /><em>Your timeline.</em></h1>
+      <p class="cx-auth-lede">Track drafts, review status and publication progress in one private place. Your email protects access to this archive; it is never displayed with a published workplace story.</p>
+
+      <div class="cx-auth-purpose" aria-label="What My Stories is for">
+        <article><span>Private access</span><strong>Only you see this archive.</strong><p>Your account is tied to your email, not to the public story.</p></article>
+        <article><span>Status tracking</span><strong>Know where your story is.</strong><p>Draft, review and publication states stay visible here.</p></article>
+        <article><span>Reader friendly</span><strong>Browsing never needs sign-in.</strong><p>Authentication is only for contributors and their submissions.</p></article>
+      </div>
+
+      <div class="cx-account-list" data-account-list aria-live="polite">
+        <div class="cx-account-state"><span class="cx-account-state__mark">✦</span><div><h2>Loading your private archive…</h2><p>Checking your contributor session and story status.</p></div></div>
+      </div>
+
+      <div class="cx-auth-actions">
+        <a class="cx-auth-button cx-auth-button--primary" href="guided-story.html">Share another story →</a>
+        <button class="cx-auth-button" type="button" data-sign-out>Sign out</button>
+      </div>
+    </section>
+
+    <aside class="cx-auth-visual" aria-label="CorporateX contributor journey">
+      <img src="frozen-assets/hero.webp" alt="Anime-style professional looking across a city at the next career chapter." />
+      <div class="cx-auth-visual__overlay"><span>YOUR PRIVATE STORY PATH</span><h2>From experience to a useful signal.</h2><p>CorporateX keeps the contributor connected to the story while identity stays separate from what readers see.</p><div class="cx-auth-timeline"><span>Draft</span><span>Review</span><span>Published</span></div></div>
+    </aside>
+  </div>
+</main>
+
 <footer class="site-footer"><p class="footer-line">CorporateX — Powered by HRTechify · People · Technology · Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved. Stories are contributor perspectives</p></footer>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase = createClient('https://otgnnkaawwwwqxlzrfpx.supabase.co','sb_publishable_bYYz3uHOE9py4E84KpEpiw_A4HGdcoX');
 const list = document.querySelector('[data-account-list]');
 const { data: { session } } = await supabase.auth.getSession();
-if (!session) location.replace(`login.html?next=${encodeURIComponent('account.html')}`);
-else {
+if (!session) {
+  location.replace(`login.html?next=${encodeURIComponent('account.html')}`);
+} else {
   const { data, error } = await supabase.from('experiences').select('id,approved_headline,status,created_at,updated_at').order('updated_at', { ascending: false });
   list.replaceChildren();
   if (error) {
-    const card = document.createElement('div'); card.className='glass-card'; card.textContent='Your archive could not be loaded. Please try again.'; list.append(card);
+    const card = document.createElement('div'); card.className='cx-account-state';
+    const mark = document.createElement('span'); mark.className='cx-account-state__mark'; mark.textContent='!';
+    const copy = document.createElement('div'); const title = document.createElement('h2'); title.textContent='Your archive could not be loaded.'; const text = document.createElement('p'); text.textContent='Please refresh the page or sign in again.'; copy.append(title,text); card.append(mark,copy); list.append(card);
   } else if (!data?.length) {
-    const card = document.createElement('div'); card.className='glass-card'; card.innerHTML='<h2>No stories yet.</h2><p>When you submit a workplace story, its private status will appear here.</p>'; list.append(card);
+    const card = document.createElement('div'); card.className='cx-account-state';
+    const mark = document.createElement('span'); mark.className='cx-account-state__mark'; mark.textContent='✦';
+    const copy = document.createElement('div'); const title = document.createElement('h2'); title.textContent='No submissions yet.'; const text = document.createElement('p'); text.textContent='When you share a workplace story, its private status will appear here.'; copy.append(title,text); card.append(mark,copy); list.append(card);
   } else {
     for (const row of data) {
-      const card = document.createElement('article'); card.className='glass-card';
+      const card = document.createElement('article'); card.className='cx-account-story';
       const title = document.createElement('h2'); title.textContent=row.approved_headline || 'Workplace story';
-      const status = document.createElement('p'); status.textContent=`Status: ${String(row.status).replaceAll('_',' ')}`;
-      card.append(title,status); list.append(card);
+      const meta = document.createElement('div'); meta.className='cx-account-story__meta';
+      const status = document.createElement('span'); status.textContent=String(row.status).replaceAll('_',' ');
+      const updated = document.createElement('span'); updated.textContent=`Updated ${new Date(row.updated_at || row.created_at).toLocaleDateString()}`;
+      meta.append(status,updated); card.append(title,meta); list.append(card);
     }
   }
 }
 document.querySelector('[data-sign-out]')?.addEventListener('click', async () => { await supabase.auth.signOut(); location.replace('index.html'); });
 </script>
+<script type="module" src="src/github-production.js"></script>
 </body>
 </html>
