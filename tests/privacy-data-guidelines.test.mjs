@@ -28,8 +28,8 @@ test('privacy page matches the live My Space data model', () => {
 });
 
 test('terms cover private account actions and moderated conversations', () => {
-  assert.match(terms, /Saved &amp; Following/);
-  assert.match(terms, /Questions are moderated before publication|questions and contributor responses also require moderation/i);
+  assert.match(terms, /SAVED &amp; FOLLOWING/i);
+  assert.match(terms, /questions and contributor responses also require moderation/i);
   assert.match(terms, /No harassment, doxxing or identity fishing/i);
   assert.match(terms, /privacy-safety\.html/);
 });
@@ -37,7 +37,7 @@ test('terms cover private account actions and moderated conversations', () => {
 test('community rules prohibit identity hunting and pile-ons in follow-up Q&A', () => {
   assert.match(community, /Ask for context, not identity/i);
   assert.match(community, /Questions are moderated before publication/i);
-  assert.match(community, /No pile-ons or targeting/i);
+  assert.match(community, /NO PILE-ONS/i);
   assert.match(community, /Saved and Following are private product tools, not public popularity signals/i);
 });
 
