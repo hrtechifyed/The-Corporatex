@@ -13,6 +13,12 @@ function withProductionRuntime(html, { submit = false } = {}) {
   if (!output.includes('src/github-shell.css')) {
     output = output.replace('</head>', '  <link rel="stylesheet" href="src/github-shell.css" />\n</head>');
   }
+  if (!output.includes('src/visual-fixes-guide.css')) {
+    output = output.replace('</head>', '  <link rel="stylesheet" href="src/visual-fixes-guide.css" />\n</head>');
+  }
+  if (!output.includes('src/guided-anime-fix.css')) {
+    output = output.replace('</head>', '  <link rel="stylesheet" href="src/guided-anime-fix.css" />\n</head>');
+  }
   if (output.includes('github-production.js')) return output;
   const scripts = [
     '<script type="module" src="src/github-production.js"></script>',
@@ -24,7 +30,13 @@ function withProductionRuntime(html, { submit = false } = {}) {
 
 for (const file of await readdir('.')) {
   if (file.endsWith('.html')) {
-    const html = await readFile(file, 'utf8');
+    let html = await readFile(file, 'utf8');
+    if (file === 'how-it-works.html' && !html.includes('user-guide.html')) {
+      html = html.replace(
+        '<a class="cx-how-button" href="guided-story.html">Share Your Story</a>',
+        '<a class="cx-how-button" href="guided-story.html">Share Your Story</a>\n          <a class="cx-how-button" href="user-guide.html">How to Use CorporateX</a>',
+      );
+    }
     await writeFile(`dist/${file}`, withProductionRuntime(html, { submit: file === 'guided-story.html' }));
   }
 }
