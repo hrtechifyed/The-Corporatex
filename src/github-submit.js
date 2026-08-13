@@ -89,6 +89,9 @@ function accountPanel() {
     const submit = panel.querySelector('[data-cx-account-submit]');
     const switcher = panel.querySelector('[data-cx-account-switch]');
     const password = panel.querySelector('input[name="password"]');
+    const status = panel.querySelector('[data-cx-account-status]');
+    if (submit) submit.disabled = false;
+    if (status) status.textContent = '';
     if (accountMode === 'signin') {
       if (title) title.textContent = 'Sign in and submit your story.';
       if (intro) intro.textContent = 'Use the CorporateX email and password you already created. No sign-in link will be emailed.';
@@ -125,7 +128,7 @@ async function send(payload) {
   localStorage.removeItem(PENDING_KEY);
   localStorage.removeItem(ENDING_KEY);
   localStorage.setItem(LAST_SUBMISSION_KEY, JSON.stringify({ id: data?.id || payload.draftId, status: data?.status || 'pending_moderation', liveLabels: data?.liveLabels || [], submittedAt: new Date().toISOString() }));
-  notify('Submitted. Your story is now private in moderation. A CorporateX confirmation email is being prepared for you.', 'success', 12000);
+  notify('Submitted. Your story is now private in moderation. Your CorporateX submission receipt is being prepared.', 'success', 12000);
   setBusy(true, 'Submitted ✓');
   const panel = document.querySelector('[data-cx-submit-account]');
   if (panel) panel.hidden = true;
