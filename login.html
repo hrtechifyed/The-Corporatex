@@ -3,18 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#050505" />
-  <meta name="description" content="Sign in to your private CorporateX account." />
+  <meta name="theme-color" content="#050608" />
+  <meta name="description" content="Secure contributor access for CorporateX My Stories." />
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="src/app-v2.css" />
   <link rel="stylesheet" href="src/reference-exact.css" />
   <link rel="stylesheet" href="src/reference-functional.css" />
-  <title>Sign In | CorporateX</title>
+  <link rel="stylesheet" href="src/github-shell.css" />
+  <link rel="stylesheet" href="src/auth-experience.css" />
+  <title>Contributor Access | CorporateX</title>
 </head>
 <body class="ref-page" data-ref-page="account">
 <a class="skip-link" href="#main">Skip to main content</a>
-<header class="ref-nav"><a class="ref-brand" href="index.html" aria-label="CorporateX home"><img src="public/hrtechify-logo.svg" alt="" width="34" height="34" /><strong>CorporateX</strong></a><nav class="ref-primary-nav" aria-label="Primary navigation"><a data-ref-nav="home" href="index.html">Home</a><a data-ref-nav="share" class="ref-share-link" href="guided-story.html">Share Your Story</a><a data-ref-nav="stories" href="stories.html">Stories</a><a data-ref-nav="more" href="more-info.html">More</a><a href="account.html">My Stories</a></nav></header>
-<main id="main"><section class="page-shell hero-space"><p class="eyebrow">PRIVATE ENTRANCE</p><h1 class="display-title">Continue without<br /><em>a password.</em></h1><p class="lede">CorporateX uses a secure Supabase magic link. Your email stays private and is not shown with published stories.</p><form class="glass-card" data-login-form style="max-width:720px"><label class="field"><span>Email address</span><input required type="email" name="email" autocomplete="email" /></label><div class="actions"><button class="button button-primary" type="submit">Email my private link →</button></div><p data-login-status role="status" aria-live="polite"></p></form></section></main>
+<header class="cx-unified-header">
+  <div class="cx-unified-header__inner">
+    <a class="cx-unified-brand" href="index.html" aria-label="HRTechify CorporateX home">
+      <span class="cx-unified-brand__mark"><img src="hrtechify-logo.svg" alt="HRTechify" width="50" height="50" /><span class="cx-unified-brand__orbit" aria-hidden="true"></span></span>
+      <span class="cx-unified-brand__parent">HRTechify</span><span class="cx-unified-brand__product">Corporate<b>X</b></span>
+    </a>
+    <span class="cx-unified-signal" aria-hidden="true"><i></i><i></i><i></i></span>
+    <nav class="cx-unified-nav" aria-label="Primary navigation">
+      <a href="index.html">Home</a><a href="stories.html">Stories</a><a href="how-it-works.html">How It Works</a><a href="index.html#about">About</a>
+      <a class="cx-unified-account" href="account.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19.2c.7-3.3 3-5 6.5-5s5.8 1.7 6.5 5"/></svg><span>My Stories</span></a>
+    </nav>
+    <details class="cx-unified-menu"><summary aria-label="Open navigation"><span></span></summary><nav aria-label="Mobile navigation"><a href="index.html">Home</a><a href="stories.html">Stories</a><a href="how-it-works.html">How It Works</a><a href="index.html#about">About</a><a href="privacy-safety.html">Privacy &amp; Safety</a><a class="cx-mobile-primary" href="guided-story.html">Share Your Story</a><a href="account.html" aria-current="page">My Stories</a></nav></details>
+  </div>
+</header>
+
+<main id="main" class="cx-auth-page">
+  <div class="cx-auth-shell">
+    <section class="cx-auth-copy" aria-labelledby="login-title">
+      <p class="cx-auth-kicker">CONTRIBUTOR ACCESS</p>
+      <h1 class="cx-auth-title" id="login-title">One private link.<br /><em>No password.</em></h1>
+      <p class="cx-auth-lede">Sign in only when you want to share a workplace story or check its private status. Reading published stories is always open and never requires an account.</p>
+
+      <div class="cx-auth-purpose" aria-label="Why CorporateX asks contributors to sign in">
+        <article><span>Own your draft</span><strong>Keep submissions tied to you.</strong><p>Your account lets CorporateX show only your drafts and statuses back to you.</p></article>
+        <article><span>Stay anonymous</span><strong>Email stays private.</strong><p>Your sign-in address is not displayed with a published story.</p></article>
+        <article><span>No password</span><strong>Use a one-time access link.</strong><p>We email a secure link instead of asking you to create another password.</p></article>
+      </div>
+
+      <form class="cx-auth-card" data-login-form>
+        <div class="cx-auth-card__head"><div><h2>Open My Stories</h2><p>Enter the email you want to use for private contributor access.</p></div><span class="cx-auth-private-chip">Private</span></div>
+        <label class="cx-auth-field"><span>Email address</span><input required type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" /></label>
+        <div class="cx-auth-actions"><button class="cx-auth-button cx-auth-button--primary" type="submit">Email my access link →</button><a class="cx-auth-button" href="stories.html">Browse without signing in</a></div>
+        <p class="cx-auth-status" data-login-status role="status" aria-live="polite"></p>
+        <p class="cx-auth-note">If this is your first visit, the same link also confirms your email and creates your private contributor access. CorporateX never publishes your email address.</p>
+      </form>
+    </section>
+
+    <aside class="cx-auth-visual" aria-label="CorporateX private contributor access illustration">
+      <img src="frozen-assets/card-5.webp" alt="Anime-style professional looking toward a new city horizon." />
+      <div class="cx-auth-visual__overlay"><span>WHY ACCESS EXISTS</span><h2>Your identity protects the archive—not the public story.</h2><p>The account is the private key to your drafts and submission status. The workplace story remains a separately moderated contributor perspective.</p><div class="cx-auth-timeline"><span>Write</span><span>Track</span><span>Control</span></div></div>
+    </aside>
+  </div>
+</main>
+
 <footer class="site-footer"><p class="footer-line">CorporateX — Powered by HRTechify · People · Technology · Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved. Stories are contributor perspectives</p></footer>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -22,17 +66,31 @@ const supabase = createClient('https://otgnnkaawwwwqxlzrfpx.supabase.co','sb_pub
 const form = document.querySelector('[data-login-form]');
 const status = document.querySelector('[data-login-status]');
 const params = new URLSearchParams(location.search);
-const next = params.get('next') || 'account.html';
+const requestedNext = params.get('next') || 'account.html';
+const allowedNext = new Set(['account.html', 'guided-story.html']);
+const next = allowedNext.has(requestedNext) ? requestedNext : 'account.html';
 const { data: { session } } = await supabase.auth.getSession();
 if (session) location.replace(next);
 form?.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const email = new FormData(form).get('email');
-  status.textContent = 'Sending your private sign-in link…';
+  const button = form.querySelector('button[type="submit"]');
+  const email = String(new FormData(form).get('email') || '').trim();
+  if (!email) return;
+  button.disabled = true;
+  status.textContent = 'Sending your private CorporateX access link…';
   const redirect = new URL(next, location.href).href;
-  const { error } = await supabase.auth.signInWithOtp({ email: String(email), options: { emailRedirectTo: redirect } });
-  status.textContent = error ? error.message : 'Check your inbox. The link will return you directly to CorporateX on GitHub Pages.';
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: redirect,
+      shouldCreateUser: true,
+      data: { product: 'CorporateX', access: 'contributor' },
+    },
+  });
+  button.disabled = false;
+  status.textContent = error ? error.message : 'Check your inbox for your CorporateX access link. It will return you directly to My Stories.';
 });
 </script>
+<script type="module" src="src/github-production.js"></script>
 </body>
 </html>
