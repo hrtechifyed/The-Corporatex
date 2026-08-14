@@ -1,0 +1,72 @@
+/* CorporateX card colour restoration.
+   Colour-only overrides: preserve existing card layout, content, controls, images and interactions. */
+
+.policy-card,
+.policy-card[data-tone="purple"],
+.cx-how-card,
+.cx-how-trust-card,
+.cx-how-forward__panel,
+.ref-journey-card,
+.ref-journey-card.purple,
+.ref-journey-card.orange,
+.cx-ending-card,
+.cx-feature-card,
+.cx-about-deck-card,
+.cx-info-stack details,
+.cx-ending-choice-grid--flow .cx-ending-choice__card,
+.company-group,
+.story-row,
+.story-article,
+.story-section,
+.story-side .glass-card,
+.info-card {
+  border-color: rgba(246, 200, 79, .42) !important;
+  background:
+    radial-gradient(circle at 84% 0%, rgba(246, 200, 79, .14), transparent 34%),
+    linear-gradient(160deg, #15120b 0%, #0d0c09 46%, #060708 100%) !important;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, .38),
+    0 0 24px rgba(246, 200, 79, .07),
+    inset 0 1px 0 rgba(255, 226, 139, .09) !important;
+}
+
+.policy-card summary h2,
+.cx-how-card h3,
+.cx-how-trust-card h3,
+.cx-how-forward__panel h3,
+.ref-journey-card h2,
+.cx-ending-card h3,
+.cx-feature-card h3,
+.cx-about-deck-card h3,
+.cx-info-stack details h3,
+.company-group h2,
+.story-row h3,
+.story-section h2,
+.info-card h2,
+.info-card h3 {
+  color: #fff0bd !important;
+}
+
+.policy-card .card-detail,
+.cx-info-stack details[open],
+.story-section + .story-section {
+  border-color: rgba(246, 200, 79, .2) !important;
+}
+
+.ref-journey-card:hover,
+.ref-journey-card:focus-visible,
+.ref-journey-card.is-active,
+.cx-ending-card:hover,
+.cx-ending-card:focus-visible,
+.cx-ending-choice-grid--flow .cx-ending-choice--button:hover .cx-ending-choice__card,
+.cx-ending-choice-grid--flow .cx-ending-choice--button:focus-visible .cx-ending-choice__card,
+.story-row:hover,
+.story-row:focus-visible,
+.cx-how-card:hover,
+.cx-feature-card:hover {
+  border-color: rgba(246, 200, 79, .78) !important;
+  box-shadow:
+    0 28px 72px rgba(0, 0, 0, .46),
+    0 0 30px rgba(246, 200, 79, .14),
+    inset 0 1px 0 rgba(255, 226, 139, .12) !important;
+}
