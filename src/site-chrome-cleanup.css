@@ -69,6 +69,34 @@
   opacity: .74 !important;
 }
 
+/* Story Beat cards keep a real image in every state, including the highlighted card. */
+.ref-journey-card .ref-art-svg {
+  display: block !important;
+  width: 100% !important;
+  height: 190px !important;
+  border-radius: 14px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+.ref-journey-card .ref-art-svg use { display: none !important; }
+.ref-journey-card[data-guided-chapter="beginning"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-1.webp') !important; background-position:center 46% !important; }
+.ref-journey-card[data-guided-chapter="promise"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-2.webp') !important; background-position:center 45% !important; }
+.ref-journey-card[data-guided-chapter="good"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-3.webp') !important; background-position:center 43% !important; }
+.ref-journey-card[data-guided-chapter="shift"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-4.webp') !important; background-position:center 43% !important; }
+.ref-journey-card[data-guided-chapter="tipping"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-5.webp') !important; background-position:center 42% !important; }
+.ref-journey-card[data-guided-chapter="lesson"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-2.webp') !important; background-position:center 45% !important; }
+.ref-journey-card[data-guided-chapter="ai"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-4.webp') !important; background-position:center 43% !important; }
+.ref-journey-card[data-guided-chapter="fit"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-5.webp') !important; background-position:center 42% !important; }
+.ref-journey-card.is-active .ref-art-svg {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
 .ref-journey-card h2 {
   margin: 16px 10px 0 !important;
   color: #fff8ed !important;
