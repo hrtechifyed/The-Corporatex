@@ -23,11 +23,18 @@ test('Remote and Other are explicit location choices', () => {
   assert.match(migration, /category in \('city','remote','other'\)/);
 });
 
-test('global city search uses the worldwide country-state-city catalogue and stays bounded per response', () => {
+test('global city search is strict prefix search with prominence ranking', () => {
   assert.match(searchFn, /country-state-city@3\.2\.1/);
   assert.match(searchFn, /City\.getAllCities\(\)/);
-  assert.match(searchFn, /const MAX_RESULTS = 20/);
-  assert.match(searchFn, /city_search\.startsWith\(query\)/);
+  assert.match(searchFn, /const MAX_RESULTS = 15/);
+  assert.match(searchFn, /PROMINENT_CITY_SCORES/);
+  assert.match(searchFn, /\["chennai\|IN", 1000\]/);
+  assert.match(searchFn, /\["coimbatore\|IN", 945\]/);
+  assert.match(searchFn, /\["cincinnati\|US", 940\]/);
+  assert.match(searchFn, /firstLetterIndex/);
+  assert.match(searchFn, /firstTwoIndex/);
+  assert.match(searchFn, /city\.city_search\.startsWith\(query\)/);
+  assert.doesNotMatch(searchFn, /search_name\.includes\(query\)/);
   assert.match(searchFn, /Origin not allowed/);
 });
 
