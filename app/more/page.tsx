@@ -24,7 +24,6 @@ export default function More() {
 
       <section className="cx-section cx-light-section" id="how-it-works">
         <div className="cx-shell">
-          <p className="cx-kicker">The plot</p>
           <h2 className="cx-title">Experience becomes guidance.</h2>
           <div className="cx-feature-grid cx-feature-grid--illustrated">
             <article className="cx-feature-card cx-feature-card--illustrated">
