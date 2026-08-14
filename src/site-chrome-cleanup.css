@@ -112,6 +112,20 @@
   box-shadow: 0 28px 70px rgba(0,0,0,.44), 0 0 26px rgba(246,200,79,.08) !important;
 }
 
+/* My Space and secure access use the larger hero source instead of stretching a small card crop. */
+.cx-auth-visual {
+  background:
+    linear-gradient(180deg, rgba(5,6,8,.02), rgba(5,6,8,.34)),
+    url('../frozen-assets/hero.webp') center 38% / cover no-repeat !important;
+}
+.cx-auth-visual > img {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+.cx-auth-visual::after {
+  background: linear-gradient(180deg, rgba(5,6,8,.01) 0%, rgba(5,6,8,.12) 58%, rgba(5,6,8,.52) 100%) !important;
+}
+
 /* Unified footer mounted by site-footer.js. */
 .site-footer {
   width: 100%;
