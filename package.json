@@ -33,7 +33,7 @@
     "dev:static": "python3 -m http.server 4173",
     "build:static": "node scripts/build.mjs",
     "preview:static": "python3 -m http.server 4173 -d dist",
-    "test": "npm run test:site && npm run test:workflow && npm run test:alerts && npm run test:auth-email && npm run test:auth-experience && npm run test:access-roles && npm run test:moderation-trigger && npm run test:home-carousel && npm run test:privacy-data && npm run test:product-polish && npm run test:server-readiness && npm run test:no-render-urls",
+    "test": "npm run test:site && npm run test:workflow && npm run test:alerts && npm run test:auth-email && npm run test:auth-experience && npm run test:access-roles && npm run test:moderation-trigger && npm run test:home-carousel && npm run test:global-location && npm run test:privacy-data && npm run test:product-polish && npm run test:server-readiness && npm run test:no-render-urls",
     "test:site": "node tests/site-quality.mjs",
     "test:workflow": "node --test tests/story-workflow.test.mjs",
     "test:alerts": "node --test tests/moderation-alert.test.mjs",
@@ -42,12 +42,13 @@
     "test:access-roles": "node --test tests/access-role-moderation-regression.test.mjs",
     "test:moderation-trigger": "node --test tests/moderation-trigger-regression.test.mjs",
     "test:home-carousel": "node --test tests/home-story-carousel.test.mjs",
+    "test:global-location": "node --test tests/global-location-regression.test.mjs",
     "test:privacy-data": "node --test tests/privacy-data-guidelines.test.mjs",
     "test:product-polish": "node --test tests/product-polish.test.mjs",
     "test:server-readiness": "node --test tests/server-readiness.test.mjs",
     "test:no-render-urls": "node --test tests/no-render-urls.test.mjs",
     "test:e2e": "playwright test",
-    "check:static": "node --check src/app-v2.js && node --check src/site-upgrades.js && node --check src/story-workflow-model.js && node --check src/reference-exact.js && node --check src/github-production.js && node --check src/contributor-nav.js && node --check src/feedback-nav.js && node --check src/feedback.js && node --check src/github-submit.js && node --check src/location-autocomplete.js && node --check src/moderation-console.js && node --check src/submission-changes.js && node --check src/account-submissions.js && node --check src/home-story-carousel.js && node --check scripts/static-contributor-flow-smoke.mjs && node --check scripts/static-moderation-flow-smoke.mjs && node --check tests/access-role-moderation-regression.test.mjs && node --check tests/moderation-trigger-regression.test.mjs && node --check tests/home-story-carousel.test.mjs && node --check tests/no-render-urls.test.mjs && node --check tests/site-quality.mjs && node --check tests/moderation-alert.test.mjs && node --check tests/auth-email-regression.test.mjs && node --check tests/auth-experience.test.mjs && node --check tests/privacy-data-guidelines.test.mjs && node --check tests/product-polish.test.mjs && node --check tests/server-readiness.test.mjs && npm test && npm run build:static",
+    "check:static": "node --check src/app-v2.js && node --check src/site-upgrades.js && node --check src/story-workflow-model.js && node --check src/reference-exact.js && node --check src/github-production.js && node --check src/contributor-nav.js && node --check src/feedback-nav.js && node --check src/feedback.js && node --check src/github-submit.js && node --check src/location-autocomplete.js && node --check src/moderation-console.js && node --check src/submission-changes.js && node --check src/account-submissions.js && node --check src/home-story-carousel.js && node --check scripts/static-contributor-flow-smoke.mjs && node --check scripts/static-moderation-flow-smoke.mjs && node --check tests/access-role-moderation-regression.test.mjs && node --check tests/moderation-trigger-regression.test.mjs && node --check tests/home-story-carousel.test.mjs && node --check tests/global-location-regression.test.mjs && node --check tests/no-render-urls.test.mjs && node --check tests/site-quality.mjs && node --check tests/moderation-alert.test.mjs && node --check tests/auth-email-regression.test.mjs && node --check tests/auth-experience.test.mjs && node --check tests/privacy-data-guidelines.test.mjs && node --check tests/product-polish.test.mjs && node --check tests/server-readiness.test.mjs && npm test && npm run build:static",
     "check:server": "next build",
     "check": "npm run check:static && npm run check:server"
   }

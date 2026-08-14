@@ -2,31 +2,46 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const field = document.querySelector('[data-guided-location]');
 if (field) {
-  const supabase = createClient('https://otgnnkaawwwwqxlzrfpx.supabase.co','sb_publishable_bYYz3uHOE9py4E84KpEpiw_A4HGdcoX');
+  const SUPABASE_URL = 'https://otgnnkaawwwwqxlzrfpx.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_bYYz3uHOE9py4E84KpEpiw_A4HGdcoX';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const searchUrl = `${SUPABASE_URL}/functions/v1/search-locations`;
   const errorNode = document.querySelector('[data-guided-error="location"]');
   const nextButton = document.querySelector('[data-guided-context-next]');
   const statusNode = document.querySelector('[data-guided-context-status]');
   const list = document.createElement('div');
   list.className = 'cx-location-listbox';
   list.id = 'cx-location-options';
-  list.setAttribute('role','listbox');
+  list.setAttribute('role', 'listbox');
   list.hidden = true;
-  field.removeAttribute('list');
-  field.setAttribute('autocomplete','off');
-  field.setAttribute('role','combobox');
-  field.setAttribute('aria-autocomplete','list');
-  field.setAttribute('aria-controls',list.id);
-  field.setAttribute('aria-expanded','false');
-  field.setAttribute('placeholder','Start typing a city, e.g. Bengaluru');
-  field.insertAdjacentElement('afterend',list);
 
-  let locations = [];
+  const attribution = document.createElement('p');
+  attribution.className = 'cx-location-attribution';
+  attribution.innerHTML = 'Global city data: <a href="https://github.com/dr5hn/countries-states-cities-database" target="_blank" rel="noopener noreferrer">Countries States Cities Database</a> · ODbL';
+
+  field.removeAttribute('list');
+  field.setAttribute('autocomplete', 'off');
+  field.setAttribute('role', 'combobox');
+  field.setAttribute('aria-autocomplete', 'list');
+  field.setAttribute('aria-controls', list.id);
+  field.setAttribute('aria-expanded', 'false');
+  field.setAttribute('placeholder', 'Type any city, or choose Remote / Other');
+  field.insertAdjacentElement('afterend', list);
+  list.insertAdjacentElement('afterend', attribution);
+
   let visible = [];
   let active = -1;
-  let loaded = false;
+  let selected = null;
+  let debounceTimer = null;
+  let requestToken = 0;
+  let suppressInput = false;
 
-  const normalize = (value) => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
-  const exact = (value) => locations.find((item) => normalize(item.display_name) === normalize(value));
+  const normalize = (value) => String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
 
   function setValidity(valid, message = '') {
     field.dataset.locationValid = valid ? 'true' : 'false';
@@ -34,111 +49,221 @@ if (field) {
       field.removeAttribute('aria-invalid');
       if (errorNode) errorNode.textContent = '';
     } else if (message) {
-      field.setAttribute('aria-invalid','true');
+      field.setAttribute('aria-invalid', 'true');
       if (errorNode) errorNode.textContent = message;
     }
+  }
+
+  function clearSelection() {
+    selected = null;
+    delete field.dataset.locationKind;
+    delete field.dataset.locationCity;
+    delete field.dataset.locationCountryCode;
+    delete field.dataset.locationStateCode;
+    delete field.dataset.locationCountry;
+    delete field.dataset.locationState;
+    setValidity(false);
   }
 
   function closeList() {
     list.hidden = true;
     active = -1;
-    field.setAttribute('aria-expanded','false');
+    field.setAttribute('aria-expanded', 'false');
     field.removeAttribute('aria-activedescendant');
   }
 
-  function choose(item) {
-    field.value = item.display_name;
+  function applySelection(item) {
+    selected = item;
+    field.dataset.locationKind = item.category || 'city';
+    field.dataset.locationCity = item.city || '';
+    field.dataset.locationCountryCode = item.country_code || '';
+    field.dataset.locationStateCode = item.state_code || '';
+    field.dataset.locationCountry = item.country || '';
+    field.dataset.locationState = item.state || '';
     setValidity(true);
-    closeList();
-    field.dispatchEvent(new Event('input',{ bubbles:true }));
-    field.dataset.locationValid = 'true';
   }
 
-  function render(query) {
-    const q = normalize(query);
-    if (!loaded || !q) { closeList(); return; }
-    const starts = locations.filter((item) => normalize(item.display_name).startsWith(q));
-    const contains = locations.filter((item) => !normalize(item.display_name).startsWith(q) && normalize(item.display_name).includes(q));
-    visible = [...starts,...contains].slice(0,10);
+  function choose(item) {
+    suppressInput = true;
+    field.value = item.display_name;
+    applySelection(item);
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+    suppressInput = false;
+    applySelection(item);
+    closeList();
+  }
+
+  function optionDetail(item) {
+    if (item.category === 'remote') return 'Work was remote';
+    if (item.category === 'other') return 'Location outside a city';
+    return [item.state, item.country].filter(Boolean).join(' · ') || 'City';
+  }
+
+  function render(items, { more = false, query = '' } = {}) {
+    visible = Array.isArray(items) ? items : [];
     if (!visible.length) {
-      list.innerHTML = '<p class="cx-location-empty">No matching major location. Try another city name.</p>';
+      list.replaceChildren();
+      const empty = document.createElement('p');
+      empty.className = 'cx-location-empty';
+      empty.textContent = query
+        ? 'No matching city yet. Keep typing, or choose Other.'
+        : 'Start typing any city, or choose Remote / Other.';
+      list.append(empty);
       list.hidden = false;
-      field.setAttribute('aria-expanded','true');
+      field.setAttribute('aria-expanded', 'true');
       return;
     }
-    list.replaceChildren(...visible.map((item,index) => {
+
+    list.replaceChildren(...visible.map((item, index) => {
       const option = document.createElement('button');
       option.type = 'button';
       option.className = 'cx-location-option';
       option.id = `cx-location-option-${index}`;
-      option.setAttribute('role','option');
-      option.setAttribute('aria-selected','false');
-      option.innerHTML = `<strong></strong><span></span>`;
-      option.querySelector('strong').textContent = item.display_name;
-      option.querySelector('span').textContent = item.category === 'remote' ? 'Remote work location' : 'Major city';
-      option.addEventListener('pointerdown',(event)=>event.preventDefault());
-      option.addEventListener('click',()=>choose(item));
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', 'false');
+
+      const main = document.createElement('strong');
+      main.textContent = item.display_name;
+      const detail = document.createElement('span');
+      detail.textContent = optionDetail(item);
+      option.append(main, detail);
+      option.addEventListener('pointerdown', (event) => event.preventDefault());
+      option.addEventListener('click', () => choose(item));
       return option;
     }));
+
+    if (more) {
+      const hint = document.createElement('p');
+      hint.className = 'cx-location-more';
+      hint.textContent = 'More cities match this search — keep typing to narrow the list.';
+      list.append(hint);
+    }
+
     active = -1;
     list.hidden = false;
-    field.setAttribute('aria-expanded','true');
+    field.setAttribute('aria-expanded', 'true');
+  }
+
+  async function fallbackSearch(query) {
+    const q = String(query || '').trim();
+    let request = supabase.from('story_locations')
+      .select('display_name,category')
+      .eq('is_active', true)
+      .order('priority', { ascending: true })
+      .order('display_name', { ascending: true })
+      .limit(20);
+    if (q) request = request.ilike('display_name', `${q}%`);
+    const { data, error } = await request;
+    if (error) throw error;
+    return (data || []).map((item) => ({
+      display_name: item.display_name,
+      category: item.category,
+      city: '',
+      country_code: '',
+      state_code: '',
+      country: '',
+      state: '',
+    }));
+  }
+
+  async function search(query) {
+    const token = ++requestToken;
+    const q = String(query || '').trim().slice(0, 80);
+    try {
+      const response = await fetch(`${searchUrl}?q=${encodeURIComponent(q)}`, {
+        method: 'GET',
+        headers: { apikey: SUPABASE_KEY, Accept: 'application/json' },
+        cache: 'no-store',
+      });
+      if (!response.ok) throw new Error(`Location search unavailable (${response.status})`);
+      const payload = await response.json();
+      if (token !== requestToken) return;
+      render(payload?.results || [], { more: Boolean(payload?.more), query: q });
+    } catch (error) {
+      try {
+        const items = await fallbackSearch(q);
+        if (token !== requestToken) return;
+        render(items, { more: false, query: q });
+      } catch (fallbackError) {
+        if (token !== requestToken) return;
+        closeList();
+        setValidity(false, 'Location suggestions could not load. Refresh and try again.');
+        console.error('CorporateX location search failed.', error, fallbackError);
+      }
+    }
+  }
+
+  function scheduleSearch(query, immediate = false) {
+    window.clearTimeout(debounceTimer);
+    if (immediate) {
+      search(query);
+      return;
+    }
+    debounceTimer = window.setTimeout(() => search(query), 150);
   }
 
   function activate(index) {
     if (!visible.length) return;
-    active = Math.max(0,Math.min(index,visible.length-1));
-    [...list.querySelectorAll('.cx-location-option')].forEach((option,i)=>option.setAttribute('aria-selected',String(i===active)));
+    active = Math.max(0, Math.min(index, visible.length - 1));
+    [...list.querySelectorAll('.cx-location-option')].forEach((option, i) => option.setAttribute('aria-selected', String(i === active)));
     const option = list.querySelector(`#cx-location-option-${active}`);
     if (option) {
-      field.setAttribute('aria-activedescendant',option.id);
-      option.scrollIntoView({ block:'nearest' });
+      field.setAttribute('aria-activedescendant', option.id);
+      option.scrollIntoView({ block: 'nearest' });
     }
   }
 
-  field.addEventListener('input',()=>{
-    const match = exact(field.value);
-    setValidity(Boolean(match));
-    render(field.value);
-  });
-  field.addEventListener('focus',()=>render(field.value));
-  field.addEventListener('blur',()=>{
-    window.setTimeout(()=>{
-      const match = exact(field.value);
-      if (match) choose(match);
-      else closeList();
-    },120);
-  });
-  field.addEventListener('keydown',(event)=>{
-    if (event.key === 'ArrowDown') { event.preventDefault(); if (list.hidden) render(field.value); activate(active+1); }
-    else if (event.key === 'ArrowUp') { event.preventDefault(); activate(active<=0?0:active-1); }
-    else if (event.key === 'Enter' && active >= 0 && visible[active]) { event.preventDefault(); choose(visible[active]); }
-    else if (event.key === 'Escape') closeList();
+  field.addEventListener('input', () => {
+    if (suppressInput) return;
+    clearSelection();
+    scheduleSearch(field.value);
   });
 
-  nextButton?.addEventListener('click',(event)=>{
-    const match = exact(field.value);
-    if (match) {
-      field.value = match.display_name;
-      setValidity(true);
+  field.addEventListener('focus', () => {
+    if (!selected || normalize(selected.display_name) !== normalize(field.value)) scheduleSearch(field.value, true);
+  });
+
+  field.addEventListener('blur', () => {
+    window.setTimeout(() => {
+      if (selected && normalize(selected.display_name) === normalize(field.value)) {
+        applySelection(selected);
+      } else {
+        const exact = visible.find((item) => normalize(item.display_name) === normalize(field.value));
+        if (exact) choose(exact);
+        else closeList();
+      }
+    }, 140);
+  });
+
+  field.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (list.hidden) scheduleSearch(field.value, true);
+      activate(active + 1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      activate(active <= 0 ? 0 : active - 1);
+    } else if (event.key === 'Enter' && active >= 0 && visible[active]) {
+      event.preventDefault();
+      choose(visible[active]);
+    } else if (event.key === 'Escape') {
+      closeList();
+    }
+  });
+
+  nextButton?.addEventListener('click', (event) => {
+    const valid = selected && normalize(selected.display_name) === normalize(field.value);
+    if (valid) {
+      applySelection(selected);
       return;
     }
     event.preventDefault();
     event.stopImmediatePropagation();
-    setValidity(false, loaded ? 'Choose a valid location from the suggestions.' : 'Location suggestions are still loading. Try again in a moment.');
-    if (statusNode) statusNode.textContent = 'Select a valid city or remote region before entering the Story Beats.';
+    setValidity(false, 'Choose a city, Remote, or Other from the suggestions.');
+    if (statusNode) statusNode.textContent = 'Select a location suggestion before entering the Story Beats.';
     field.focus();
-    render(field.value);
-  },true);
+    scheduleSearch(field.value, true);
+  }, true);
 
-  const { data, error } = await supabase.from('story_locations').select('display_name,category,priority').eq('is_active',true).order('priority',{ ascending:true }).order('display_name',{ ascending:true });
-  if (error) {
-    loaded = false;
-    setValidity(false,'Location suggestions could not load. Refresh and try again.');
-  } else {
-    locations = data || [];
-    loaded = true;
-    const match = exact(field.value);
-    setValidity(Boolean(match));
-  }
+  setValidity(false);
 }
