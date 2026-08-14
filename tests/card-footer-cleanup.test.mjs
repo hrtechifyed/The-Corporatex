@@ -10,6 +10,7 @@ const css = await readFile('src/site-chrome-cleanup.css', 'utf8');
 const footer = await readFile('src/site-footer.js', 'utf8');
 const nextHome = await readFile('app/page.tsx', 'utf8');
 const nextAbout = await readFile('app/about/page.tsx', 'utf8');
+const nextMore = await readFile('app/more/page.tsx', 'utf8');
 const nextCleanup = await readFile('app/card-footer-cleanup.css', 'utf8');
 const nextFooter = await readFile('components/site-footer.tsx', 'utf8');
 const pagesHome = await readFile('pages-preview/index.html', 'utf8');
@@ -48,10 +49,21 @@ test('guided Story Beat cards remove large number badges, status captions and co
   }
 });
 
+test('highlighted Story Beat cards always retain clear artwork', () => {
+  assert.match(css, /\.ref-journey-card\.is-active \.ref-art-svg/);
+  assert.match(css, /visibility:\s*visible !important/);
+  assert.match(css, /\.ref-journey-card\[data-guided-chapter="beginning"\] \.ref-art-svg/);
+  assert.match(css, /\.ref-journey-card\[data-guided-chapter="promise"\] \.ref-art-svg/);
+  assert.match(css, /frozen-assets\/card-1\.webp/);
+  assert.match(css, /frozen-assets\/card-5\.webp/);
+});
+
 test('How It Works cards no longer use numbered sequence labels', () => {
   for (const label of ['01 · SIGNAL', '02 · SEQUENCE', '03 · DECISION', 'ONE PERSPECTIVE', 'SAFETY + REVIEW', 'FINAL CONTROL']) {
     assert.doesNotMatch(how, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.doesNotMatch(nextMore, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
+  assert.doesNotMatch(nextMore, /SAFETY ONLY/);
   assert.doesNotMatch(how, /<p class="cx-how-kicker">Pass it forward<\/p>/i);
   assert.match(how, />Share Your Story →<\/a>/);
 });
@@ -90,6 +102,12 @@ test('legacy color variants are overridden by one CorporateX card treatment', ()
   assert.match(nextCleanup, /\.cx-about-deck-card/);
   assert.match(pagesCleanup, /\.pages-ending-grid \.pages-ending-card\[data-ending\]/);
   assert.match(pagesCleanup, /background:\s*linear-gradient\(160deg, #111214, #08090a 72%\)/);
+});
+
+test('My Space and secure access use a sharper large hero source', () => {
+  assert.match(css, /\.cx-auth-visual/);
+  assert.match(css, /frozen-assets\/hero\.webp/);
+  assert.match(css, /\.cx-auth-visual > img/);
 });
 
 test('footers use concise CorporateX copy and responsive safe-area layouts', () => {
