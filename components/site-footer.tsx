@@ -1,6 +1,8 @@
 import Link from 'next/link';
 
 export function SiteFooter() {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="site-footer">
       <div className="footer-grid">
@@ -10,7 +12,7 @@ export function SiteFooter() {
             <span className="cx-brand-parent">HRTechify</span>
             <span className="cx-brand-product">Corporate<span className="cx-brand-x">X</span></span>
           </Link>
-          <p>Not a score. A sequence. Real workplace stories that help people understand what was promised, what changed and what to ask before joining.</p>
+          <p>Workplace stories, structured for better career decisions.</p>
         </div>
         <nav className="cx-footer-nav" aria-label="Footer navigation">
           <Link href="/browse">Stories</Link>
@@ -19,11 +21,11 @@ export function SiteFooter() {
           <Link href="/submit">Share Your Story</Link>
           <Link href="/privacy">Privacy &amp; Safety</Link>
           <Link href="/terms">Terms</Link>
-          <Link href="/community-guidelines">Community guidelines</Link>
+          <Link href="/community-guidelines">Community Guidelines</Link>
         </nav>
         <div className="cx-footer-bottom">
-          <span>CorporateX — Powered by HRTechify · People · Technology · Growth</span>
-          <span>© 2026 All Rights Reserved. Stories are contributor perspectives</span>
+          <span>© {year} HRTechify. All rights reserved.</span>
+          <span>Contributor stories reflect individual perspectives and are moderated before publication.</span>
         </div>
       </div>
     </footer>
