@@ -9,7 +9,7 @@ await cp('src', 'dist/src', { recursive: true });
 
 function withProductionRuntime(html, { submit = false } = {}) {
   let output = html;
-  for (const stylesheet of ['src/github-shell.css','src/visual-fixes-guide.css','src/guided-anime-fix.css','src/stories-polish.css','src/guided-production.css','src/guided-account-polish.css','src/home-live-signals.css','src/location-autocomplete.css','src/moderation-console.css','src/account-submissions.css','src/login-role.css']) {
+  for (const stylesheet of ['src/github-shell.css','src/visual-fixes-guide.css','src/guided-anime-fix.css','src/stories-polish.css','src/guided-production.css','src/guided-account-polish.css','src/home-live-signals.css','src/home-story-carousel.css','src/location-autocomplete.css','src/moderation-console.css','src/account-submissions.css','src/login-role.css']) {
     if (!output.includes(stylesheet)) output = output.replace('</head>', `  <link rel="stylesheet" href="${stylesheet}" />\n</head>`);
   }
   const candidates = [
@@ -18,6 +18,7 @@ function withProductionRuntime(html, { submit = false } = {}) {
     'src/contributor-nav.js',
     'src/stories-polish.js',
     'src/home-live-signals.js',
+    'src/home-story-carousel.js',
     'src/account-arrival.js',
     'src/account-submissions.js',
     submit ? 'src/location-autocomplete.js' : '',
@@ -52,4 +53,4 @@ await writeFile('dist/index.html', pagesHtml);
 await cp('pages-preview/github-pages-current.css', 'dist/github-pages-current.css');
 await cp('pages-preview/prelaunch-pages-fixes.css', 'dist/prelaunch-pages-fixes.css');
 await cp('pages-preview/navbar-fix.css', 'dist/navbar-fix.css');
-console.log('Built GitHub Pages production frontend with validated locations, password-based contributor access, moderator workflow, live signals and one responsive anime shell.');
+console.log('Built GitHub Pages production frontend with validated locations, password-based contributor access, moderator workflow, live signals, latest published story carousel and one responsive anime shell.');
