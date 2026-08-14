@@ -73,9 +73,10 @@ test('ending choice cards show names rather than ENDING 01-style labels', () => 
   assert.doesNotMatch(guided, /ENDING \$\{ending\.number\}/);
   assert.doesNotMatch(nextHome, /Ending \{String\(index/);
   assert.doesNotMatch(pagesHome, />Ending 0[1-4]</);
+  assert.match(nextHome, /<h3>\{ending\.title\}<\/h3>/);
+  assert.match(nextHome, /<p>\{ending\.description\}<\/p>/);
   for (const ending of ['Break Free', 'Next Act', 'Mixed Ending', 'Pass the Torch']) {
     assert.match(guided, new RegExp(ending));
-    assert.match(nextHome, new RegExp(ending));
     assert.match(pagesHome, new RegExp(ending));
   }
 });
