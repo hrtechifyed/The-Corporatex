@@ -1,44 +1,42 @@
-# CorporateX auth email branding
+# CorporateX account email branding
 
-CorporateX uses Supabase Auth for passwordless contributor access. Hosted Supabase projects require the sender and hosted email templates to be configured in the Supabase Dashboard.
+CorporateX uses Supabase Auth for email-and-password accounts. Readers do not need an account to browse published stories.
 
 ## Sender
 
-Use the HRTechify mailbox already used by the project:
+Use the HRTechify mailbox already configured for the project:
 
 - Sender name: `HRTechify · CorporateX`
 - Sender email: `hrtechifyed@gmail.com`
 - SMTP host: `smtp.gmail.com`
 - SMTP port: `587`
 - SMTP username: `hrtechifyed@gmail.com`
-- SMTP password: use a Google App Password created for this mailbox; never commit it to GitHub.
+- SMTP password: a Google App Password stored only in Supabase; never commit it.
 
-In Supabase: Authentication → Emails → SMTP Settings. Enable custom SMTP and enter the values above. Keep the App Password only in the Supabase secret field.
+## First-account confirmation
 
-## Email subjects
+New contributors create an account with an email and a password of at least 10 characters. If email confirmation is enabled, the first account email is a one-time ownership check. It is **not** used for future sign-in.
 
-Use the same clear product-level subject for first-time confirmation and returning magic-link access:
+Use this subject for **Confirm signup**:
 
-`Your private CorporateX access link`
+`Confirm your CorporateX account & submit your story`
 
-This avoids exposing implementation details such as “Supabase Auth” or presenting contributor access as an unrelated signup flow.
+Use `supabase/templates/confirmation.html` as the hosted Confirm signup template.
 
-## Hosted email templates
+The email must make clear that:
 
-In Supabase: Authentication → Email Templates.
+- it is from CorporateX by HRTechify;
+- the user created a CorporateX account;
+- the confirmation verifies the email address;
+- future access uses email + password;
+- contributor email is never displayed with a published workplace story.
 
-- **Confirm signup**: copy the contents of `supabase/templates/confirmation.html`.
-- **Magic Link**: copy the contents of `supabase/templates/magic-link.html`.
-- Set both subjects to `Your private CorporateX access link`.
+## Future sign-in
 
-Both templates use `{{ .ConfirmationURL }}` and `{{ .Email }}`, which are supported Supabase Auth template variables.
+CorporateX production uses `signInWithPassword`. Do not use Magic Link / `signInWithOtp` for normal My Space or story-submission access.
 
-## Product intent
+Password recovery uses Supabase's password-recovery email and returns the user to `reset-password.html` to choose a new password.
 
-Contributor authentication exists only to:
+## Story-status emails
 
-1. associate drafts/submissions with the correct private account,
-2. let a contributor see only their own story status,
-3. securely continue or submit a story.
-
-Reading published CorporateX stories does not require authentication, and a contributor email must never be included in public story output.
+Submission receipts, HRTechify moderation alerts and publication-approved emails are separate transactional messages documented in `docs/STORY_NOTIFICATION_EMAILS.md`.

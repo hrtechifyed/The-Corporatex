@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const read = (path) => readFile(path, 'utf8');
-const [login, account, authCss, navRuntime, confirmation, magicLink, build, productionRuntime] = await Promise.all([
+const [login, account, authCss, navRuntime, confirmation, magicLink, build, productionRuntime, submitRuntime] = await Promise.all([
   read('login.html'),
   read('account.html'),
   read('src/auth-experience.css'),
@@ -11,16 +11,25 @@ const [login, account, authCss, navRuntime, confirmation, magicLink, build, prod
   read('supabase/templates/magic-link.html'),
   read('scripts/build.mjs'),
   read('src/github-production.js'),
+  read('src/github-submit.js'),
 ]);
 
 assert.match(login, /Reading published stories stays open to everyone/i);
-assert.match(login, /Email my access link/);
-assert.match(login, /shouldCreateUser:\s*true/);
-assert.match(login, /product:\s*'CorporateX'/);
-assert.match(login, /Open My Space/);
+assert.match(login, /Sign in to My Space/);
+assert.match(login, /signInWithPassword/);
+assert.match(login, /auth\.signUp/);
+assert.match(login, /minlength="10"/);
+assert.match(login, /Set \/ reset password/);
+assert.doesNotMatch(login, /signInWithOtp|Email my access link/i);
 assert.match(login, /class="cx-auth-visual"/);
 assert.equal((login.match(/<article>/g) || []).length, 3, 'My Space access must keep three concise purpose cards');
-assert.doesNotMatch(login, /secure Supabase magic link/i, 'implementation-provider language must not lead the user experience');
+
+assert.match(submitRuntime, /Click here to submit/);
+assert.match(submitRuntime, /signInWithPassword/);
+assert.match(submitRuntime, /auth\.signUp/);
+assert.match(submitRuntime, /password\.length < 10/);
+assert.match(submitRuntime, /What happens next/);
+assert.doesNotMatch(submitRuntime, /signInWithOtp/);
 
 assert.match(account, /Keep what matters\.\s*<br \/><em>Follow what changes\.<\/em>/);
 assert.match(account, /data-space-tab="saved"/);
@@ -41,6 +50,7 @@ assert.match(authCss, /\.cx-story-action/);
 assert.match(navRuntime, /My Space/);
 assert.doesNotMatch(navRuntime, /label\.textContent = 'My Stories'/);
 assert.match(build, /src\/contributor-nav\.js/);
+assert.match(build, /src\/guided-account-polish\.css/);
 assert.match(productionRuntime, /saved_experiences/);
 assert.match(productionRuntime, /experience_follows/);
 assert.match(productionRuntime, /story_questions/);
@@ -54,4 +64,4 @@ for (const [name, template] of [['confirmation', confirmation], ['magic link', m
   assert.doesNotMatch(template, /powered by Supabase|Supabase Auth/i, `${name}: provider branding must not appear in user-facing email copy`);
 }
 
-console.log('My Space auth experience checks passed: saved/following/submissions, anime UI and HRTechify email branding are stable.');
+console.log('My Space auth checks passed: password access, submissions, anime UI and HRTechify branding are stable.');

@@ -19,19 +19,21 @@
   <div class="cx-auth-shell">
     <section class="cx-auth-copy" aria-labelledby="login-title">
       <p class="cx-auth-kicker">MY SPACE ACCESS</p>
-      <h1 class="cx-auth-title" id="login-title">One private link.<br /><em>No password.</em></h1>
+      <h1 class="cx-auth-title" id="login-title">Your private space.<br /><em>Your password.</em></h1>
       <p class="cx-auth-lede">Sign in to save stories, follow moderated conversations, share a workplace story, or check your private submission status. Reading published stories stays open to everyone.</p>
       <div class="cx-auth-purpose" aria-label="Why CorporateX uses private access">
         <article><span>Save & follow</span><strong>Keep a private decision shortlist.</strong><p>Your stars and follows belong only to your account.</p></article>
         <article><span>Contribute safely</span><strong>Email stays private.</strong><p>Your sign-in address is never displayed with a published story.</p></article>
-        <article><span>No password</span><strong>Use a one-time access link.</strong><p>We email a secure link instead of asking you to create another password.</p></article>
+        <article><span>Password access</span><strong>No sign-in links.</strong><p>Use the email and password connected to your CorporateX account.</p></article>
       </div>
       <form class="cx-auth-card" data-login-form>
-        <div class="cx-auth-card__head"><div><h2>Open My Space</h2><p>Enter the email you want to use for your private CorporateX space.</p></div><span class="cx-auth-private-chip">Private</span></div>
+        <div class="cx-auth-card__head"><div><h2 data-auth-mode-title>Sign in to My Space</h2><p data-auth-mode-copy>Use the CorporateX email and password you already created.</p></div><span class="cx-auth-private-chip">Private</span></div>
         <label class="cx-auth-field"><span>Email address</span><input required type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" /></label>
-        <div class="cx-auth-actions"><button class="cx-auth-button cx-auth-button--primary" type="submit">Email my access link →</button><a class="cx-auth-button" href="stories.html">Browse without signing in</a></div>
+        <label class="cx-auth-field"><span>Password</span><input required minlength="10" type="password" name="password" autocomplete="current-password" placeholder="Minimum 10 characters" /><small>At least 10 characters. Letters, numbers and special characters are allowed.</small></label>
+        <div class="cx-auth-actions"><button class="cx-auth-button cx-auth-button--primary" type="submit" data-auth-submit>Sign in →</button><button class="cx-auth-button" type="button" data-auth-switch>Create an account</button></div>
+        <div class="cx-auth-actions"><a class="cx-auth-button" href="reset-password.html">Set / reset password</a><a class="cx-auth-button" href="stories.html">Browse without signing in</a></div>
         <p class="cx-auth-status" data-login-status role="status" aria-live="polite"></p>
-        <p class="cx-auth-note">If this is your first visit, the same link confirms your email and creates My Space. CorporateX never publishes your email address.</p>
+        <p class="cx-auth-note" data-auth-note>New contributors can also create their account directly at the end of Share Your Story. CorporateX never publishes your email address.</p>
       </form>
     </section>
     <aside class="cx-auth-visual" aria-label="CorporateX private space illustration"><img src="frozen-assets/card-5.webp" alt="Anime-style professional looking toward a new city horizon." style="object-position:center 38%;opacity:.96;filter:brightness(1.12) saturate(1.08) contrast(1.03)" /><div class="cx-auth-visual__overlay"><span>WHY ACCESS EXISTS</span><h2>Your private actions stay yours.</h2><p>Saved stories, follows and contributor status are tied to your account. Public workplace stories remain separately moderated perspectives.</p><div class="cx-auth-timeline"><span>Save</span><span>Follow</span><span>Share</span></div></div></aside>
@@ -41,10 +43,12 @@
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase=createClient('https://otgnnkaawwwwqxlzrfpx.supabase.co','sb_publishable_bYYz3uHOE9py4E84KpEpiw_A4HGdcoX');
-const form=document.querySelector('[data-login-form]');const status=document.querySelector('[data-login-status]');const params=new URLSearchParams(location.search);const requestedNext=params.get('next')||'account.html';
+const form=document.querySelector('[data-login-form]');const status=document.querySelector('[data-login-status]');const params=new URLSearchParams(location.search);const requestedNext=params.get('next')||'account.html';let mode='signin';
 function safeNext(value){try{const decoded=decodeURIComponent(value);if(decoded.startsWith('http:')||decoded.startsWith('https:')||decoded.startsWith('//'))return'account.html';if(!/^[a-z0-9/_?=&.%#-]+$/i.test(decoded))return'account.html';return decoded;}catch{return'account.html';}}
+function setMode(nextMode){mode=nextMode;const title=document.querySelector('[data-auth-mode-title]');const copy=document.querySelector('[data-auth-mode-copy]');const button=document.querySelector('[data-auth-submit]');const toggle=document.querySelector('[data-auth-switch]');const password=form.querySelector('input[name="password"]');if(mode==='create'){title.textContent='Create your private account';copy.textContent='Choose an email and password for CorporateX My Space.';button.textContent='Create account →';toggle.textContent='I already have an account';password.autocomplete='new-password';}else{title.textContent='Sign in to My Space';copy.textContent='Use the CorporateX email and password you already created.';button.textContent='Sign in →';toggle.textContent='Create an account';password.autocomplete='current-password';}status.textContent='';}
 const next=safeNext(requestedNext);const {data:{session}}=await supabase.auth.getSession();if(session)location.replace(next);
-form?.addEventListener('submit',async event=>{event.preventDefault();const button=form.querySelector('button[type="submit"]');const email=String(new FormData(form).get('email')||'').trim();if(!email)return;button.disabled=true;status.textContent='Sending your private CorporateX access link…';const redirect=new URL(next,location.href).href;const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:redirect,shouldCreateUser:true,data:{product:'CorporateX',access:'my-space'}}});button.disabled=false;status.textContent=error?'We could not send your access link. Please try again shortly.':'Check your inbox for your CorporateX access link. It will return you to My Space.';});
+document.querySelector('[data-auth-switch]')?.addEventListener('click',()=>setMode(mode==='signin'?'create':'signin'));
+form?.addEventListener('submit',async event=>{event.preventDefault();const button=form.querySelector('button[type="submit"]');const values=new FormData(form);const email=String(values.get('email')||'').trim().toLowerCase();const password=String(values.get('password')||'');if(password.length<10){status.textContent='Use a password with at least 10 characters.';return;}button.disabled=true;status.textContent=mode==='create'?'Creating your CorporateX account…':'Signing in…';if(mode==='signin'){const {error}=await supabase.auth.signInWithPassword({email,password});button.disabled=false;if(error){status.textContent='Email or password did not match. Try again or reset your password.';return;}location.replace(next);return;}const redirect=new URL(next,location.href).href;const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:redirect,data:{product:'CorporateX',access:'my-space'}}});button.disabled=false;if(error){status.textContent=error.message||'We could not create your account. Please try again.';return;}if(data.session){location.replace(next);return;}status.textContent='Check your inbox for the CorporateX account-confirmation email. After confirming your email, you can use this password to sign in.';});
 </script>
 <script type="module" src="src/github-production.js"></script>
 </body>
