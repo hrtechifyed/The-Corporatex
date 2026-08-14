@@ -22,11 +22,12 @@ test('five clearly fictional placeholders fill empty live slots and are replaced
   assert.match(css, /\.cx-home-story-card\.is-demo/);
 });
 
-test('carousel appends a dedicated Stories archive card after five story slots', () => {
-  assert.match(script, /More stories\. More sequences\./);
-  assert.match(script, /Read more stories →/);
-  assert.match(script, /card\.href = 'stories\.html'/);
-  assert.match(script, /track\.append\(moreStoriesCard\(\)\)/);
+test('carousel contains story cards only and does not append a separate keep-reading card', () => {
+  assert.doesNotMatch(script, /function moreStoriesCard/);
+  assert.doesNotMatch(script, /More stories\. More sequences\./);
+  assert.doesNotMatch(script, /KEEP READING/);
+  assert.doesNotMatch(script, /track\.append\(moreStoriesCard\(\)\)/);
+  assert.match(script, /stories\.slice\(0, 5\)\.forEach/);
 });
 
 test('published cards use safe text nodes, real story links and anime art', () => {
