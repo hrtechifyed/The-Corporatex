@@ -7,6 +7,7 @@ const migration = await readFile('supabase/migrations/202608140007_self_service_
 const deletionWorker = await readFile('supabase/functions/process-story-deletions/index.ts','utf8');
 const storyWorker = await readFile('supabase/functions/process-story-notifications/index.ts','utf8');
 const confirmationTemplate = await readFile('supabase/templates/confirmation.html','utf8');
+const recoveryTemplate = await readFile('supabase/templates/recovery.html','utf8');
 
 test('My Space exposes irreversible deletion only behind explicit confirmation',()=>{
   assert.match(account,/Delete my story/);
@@ -44,6 +45,10 @@ test('CorporateX branding is a contract for every application email subject and 
   for (const line of subjectLines) assert.match(line,/CorporateX/,`unbranded subject: ${line.trim()}`);
   assert.match(storyWorker,/from: `"HRTechify · CorporateX"/);
   assert.match(deletionWorker,/from: `"HRTechify · CorporateX"/);
-  assert.match(confirmationTemplate,/CorporateX/);
-  assert.match(confirmationTemplate,/HRTechify/);
+  for (const template of [confirmationTemplate,recoveryTemplate]) {
+    assert.match(template,/CorporateX/);
+    assert.match(template,/HRTechify/);
+    assert.match(template,/Not a score\. A sequence\./);
+  }
+  assert.match(recoveryTemplate,/{{ \.ConfirmationURL }}/);
 });
