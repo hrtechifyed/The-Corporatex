@@ -17,12 +17,9 @@ async function waitForServer() {
 const mockSupabaseModule = `
 const locations=[
  {display_name:'Hamburg, Germany',category:'city',priority:20},
- {display_name:'Hanoi, Vietnam',category:'city',priority:20},
- {display_name:'Helsinki, Finland',category:'city',priority:20},
- {display_name:'Hong Kong',category:'city',priority:10},
- {display_name:'Houston, United States',category:'city',priority:10},
  {display_name:'Hyderabad, India',category:'city',priority:10},
- {display_name:'Remote — Europe',category:'remote',priority:15}
+ {display_name:'Remote',category:'remote',priority:1},
+ {display_name:'Other',category:'other',priority:2}
 ];
 const session=()=>globalThis.__cxMockSession?{user:{id:'00000000-0000-4000-8000-000000000001',email:'tester@example.com'}}:null;
 function builder(table){
@@ -30,7 +27,9 @@ function builder(table){
  return {
   select(){return this},
   eq(column,value){if(table==='story_locations'&&column==='is_active'&&value!==true)rows=[];return this},
+  ilike(){return this},
   order(){return this},
+  limit(){return this},
   maybeSingle:async()=>({data:null,error:null}),
   insert:async()=>({data:null,error:null}),
   delete(){return this},
@@ -54,6 +53,33 @@ export function createClient(){
   };
 }`;
 
+function globalLocationResults(query) {
+  const q = String(query || '').toLowerCase();
+  const city = (display_name, city, country_code, state_code, state, country) => ({ display_name, category:'city', city, country_code, state_code, state, country });
+  if (!q) return { results:[{display_name:'Remote',category:'remote',city:'',country_code:'',state_code:'',state:'',country:''},{display_name:'Other',category:'other',city:'',country_code:'',state_code:'',state:'',country:''}], more:false };
+  if (q === 'h') return { results:[
+    city('Hamburg, Hamburg, Germany','Hamburg','DE','HH','Hamburg','Germany'),
+    city('Hanoi, Hanoi, Vietnam','Hanoi','VN','HN','Hanoi','Vietnam'),
+    city('Helsinki, Uusimaa, Finland','Helsinki','FI','18','Uusimaa','Finland'),
+    city('Houston, Texas, United States','Houston','US','TX','Texas','United States'),
+    city('Hyderabad, Sindh, Pakistan','Hyderabad','PK','SD','Sindh','Pakistan'),
+    city('Hyderabad, Telangana, India','Hyderabad','IN','TG','Telangana','India'),
+  ], more:true };
+  if (q === 'hy') return { results:[
+    city('Hyderabad, Sindh, Pakistan','Hyderabad','PK','SD','Sindh','Pakistan'),
+    city('Hyderabad, Telangana, India','Hyderabad','IN','TG','Telangana','India'),
+  ], more:false };
+  return { results:[], more:false };
+}
+
+async function mockGlobalLocationSearch(page) {
+  await page.route('**/functions/v1/search-locations**', (route) => {
+    const url = new URL(route.request().url());
+    const payload = globalLocationResults(url.searchParams.get('q') || '');
+    route.fulfill({ status:200, contentType:'application/json', body:JSON.stringify({ ...payload, attribution:'Countries States Cities Database · ODbL' }) });
+  });
+}
+
 async function prepareStory(page, { company = 'Quality Test Company' } = {}) {
   await page.goto(`${base}/guided-story.html`, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('[data-guided-ending-panel]');
@@ -62,16 +88,22 @@ async function prepareStory(page, { company = 'Quality Test Company' } = {}) {
   await page.click('[data-ending="break-free"]');
   await page.fill('[data-guided-company]', company);
 
-  await page.fill('[data-guided-location]', 'H');
+  await page.click('[data-guided-location]');
   await page.waitForSelector('.cx-location-option');
+  const specialOptions = await page.locator('.cx-location-option strong').allTextContents();
+  if (!specialOptions.includes('Remote') || !specialOptions.includes('Other')) throw new Error('Location picker must offer Remote and Other as explicit choices.');
+
+  await page.fill('[data-guided-location]', 'H');
+  await page.waitForFunction(() => document.querySelectorAll('.cx-location-option').length >= 5);
   const hSuggestions = await page.locator('.cx-location-option strong').allTextContents();
-  if (!hSuggestions.includes('Hamburg, Germany') || !hSuggestions.includes('Hyderabad, India') || hSuggestions.length < 4) throw new Error('Typing H must surface multiple matching major-city suggestions.');
+  if (!hSuggestions.includes('Hamburg, Hamburg, Germany') || !hSuggestions.includes('Hyderabad, Telangana, India') || hSuggestions.length < 5) throw new Error('Typing H must search the worldwide city catalogue.');
+
   await page.fill('[data-guided-location]', 'Hy');
-  await page.waitForFunction(() => document.querySelectorAll('.cx-location-option').length === 1);
+  await page.waitForFunction(() => document.querySelectorAll('.cx-location-option').length === 2);
   const narrowed = await page.locator('.cx-location-option strong').allTextContents();
-  if (narrowed[0] !== 'Hyderabad, India') throw new Error('Location suggestions did not narrow from H to Hy.');
-  await page.click('.cx-location-option');
-  if ((await page.inputValue('[data-guided-location]')) !== 'Hyderabad, India') throw new Error('Selected location was not normalized into the field.');
+  if (!narrowed.includes('Hyderabad, Sindh, Pakistan') || !narrowed.includes('Hyderabad, Telangana, India')) throw new Error('Global location search must disambiguate cities with the same name.');
+  await page.locator('.cx-location-option', { hasText:'Hyderabad, Telangana, India' }).click();
+  if ((await page.inputValue('[data-guided-location]')) !== 'Hyderabad, Telangana, India') throw new Error('Selected global city was not normalized into the field.');
 
   await page.fill('[data-guided-team]', 'Product');
   await page.click('[data-guided-context-next]');
@@ -95,6 +127,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.addInitScript(() => { globalThis.__cxMockSession = false; globalThis.__cxExistingAccount = false; });
   await page.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: mockSupabaseModule }));
+  await mockGlobalLocationSearch(page);
   await prepareStory(page);
   await page.fill('[data-cx-submit-account] input[name="email"]', 'tester@example.com');
   await page.fill('[data-cx-submit-account] input[name="password"]', 'CorporateX!2026');
@@ -106,13 +139,15 @@ try {
   if (state.submit.name !== 'submit-story') throw new Error('Password account completion did not invoke submit-story.');
   if (state.submit.body?.ending !== 'break-free') throw new Error('Chosen ending was lost before submission.');
   if (state.submit.body?.context?.company !== 'Quality Test Company') throw new Error('Story context was lost before submission.');
-  if (state.submit.body?.context?.location !== 'Hyderabad, India') throw new Error('Validated location was lost before submission.');
+  if (state.submit.body?.context?.location !== 'Hyderabad, Telangana, India') throw new Error('Validated global city was lost before submission.');
+  if (state.submit.body?.locationSelection?.kind !== 'city' || state.submit.body?.locationSelection?.city !== 'Hyderabad' || state.submit.body?.locationSelection?.countryCode !== 'IN' || state.submit.body?.locationSelection?.stateCode !== 'TG') throw new Error('Validated global location metadata was lost before submission.');
   if (!state.submit.body?.chapters?.some((chapter) => chapter.response?.includes('growth and learning'))) throw new Error('Story Beat response was lost before submission.');
   await page.close();
 
   const returning = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await returning.addInitScript(() => { globalThis.__cxMockSession = false; globalThis.__cxExistingAccount = true; });
   await returning.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: mockSupabaseModule }));
+  await mockGlobalLocationSearch(returning);
   await prepareStory(returning, { company: 'Returning User Company' });
   await returning.fill('[data-cx-submit-account] input[name="email"]', 'returning@example.com');
   await returning.fill('[data-cx-submit-account] input[name="password"]', 'Returning!2026');
@@ -138,7 +173,7 @@ try {
   if (!signalText.includes('Growth') || !signalText.includes('Workload')) throw new Error('Homepage live signal cloud did not hydrate from safe aggregated labels.');
   await home.close();
 
-  console.log('Contributor-flow smoke passed: validated location narrowing, anime Story Beats, new accounts, returning-user password sign-in, submission and live signals are connected.');
+  console.log('Contributor-flow smoke passed: global city search, Remote/Other options, anime Story Beats, account access, submission and live signals are connected.');
 } finally {
   if (browser) await browser.close();
   server.kill('SIGTERM');
