@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('homepage endings use archive-style image cards instead of abstract geometry', async ({ page, request }) => {
+test('homepage endings use clean archive-style image cards without sequence labels', async ({ page, request }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/');
 
@@ -28,9 +28,13 @@ test('homepage endings use archive-style image cards instead of abstract geometr
     await expect(page.locator(selector)).toHaveCount(0);
   }
 
-  await expect(cards.nth(0)).toContainText('Ending 01');
+  await expect(page.locator('.pages-ending-copy > span')).toHaveCount(0);
+  await expect(cards.nth(0)).not.toContainText('Ending 01');
   await expect(cards.nth(0)).toContainText('Break Free');
   await expect(cards.nth(1)).toContainText('Next Act');
   await expect(cards.nth(2)).toContainText('Mixed Ending');
   await expect(cards.nth(3)).toContainText('Pass the Torch');
+
+  const cardBackgrounds = await cards.evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).backgroundImage));
+  expect(new Set(cardBackgrounds).size).toBe(1);
 });
