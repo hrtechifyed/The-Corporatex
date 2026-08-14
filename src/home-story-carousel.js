@@ -8,6 +8,14 @@ const ENDING_LABELS = {
   'pass-the-torch': 'Pass the Torch',
 };
 
+const DEMO_STORIES = [
+  { id:'demo-1', demo:true, ending_type:'break-free', approved_headline:'When the role stopped matching the promise', approved_summary:'Fictional placeholder only — not an employee submission. This card previews how a moderated CorporateX story will appear.', broad_function:'Product', broad_region:'Example location' },
+  { id:'demo-2', demo:true, ending_type:'next-act', approved_headline:'A good chapter that reached its natural end', approved_summary:'Fictional placeholder only — not an employee submission. Real approved stories will replace these examples automatically.', broad_function:'Operations', broad_region:'Example location' },
+  { id:'demo-3', demo:true, ending_type:'mixed-ending', approved_headline:'Strong learning, difficult trade-offs', approved_summary:'Fictional placeholder only — not an employee submission. CorporateX will show genuine contributor perspectives here after moderation.', broad_function:'Engineering', broad_region:'Example location' },
+  { id:'demo-4', demo:true, ending_type:'pass-the-torch', approved_headline:'I left, but the right person could still thrive', approved_summary:'Fictional placeholder only — not an employee submission. This demonstrates the shape of a future published story card.', broad_function:'People', broad_region:'Example location' },
+  { id:'demo-5', demo:true, ending_type:'mixed-ending', approved_headline:'The team was good; the system made it hard', approved_summary:'Fictional placeholder only — not an employee submission. The newest real stories will progressively replace demo cards.', broad_function:'Finance', broad_region:'Example location' },
+];
+
 function make(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -15,8 +23,8 @@ function make(tag, className, text) {
   return node;
 }
 
-function storyHref(id) {
-  return `story-detail.html?id=${encodeURIComponent(id)}`;
+function storyHref(story) {
+  return story.demo ? 'stories.html' : `story-detail.html?id=${encodeURIComponent(story.id)}`;
 }
 
 function endingLabel(value) {
@@ -33,26 +41,30 @@ function publishedDate(value) {
 }
 
 function storyCard(story, index) {
-  const card = make('a', 'cx-home-story-card');
-  card.href = storyHref(story.id);
+  const card = make('a', `cx-home-story-card${story.demo ? ' is-demo' : ''}`);
+  card.href = storyHref(story);
   card.dataset.ending = story.ending_type || 'mixed-ending';
-  card.setAttribute('aria-label', `Read ${story.approved_headline || 'published CorporateX story'}`);
+  card.setAttribute('aria-label', story.demo ? `Fictional CorporateX placeholder: ${story.approved_headline}` : `Read ${story.approved_headline || 'published CorporateX story'}`);
 
   const art = make('div', 'cx-home-story-card__art');
   const artTop = make('div', 'cx-home-story-card__art-top');
   artTop.append(
-    make('span', 'cx-home-story-card__status', index === 0 ? 'Newest' : 'Published'),
-    make('span', 'cx-home-story-card__ending', endingLabel(story.ending_type)),
+    make('span', 'cx-home-story-card__status', story.demo ? 'Demo placeholder' : index === 0 ? 'Newest' : 'Published'),
+    make('span', 'cx-home-story-card__ending', story.demo ? 'Fictional example' : endingLabel(story.ending_type)),
   );
   art.append(artTop);
 
   const body = make('div', 'cx-home-story-card__body');
-  const company = make('p', 'cx-home-story-card__company', story.company_display_name || 'Employer');
+  const company = make('p', 'cx-home-story-card__company', story.demo ? 'Fictional workplace example' : (story.company_display_name || 'Employer'));
   const headline = make('h3', '', story.approved_headline || 'A workplace experience');
   const summary = make('p', 'cx-home-story-card__summary', story.approved_summary || 'A moderated contributor perspective from the CorporateX archive.');
   const meta = make('div', 'cx-home-story-card__meta');
-  [story.broad_function, story.broad_region, publishedDate(story.published_at)].filter(Boolean).forEach((value) => meta.append(make('span', '', value)));
-  const action = make('span', 'cx-home-story-card__action', 'Read story →');
+  if (story.demo) {
+    meta.append(make('span', '', story.broad_function), make('span', '', 'Demo only'));
+  } else {
+    [story.broad_function, story.broad_region, publishedDate(story.published_at)].filter(Boolean).forEach((value) => meta.append(make('span', '', value)));
+  }
+  const action = make('span', 'cx-home-story-card__action', story.demo ? 'See how Stories work →' : 'Read story →');
   body.append(company, headline, summary, meta, action);
   card.append(art, body);
   return card;
@@ -74,7 +86,7 @@ function moreStoriesCard() {
   return card;
 }
 
-function mountCarousel(stories) {
+function mountCarousel(stories, realCount) {
   const section = document.querySelector('.pages-stories');
   const shell = section?.querySelector('.pages-shell');
   if (!section || !shell || !stories.length) return;
@@ -85,10 +97,14 @@ function mountCarousel(stories) {
   const carousel = make('div', 'cx-home-story-carousel');
   carousel.setAttribute('role', 'region');
   carousel.setAttribute('aria-roledescription', 'carousel');
-  carousel.setAttribute('aria-label', 'Latest published CorporateX stories');
+  carousel.setAttribute('aria-label', 'Latest published CorporateX stories and fictional placeholders');
 
   const chrome = make('div', 'cx-home-story-carousel__chrome');
-  const count = make('p', 'cx-home-story-carousel__count', `${stories.length} latest published ${stories.length === 1 ? 'story' : 'stories'}`);
+  const placeholderCount = Math.max(0, 5 - realCount);
+  const label = realCount
+    ? `${realCount} published · ${placeholderCount} demo placeholder${placeholderCount === 1 ? '' : 's'}`
+    : 'Archive forming · 5 clearly fictional demo placeholders';
+  const count = make('p', 'cx-home-story-carousel__count', label);
   const buttons = make('div', 'cx-home-story-carousel__buttons');
   const previous = make('button', '', '←');
   previous.type = 'button';
@@ -173,11 +189,13 @@ async function loadLatestPublishedStories() {
       cache: 'no-store',
     });
     if (!response.ok) throw new Error(`Published story archive unavailable (${response.status})`);
-    const stories = await response.json();
-    if (!Array.isArray(stories) || !stories.length) return;
-    mountCarousel(stories);
+    const rows = await response.json();
+    const published = Array.isArray(rows) ? rows.slice(0, 5) : [];
+    const display = [...published, ...DEMO_STORIES.slice(0, Math.max(0, 5 - published.length))];
+    mountCarousel(display, published.length);
   } catch (error) {
     console.error('CorporateX latest story carousel could not load.', error);
+    mountCarousel(DEMO_STORIES, 0);
   }
 }
 
