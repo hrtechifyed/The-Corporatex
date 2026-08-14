@@ -1,3 +1,5 @@
+create extension if not exists pg_net with schema extensions;
+
 create table if not exists public.story_notification_jobs (
   id uuid primary key default gen_random_uuid(),
   experience_id uuid not null references public.experiences(id) on delete cascade,
