@@ -61,6 +61,9 @@ jobs:
       - name: Validate complete contributor flow
         run: node scripts/static-contributor-flow-smoke.mjs
 
+      - name: Validate moderation lifecycle
+        run: node scripts/static-moderation-flow-smoke.mjs
+
       - name: Run browser regression suite
         run: npm run test:e2e
 
