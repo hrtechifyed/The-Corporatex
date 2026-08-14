@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050608" />
+  <meta name="description" content="Private CorporateX moderation workspace." />
+  <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="src/app-v2.css" />
+  <link rel="stylesheet" href="src/reference-exact.css" />
+  <link rel="stylesheet" href="src/github-shell.css" />
+  <link rel="stylesheet" href="src/moderation-console.css" />
+  <title>Moderation | CorporateX</title>
+</head>
+<body class="ref-page cx-mod-page" data-ref-page="moderation">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="ref-nav">
+  <a class="ref-brand" href="index.html" aria-label="CorporateX home"><img src="public/hrtechify-logo.svg" alt="" width="34" height="34" /><strong>CorporateX</strong></a>
+  <nav class="ref-primary-nav" aria-label="Primary navigation"><a href="index.html">Home</a><a href="stories.html">Stories</a><a href="account.html">My Space</a></nav>
+  <div class="ref-nav-actions"><button class="ref-action ghost" type="button" data-mod-signout>Sign out</button></div>
+</header>
+<main id="main" class="cx-mod-shell">
+  <header class="cx-mod-head">
+    <div><p class="cx-mod-kicker">PRIVATE HRTECHIFY WORKSPACE</p><h1>Story moderation.</h1><p>Review contributor stories for privacy, safety and clarity. Contributor identity stays outside the public story. Every decision is recorded and notification emails are queued automatically.</p></div>
+    <p class="cx-mod-status" data-mod-status role="status" aria-live="polite">Checking moderator access…</p>
+  </header>
+
+  <section data-mod-dashboard hidden>
+    <div class="cx-mod-layout">
+      <aside class="cx-mod-queue" aria-label="Moderation queue">
+        <div class="cx-mod-tabs" data-mod-tabs>
+          <button type="button" class="is-active" data-mod-filter="pending_moderation">Awaiting review</button>
+          <button type="button" data-mod-filter="changes_requested">Changes requested</button>
+          <button type="button" data-mod-filter="published">Published</button>
+          <button type="button" data-mod-filter="rejected">Rejected</button>
+        </div>
+        <div class="cx-mod-list" data-mod-list><p class="cx-location-empty">Loading moderation queue…</p></div>
+      </aside>
+
+      <section class="cx-mod-detail" data-mod-detail aria-live="polite">
+        <div class="cx-mod-empty"><div><p class="cx-mod-kicker">MODERATION QUEUE</p><h2>Select a story to review.</h2><p>Open an item from the queue or use the Review submission button in the HRTechify notification email.</p></div></div>
+      </section>
+    </div>
+  </section>
+</main>
+<footer class="site-footer"><p class="footer-line">CorporateX — Powered by HRTechify · People · Technology · Growth</p><p class="footer-line secondary">Private moderation workspace</p></footer>
+<script type="module" src="src/moderation-console.js"></script>
+</body>
+</html>
