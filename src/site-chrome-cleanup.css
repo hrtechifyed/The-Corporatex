@@ -6,7 +6,11 @@
 .policy-card[data-tone="purple"],
 .cx-how-card,
 .cx-how-trust-card,
-.cx-how-forward__panel {
+.cx-how-forward__panel,
+.ref-journey-card,
+.ref-journey-card.purple,
+.ref-journey-card.orange,
+.cx-ending-card {
   border-color: rgba(246, 200, 79, .18) !important;
   background: linear-gradient(160deg, #111214, #08090a 72%) !important;
   box-shadow: 0 22px 60px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255,255,255,.025) !important;
@@ -17,7 +21,9 @@
 .policy-card summary .eyebrow,
 .cx-how-card__body > span,
 .cx-how-trust-card__copy > span,
-.cx-how-forward__panel .cx-how-kicker {
+.cx-how-forward__panel .cx-how-kicker,
+.ref-journey-card .ref-card-icon,
+.ref-journey-card .ref-card-status {
   display: none !important;
 }
 
@@ -61,6 +67,63 @@
 }
 .cx-how-forward__panel::before {
   opacity: .74 !important;
+}
+
+/* Story Beat cards keep a real image in every state, including the highlighted card. */
+.ref-journey-card .ref-art-svg {
+  display: block !important;
+  width: 100% !important;
+  height: 190px !important;
+  border-radius: 14px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+.ref-journey-card .ref-art-svg use { display: none !important; }
+.ref-journey-card[data-guided-chapter="beginning"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-1.webp') !important; background-position:center 46% !important; }
+.ref-journey-card[data-guided-chapter="promise"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-2.webp') !important; background-position:center 45% !important; }
+.ref-journey-card[data-guided-chapter="good"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-3.webp') !important; background-position:center 43% !important; }
+.ref-journey-card[data-guided-chapter="shift"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-4.webp') !important; background-position:center 43% !important; }
+.ref-journey-card[data-guided-chapter="tipping"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-5.webp') !important; background-position:center 42% !important; }
+.ref-journey-card[data-guided-chapter="lesson"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-2.webp') !important; background-position:center 45% !important; }
+.ref-journey-card[data-guided-chapter="ai"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-4.webp') !important; background-position:center 43% !important; }
+.ref-journey-card[data-guided-chapter="fit"] .ref-art-svg { background-image: linear-gradient(180deg,rgba(5,6,8,.02),rgba(5,6,8,.48)),url('../frozen-assets/card-5.webp') !important; background-position:center 42% !important; }
+.ref-journey-card.is-active .ref-art-svg {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+.ref-journey-card h2 {
+  margin: 16px 10px 0 !important;
+  color: #fff8ed !important;
+}
+.ref-journey-card p {
+  margin: 8px 10px 0 !important;
+  color: #aaa49d !important;
+}
+.ref-journey-card:hover,
+.ref-journey-card:focus-visible,
+.ref-journey-card.is-active {
+  border-color: rgba(246,200,79,.62) !important;
+  box-shadow: 0 28px 70px rgba(0,0,0,.44), 0 0 26px rgba(246,200,79,.08) !important;
+}
+
+/* My Space and secure access use the larger hero source instead of stretching a small card crop. */
+.cx-auth-visual {
+  background:
+    linear-gradient(180deg, rgba(5,6,8,.02), rgba(5,6,8,.34)),
+    url('../frozen-assets/hero.webp') center 38% / cover no-repeat !important;
+}
+.cx-auth-visual > img {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+.cx-auth-visual::after {
+  background: linear-gradient(180deg, rgba(5,6,8,.01) 0%, rgba(5,6,8,.12) 58%, rgba(5,6,8,.52) 100%) !important;
 }
 
 /* Unified footer mounted by site-footer.js. */
@@ -143,22 +206,24 @@
       max(20px, env(safe-area-inset-left, 0px));
     grid-template-columns: 1fr;
     gap: 22px;
-    text-align: center;
+    text-align: left;
   }
   .cx-footer-brand,
-  .cx-footer-meta { text-align: center; }
+  .cx-footer-meta { text-align: left; }
   .cx-footer-links {
-    justify-content: center;
-    gap: 10px 18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    gap: 11px 18px;
   }
   .cx-footer-links a { font-size: .75rem; }
-  .cx-footer-meta p { max-width: 36rem; margin-inline: auto; }
+  .cx-footer-meta p { max-width: 36rem; margin-inline: 0; }
 }
 
 @media (max-width: 390px) {
   .cx-footer-links {
-    display: grid;
-    justify-items: center;
+    grid-template-columns: 1fr;
+    justify-items: start;
     gap: 11px;
   }
 }

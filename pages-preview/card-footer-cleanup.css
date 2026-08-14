@@ -1,0 +1,142 @@
+/* Final CorporateX cleanup for the synced public homepage. */
+
+.pages-how-card,
+.pages-ending-grid .pages-ending-card[data-ending],
+.pages-about-card {
+  border-color: rgba(246, 200, 79, .20) !important;
+  background: linear-gradient(160deg, #111214, #08090a 72%) !important;
+  box-shadow: 0 22px 60px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+.pages-how-copy,
+.pages-ending-copy {
+  background: linear-gradient(180deg, #111214, #08090a 76%) !important;
+}
+
+.pages-how-copy > span,
+.pages-ending-copy > span,
+.pages-about-card > span {
+  display: none !important;
+}
+
+.pages-how-card h3,
+.pages-ending-card h3,
+.pages-about-card h3 {
+  color: #fff8ed !important;
+}
+
+.pages-how-card p,
+.pages-ending-card p,
+.pages-about-card p {
+  color: #aaa49d !important;
+}
+
+.pages-ending-grid .pages-ending-card[data-ending]:hover,
+.pages-ending-grid .pages-ending-card[data-ending]:focus-visible,
+.pages-how-card:hover,
+.pages-how-card:focus-within,
+.pages-about-card:hover,
+.pages-about-card:focus-within {
+  border-color: rgba(246, 200, 79, .58) !important;
+  box-shadow: 0 28px 68px rgba(0,0,0,.42), 0 0 26px rgba(246,200,79,.08) !important;
+}
+
+.pages-footer {
+  margin-top: clamp(48px, 7vw, 88px);
+  padding: 0 max(24px, env(safe-area-inset-right, 0px)) 0 max(24px, env(safe-area-inset-left, 0px));
+  border-top: 1px solid rgba(246,200,79,.16) !important;
+  background:
+    radial-gradient(circle at 18% 0, rgba(246,200,79,.06), transparent 26rem),
+    #050608 !important;
+  color: #fff8ed;
+  text-align: left !important;
+}
+
+.pages-footer-inner {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: clamp(34px, 5vw, 54px) 0 calc(30px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  grid-template-columns: minmax(280px, 1.1fr) minmax(320px, .9fr);
+  gap: 30px clamp(36px, 6vw, 84px);
+  align-items: start;
+}
+
+.pages-footer-brand strong {
+  display: block;
+  color: #fff8ed;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -.015em;
+}
+.pages-footer-brand strong span { color: #d8ad43; }
+.pages-footer-brand p {
+  max-width: 48ch;
+  margin: 12px 0 0;
+  color: #a8a198;
+  font-size: .84rem;
+  line-height: 1.65;
+}
+
+.pages-footer-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 28px;
+}
+.pages-footer-nav a {
+  color: #beb7ae;
+  font-size: .8rem;
+  font-weight: 750;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.pages-footer-nav a:hover,
+.pages-footer-nav a:focus-visible { color: #f6c84f; }
+
+.pages-footer-meta {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px 32px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,.09);
+  color: #77716d;
+  font-size: .72rem;
+  line-height: 1.55;
+}
+.pages-footer-meta span:last-child {
+  max-width: 58ch;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .pages-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .pages-footer-nav {
+    max-width: 680px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .pages-footer-meta span:last-child { text-align: left; }
+}
+
+@media (max-width: 620px) {
+  .pages-footer {
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+  }
+  .pages-footer-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px 22px;
+  }
+  .pages-footer-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 390px) {
+  .pages-footer-nav { grid-template-columns: 1fr; }
+}

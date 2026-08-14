@@ -1,0 +1,158 @@
+/* CorporateX content-first card and footer cleanup.
+   Imported last so older per-card storytelling treatments cannot leak back in. */
+
+/* One dark CorporateX material with one restrained gold accent. */
+.cx-ending-grid .cx-ending-card,
+.cx-ending-choice-grid--flow .cx-ending-choice--button {
+  --ending-accent: #f6c84f !important;
+}
+
+.cx-ending-grid .cx-ending-card,
+.cx-ending-choice-grid--flow .cx-ending-choice__card,
+.cx-about-deck-card {
+  border-color: rgba(246, 200, 79, .20) !important;
+  background: linear-gradient(160deg, #111214, #08090a 72%) !important;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, .30), inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+.cx-ending-grid .cx-ending-card__copy {
+  background: linear-gradient(180deg, #111214, #08090a 76%) !important;
+}
+
+.cx-ending-grid .cx-ending-card__scene::after {
+  background: linear-gradient(180deg, rgba(5,6,8,.02) 48%, rgba(5,6,8,.86) 100%) !important;
+}
+
+.cx-ending-choice-grid--flow .cx-ending-choice__card::before {
+  border-bottom-color: rgba(246, 200, 79, .16) !important;
+}
+
+/* Remove numbered/category storytelling chrome from cards. */
+.cx-ending-grid .cx-ending-card__copy > span,
+.cx-ending-choice-grid--flow .cx-ending-choice__card::after,
+.cx-about-card-label,
+.cx-about-card-copy > small {
+  display: none !important;
+  content: none !important;
+}
+
+.cx-ending-grid .cx-ending-card__copy h3,
+.cx-ending-choice-grid--flow .cx-ending-choice__card > strong,
+.cx-about-card-copy h2 {
+  color: #fff8ed !important;
+}
+
+.cx-ending-grid .cx-ending-card__copy p,
+.cx-ending-choice-grid--flow .cx-ending-choice__card > span:not(.cx-ending-choice__status),
+.cx-about-card-copy p {
+  color: #aaa49d !important;
+}
+
+/* Footer: editorial hierarchy first, then navigation and legal context. */
+.site-footer {
+  margin-top: clamp(48px, 7vw, 88px);
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  border-top-color: rgba(246, 200, 79, .16) !important;
+  background:
+    radial-gradient(circle at 18% 0, rgba(246,200,79,.06), transparent 26rem),
+    #050608 !important;
+}
+
+.footer-grid {
+  width: min(1240px, 100%) !important;
+  margin: 0 auto;
+  padding: clamp(34px, 5vw, 54px) 0 calc(30px + env(safe-area-inset-bottom, 0px)) !important;
+  display: grid !important;
+  grid-template-columns: minmax(280px, 1.1fr) minmax(320px, .9fr) !important;
+  gap: 30px clamp(36px, 6vw, 84px) !important;
+  align-items: start;
+}
+
+.cx-footer-brand p {
+  max-width: 48ch;
+  margin-top: 14px;
+  color: #a8a198 !important;
+  font-size: .86rem;
+  line-height: 1.65;
+}
+
+.cx-footer-nav {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 28px !important;
+  align-content: start;
+  justify-content: stretch !important;
+}
+
+.cx-footer-nav a {
+  color: #beb7ae !important;
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.cx-footer-nav a:hover,
+.cx-footer-nav a:focus-visible {
+  color: #f6c84f !important;
+}
+
+.cx-footer-bottom {
+  grid-column: 1 / -1;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px 32px;
+  margin-top: 4px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,.09) !important;
+  color: #77716d !important;
+  font-size: .72rem;
+  line-height: 1.55;
+}
+
+.cx-footer-bottom span:last-child {
+  max-width: 58ch;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 26px !important;
+  }
+
+  .cx-footer-nav {
+    max-width: 680px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cx-footer-bottom span:last-child { text-align: left; }
+}
+
+@media (max-width: 620px) {
+  .site-footer {
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+  }
+
+  .footer-grid {
+    padding-top: 32px !important;
+    gap: 24px !important;
+  }
+
+  .cx-footer-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px 22px !important;
+  }
+
+  .cx-footer-bottom {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 390px) {
+  .cx-footer-nav {
+    grid-template-columns: 1fr;
+  }
+}

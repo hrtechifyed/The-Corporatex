@@ -98,7 +98,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
           <h2 className="cx-title" id="ending-title">An exit is not always a warning.</h2>
           <p className="cx-lede">Relief, progress, mixed truth and genuine recommendation all carry useful information.</p>
           <div className="cx-ending-grid">
-            {ENDINGS.map((ending, index) => (
+            {ENDINGS.map((ending) => (
               <Link
                 className="cx-ending-card"
                 data-ending={ending.slug}
@@ -108,7 +108,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
                 key={ending.value}
               >
                 <span className="cx-ending-card__scene" aria-hidden="true"><span className="cx-ending-card__sun" /><span className="cx-ending-card__door" /><span className="cx-ending-card__person" /></span>
-                <span className="cx-ending-card__copy"><span>Ending {String(index + 1).padStart(2, '0')}</span><h3>{ending.title}</h3><p>{ending.description}</p></span>
+                <span className="cx-ending-card__copy"><h3>{ending.title}</h3><p>{ending.description}</p></span>
               </Link>
             ))}
           </div>

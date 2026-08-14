@@ -11,11 +11,12 @@ let html = await readFile('pages-preview/index.html', 'utf8');
 html = html
   .replace('<link rel="stylesheet" href="github-pages-current.css" />', '<link rel="stylesheet" href="/pages-home/github-pages-current.css" />')
   .replace('<link rel="stylesheet" href="prelaunch-pages-fixes.css" />', '<link rel="stylesheet" href="/pages-home/prelaunch-pages-fixes.css" />\n  <link rel="stylesheet" href="/pages-home/navbar-fix.css" />')
+  .replace('<link rel="stylesheet" href="card-footer-cleanup.css" />', '<link rel="stylesheet" href="/pages-home/card-footer-cleanup.css" />')
   .replaceAll('src="hrtechify-logo.svg"', 'src="/hrtechify-logo.svg"')
   .replaceAll('href="hrtechify-logo.svg"', 'href="/hrtechify-logo.svg"');
 await writeFile(`${outDir}/index.html`, html);
 
-for (const name of ['github-pages-current.css', 'prelaunch-pages-fixes.css', 'navbar-fix.css']) {
+for (const name of ['github-pages-current.css', 'prelaunch-pages-fixes.css', 'navbar-fix.css', 'card-footer-cleanup.css']) {
   let css = await readFile(`pages-preview/${name}`, 'utf8');
   css = css.replaceAll("url('frozen-assets/", "url('/pages-home/frozen-assets/");
   await writeFile(`${outDir}/${name}`, css);

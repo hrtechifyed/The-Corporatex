@@ -19,6 +19,7 @@ import './global-home-character.css';
 import './opening-signal-refinement.css';
 import './header-stability.css';
 import './launch-readiness.css';
+import './card-footer-cleanup.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { FunnelTelemetry } from '@/components/funnel-telemetry';

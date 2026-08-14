@@ -167,13 +167,15 @@ test('frozen homepage artwork is cacheable and launch overrides use valid extens
   assert.doesNotMatch(launchCss, /frozen-assets\/hero\.webp/);
 });
 
-test('global black-gold design remains intact while current launch overrides load last', () => {
+test('global black-gold design remains intact while current launch overrides and cleanup layers are present', () => {
   assert.match(rootLayout, /frozen-global\.css/);
+  assert.match(rootLayout, /card-footer-cleanup\.css/);
   assert.match(frozenGlobalCss, /body\.cx-body/);
   assert.match(frozenGlobalCss, /\.site-header/);
   assert.match(frozenGlobalCss, /\.site-footer/);
   assert.ok(rootLayout.indexOf('./launch-readiness.css') > rootLayout.indexOf('./frozen-global.css'));
-  assert.match(siteFooter, /CorporateX — Powered by HRTechify/);
+  assert.match(siteFooter, /Workplace stories, structured for better career decisions\./);
+  assert.match(siteFooter, /Contributor stories reflect individual perspectives and are moderated before publication\./);
   for (const [name, source] of Object.entries({ morePage, privacyPage, storyPage })) assert.match(source, /cx-frozen-mini-art/, `${name} should use approved visual language`);
 });
 

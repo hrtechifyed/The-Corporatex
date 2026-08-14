@@ -46,26 +46,31 @@ test('top navigation stays anchored at identical geometry across homepage and ap
   expect(Math.abs(mobileAppBox!.height - mobilePublicBox!.height)).toBeLessThan(1);
 });
 
-test('Opening Signal cards use the exact homepage contextual anime artwork instead of abstract geometry', async ({ page }) => {
+test('Opening Signal cards keep the contextual artwork but remove ending sequence labels', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/submit');
   await expect(page.getByRole('heading', { name: 'How did this ending feel?' })).toBeVisible();
 
   const mappings = [
-    ['break-free', 'card-1', 'ENDING 01'],
-    ['next-act', 'card-2', 'ENDING 02'],
-    ['mixed-ending', 'card-3', 'ENDING 03'],
-    ['pass-the-torch', 'card-5', 'ENDING 04'],
+    ['break-free', 'card-1'],
+    ['next-act', 'card-2'],
+    ['mixed-ending', 'card-3'],
+    ['pass-the-torch', 'card-5'],
   ] as const;
 
-  for (const [ending, asset, label] of mappings) {
+  const backgrounds: string[] = [];
+  for (const [ending, asset] of mappings) {
     const button = page.locator(`.cx-ending-choice--button[data-ending="${ending}"]`);
     await expect(button).toBeVisible();
     const card = button.locator('.cx-ending-choice__card');
     const beforeImage = await card.evaluate((element) => getComputedStyle(element, '::before').backgroundImage);
     const endingLabel = await card.evaluate((element) => getComputedStyle(element, '::after').content);
+    const background = await card.evaluate((element) => getComputedStyle(element).backgroundImage);
     expect(beforeImage).toContain(`/frozen-assets/${asset}`);
     expect(beforeImage).not.toContain('.webp');
-    expect(endingLabel).toContain(label);
+    expect(endingLabel).not.toContain('ENDING');
+    backgrounds.push(background);
   }
+
+  expect(new Set(backgrounds).size).toBe(1);
 });

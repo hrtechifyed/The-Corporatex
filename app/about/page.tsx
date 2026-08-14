@@ -5,35 +5,27 @@ import Link from 'next/link';
 
 const aboutSteps = [
   {
-    number: '01',
     label: 'Experience',
     title: 'Start with what actually happened.',
     text: 'The promise, the good part, the shift and the decision stay in the contributor’s own words.',
-    meta: 'No score · no forced sentiment',
     art: 'experience',
   },
   {
-    number: '02',
     label: 'Sequence',
     title: 'Context changes the meaning.',
     text: 'A single moment can mislead. The sequence shows what came before, what worked and what changed.',
-    meta: 'Beginning → promise → shift',
     art: 'sequence',
   },
   {
-    number: '03',
     label: 'Signal',
     title: 'Patterns emerge without flattening stories.',
     text: 'Safe recurring themes can become shared signals while each individual account remains distinct and privately reviewed.',
-    meta: 'Theme visible · story private',
     art: 'signal',
   },
   {
-    number: '04',
     label: 'Decision',
     title: 'Turn hindsight into a better question.',
     text: 'The goal is not a verdict on a company. It is sharper context for the next person deciding whether a role fits.',
-    meta: 'Use the story forward',
     art: 'decision',
   },
 ] as const;
@@ -106,10 +98,8 @@ export default function AboutPage() {
                   <article className="cx-about-deck-card">
                     <span className={`cx-about-card-art cx-about-card-art--${step.art}`} aria-hidden="true" />
                     <section className="cx-about-card-copy">
-                      <span className="cx-about-card-label">{step.number} · {step.label}</span>
                       <h2>{step.title}</h2>
                       <p>{step.text}</p>
-                      <small>{step.meta}</small>
                     </section>
                   </article>
                 </li>
@@ -132,7 +122,6 @@ export default function AboutPage() {
             </div>
             <button type="button" onClick={() => move(1)} aria-label="Next card">→</button>
           </div>
-          <span className="cx-about-swipe-hint" aria-hidden="true">SWIPE · {String(active + 1).padStart(2, '0')} / 04</span>
         </div>
       </section>
     </div>

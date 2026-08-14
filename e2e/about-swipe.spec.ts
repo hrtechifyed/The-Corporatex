@@ -8,7 +8,7 @@ test.describe('About swipe deck', () => {
     await expect(page.getByRole('heading', { name: /Workplace truth has a timeline/i })).toBeVisible();
     const cards = page.locator('.cx-about-card-deck > li');
     await expect(cards).toHaveCount(4);
-    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Experience');
+    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Start with what actually happened.');
     await expect(page.locator('.cx-about-card-deck > li[data-depth="1"]')).toBeVisible();
 
     const dimensions = await page.evaluate(() => ({
@@ -40,11 +40,11 @@ test.describe('About swipe deck', () => {
     }
 
     await page.getByRole('button', { name: 'Next card' }).click();
-    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Sequence');
-    await expect(page.getByText('SWIPE · 02 / 04')).toBeVisible();
+    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Context changes the meaning.');
+    await expect(page.locator('.cx-about-swipe-hint')).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Show Decision' }).click();
-    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Decision');
+    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Turn hindsight into a better question.');
   });
 
   test('supports keyboard navigation without requiring page scrolling', async ({ page }) => {
@@ -53,8 +53,8 @@ test.describe('About swipe deck', () => {
     const deck = page.locator('.cx-about-deck-visual');
     await deck.focus();
     await page.keyboard.press('ArrowRight');
-    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Sequence');
+    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Context changes the meaning.');
     await page.keyboard.press('ArrowLeft');
-    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Experience');
+    await expect(page.locator('.cx-about-card-deck > li[data-active="true"]')).toContainText('Start with what actually happened.');
   });
 });

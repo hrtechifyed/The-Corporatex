@@ -15,16 +15,18 @@ function mountCorporateXFooter() {
   byline.textContent = 'by HRTechify';
   brandLine.append(byline);
   const tagline = document.createElement('p');
-  tagline.textContent = 'Not a score. A sequence.';
+  tagline.textContent = 'Workplace stories, structured for better career decisions.';
   brand.append(brandLine, tagline);
 
   const links = document.createElement('nav');
   links.className = 'cx-footer-links';
   links.setAttribute('aria-label', 'Footer navigation');
   for (const [label, href] of [
+    ['Stories', 'stories.html'],
+    ['How It Works', 'how-it-works.html'],
     ['Privacy & Safety', 'privacy-safety.html'],
-    ['Terms', 'terms.html'],
     ['Community Guidelines', 'community-guidelines.html'],
+    ['Terms', 'terms.html'],
   ]) {
     const link = document.createElement('a');
     link.href = href;
@@ -35,9 +37,9 @@ function mountCorporateXFooter() {
   const meta = document.createElement('div');
   meta.className = 'cx-footer-meta';
   const copyright = document.createElement('p');
-  copyright.textContent = '© 2026 HRTechify. All rights reserved.';
+  copyright.textContent = `© ${new Date().getFullYear()} HRTechify. All rights reserved.`;
   const perspective = document.createElement('p');
-  perspective.textContent = 'Contributor stories reflect individual perspectives.';
+  perspective.textContent = 'Contributor stories reflect individual perspectives and are moderated before publication.';
   meta.append(copyright, perspective);
 
   inner.append(brand, links, meta);

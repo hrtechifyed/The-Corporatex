@@ -58,8 +58,9 @@ test.describe('Global frozen design system', () => {
       const footer = page.locator('.site-footer');
       await expect(footer).toBeVisible();
       await expect(footer.getByRole('link', { name: 'Privacy & Safety' })).toBeVisible();
-      await expect(footer.locator('.cx-footer-bottom span').first()).toContainText('CorporateX — Powered by HRTechify · People · Technology · Growth');
-      await expect(footer.locator('.cx-footer-bottom span').nth(1)).toContainText('© 2026 All Rights Reserved. Stories are contributor perspectives');
+      await expect(footer.locator('.cx-footer-brand p')).toContainText('Workplace stories, structured for better career decisions.');
+      await expect(footer.locator('.cx-footer-bottom span').first()).toContainText('© 2026 HRTechify. All rights reserved.');
+      await expect(footer.locator('.cx-footer-bottom span').nth(1)).toContainText('Contributor stories reflect individual perspectives and are moderated before publication.');
     });
   }
 
