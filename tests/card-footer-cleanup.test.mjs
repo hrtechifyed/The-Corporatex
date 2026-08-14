@@ -4,9 +4,17 @@ import test from 'node:test';
 
 const privacy = await readFile('privacy-safety.html', 'utf8');
 const how = await readFile('how-it-works.html', 'utf8');
+const guidedHtml = await readFile('guided-story.html', 'utf8');
 const guided = await readFile('src/guided-production.js', 'utf8');
 const css = await readFile('src/site-chrome-cleanup.css', 'utf8');
 const footer = await readFile('src/site-footer.js', 'utf8');
+const nextHome = await readFile('app/page.tsx', 'utf8');
+const nextAbout = await readFile('app/about/page.tsx', 'utf8');
+const nextCleanup = await readFile('app/card-footer-cleanup.css', 'utf8');
+const nextFooter = await readFile('components/site-footer.tsx', 'utf8');
+const pagesHome = await readFile('pages-preview/index.html', 'utf8');
+const pagesCleanup = await readFile('pages-preview/card-footer-cleanup.css', 'utf8');
+const syncHome = await readFile('scripts/sync-live-home.mjs', 'utf8');
 const build = await readFile('scripts/build.mjs', 'utf8');
 
 test('privacy cards keep the content but remove numbered and category decorations', () => {
@@ -25,6 +33,19 @@ test('privacy cards keep the content but remove numbered and category decoration
   }
   assert.match(privacy, /Questions and answers are moderated\./);
   assert.match(privacy, /Safety checks are narrow, not truth scoring\./);
+  assert.match(privacy, /Save, unfollow, reset, withdraw, report\./);
+  assert.match(privacy, /Private actions should be reversible where supported\./);
+});
+
+test('guided Story Beat cards remove large number badges, status captions and color variants', () => {
+  assert.doesNotMatch(guidedHtml, /class="ref-card-icon"/);
+  assert.doesNotMatch(guidedHtml, /class="ref-card-status"/);
+  assert.doesNotMatch(guidedHtml, /ref-journey-card purple/);
+  assert.doesNotMatch(guidedHtml, /ref-journey-card orange/);
+  assert.doesNotMatch(guidedHtml, />SCENE 01</);
+  for (const heading of ['The Beginning', 'The Shift', 'The Tipping Point', 'The Lesson', 'Who Thrives Here?']) {
+    assert.match(guidedHtml, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
 });
 
 test('How It Works cards no longer use numbered sequence labels', () => {
@@ -38,7 +59,22 @@ test('How It Works cards no longer use numbered sequence labels', () => {
 test('ending choice cards show names rather than ENDING 01-style labels', () => {
   assert.doesNotMatch(guided, /number:\s*'0[1-4]'/);
   assert.doesNotMatch(guided, /ENDING \$\{ending\.number\}/);
-  for (const ending of ['Break Free', 'Next Act', 'Mixed Ending', 'Pass the Torch']) assert.match(guided, new RegExp(ending));
+  assert.doesNotMatch(nextHome, /Ending \{String\(index/);
+  assert.doesNotMatch(pagesHome, />Ending 0[1-4]</);
+  for (const ending of ['Break Free', 'Next Act', 'Mixed Ending', 'Pass the Torch']) {
+    assert.match(guided, new RegExp(ending));
+    assert.match(nextHome, new RegExp(ending));
+    assert.match(pagesHome, new RegExp(ending));
+  }
+});
+
+test('homepage and About cards remove visible numbered/category storytelling labels', () => {
+  for (const label of ['01 &middot; SIGNAL', '02 &middot; SEQUENCE', '03 &middot; DECISION', '01 &middot; EXPERIENCE', '03 &middot; SIGNAL', '04 &middot; DECISION']) {
+    assert.doesNotMatch(pagesHome, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+  assert.doesNotMatch(nextAbout, /cx-about-card-label/);
+  assert.doesNotMatch(nextAbout, /step\.number/);
+  assert.doesNotMatch(nextAbout, /cx-about-swipe-hint/);
 });
 
 test('legacy color variants are overridden by one CorporateX card treatment', () => {
@@ -46,28 +82,37 @@ test('legacy color variants are overridden by one CorporateX card treatment', ()
   assert.match(css, /\.cx-how-card/);
   assert.match(css, /\.cx-how-trust-card/);
   assert.match(css, /\.cx-how-forward__panel/);
+  assert.match(css, /\.ref-journey-card\.purple/);
   assert.match(css, /background:\s*linear-gradient\(160deg, #111214, #08090a 72%\)/);
-  assert.match(css, /\.policy-card \.info-icon/);
+  assert.match(css, /\.ref-journey-card \.ref-card-icon/);
   assert.match(css, /display:\s*none !important/);
+  assert.match(nextCleanup, /--ending-accent:\s*#f6c84f !important/);
+  assert.match(nextCleanup, /\.cx-about-deck-card/);
+  assert.match(pagesCleanup, /\.pages-ending-grid \.pages-ending-card\[data-ending\]/);
+  assert.match(pagesCleanup, /background:\s*linear-gradient\(160deg, #111214, #08090a 72%\)/);
 });
 
-test('footer has concise CorporateX branding, useful links and responsive safe-area layout', () => {
-  assert.match(footer, /CorporateX/);
-  assert.match(footer, /by HRTechify/);
-  assert.match(footer, /Not a score\. A sequence\./);
+test('footers use concise CorporateX copy and responsive safe-area layouts', () => {
+  for (const source of [footer, nextFooter, pagesHome]) {
+    assert.match(source, /Workplace stories, structured for better career decisions\./);
+    assert.match(source, /Contributor stories reflect individual perspectives and are moderated before publication\./);
+  }
+  assert.match(footer, /Stories/);
   assert.match(footer, /Privacy & Safety/);
   assert.match(footer, /Terms/);
-  assert.match(footer, /Community Guidelines/);
-  assert.match(footer, /Contributor stories reflect individual perspectives\./);
+  assert.match(nextFooter, /Community Guidelines/);
   assert.match(css, /@media \(max-width: 900px\)/);
   assert.match(css, /@media \(max-width: 620px\)/);
   assert.match(css, /@media \(max-width: 390px\)/);
   assert.match(css, /safe-area-inset-bottom/);
   assert.match(css, /safe-area-inset-left/);
   assert.match(css, /safe-area-inset-right/);
+  assert.match(nextCleanup, /safe-area-inset-bottom/);
+  assert.match(pagesCleanup, /safe-area-inset-bottom/);
 });
 
-test('production build injects the cleanup stylesheet and footer runtime everywhere', () => {
+test('production builds load both cleanup layers', () => {
   assert.match(build, /src\/site-chrome-cleanup\.css/);
   assert.match(build, /src\/site-footer\.js/);
+  assert.match(syncHome, /card-footer-cleanup\.css/);
 });
