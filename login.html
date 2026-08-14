@@ -4,30 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050608" />
-  <meta name="description" content="Secure private access to CorporateX My Space." />
+  <meta name="description" content="Secure private access to CorporateX My Space and HRTechify moderation." />
   <link rel="icon" href="public/hrtechify-logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="src/app-v2.css" />
   <link rel="stylesheet" href="src/reference-exact.css" />
   <link rel="stylesheet" href="src/reference-functional.css" />
   <link rel="stylesheet" href="src/github-shell.css" />
   <link rel="stylesheet" href="src/auth-experience.css" />
-  <title>My Space Access | CorporateX</title>
+  <title>Secure Access | CorporateX</title>
 </head>
 <body class="ref-page" data-ref-page="account">
 <a class="skip-link" href="#main">Skip to main content</a>
 <main id="main" class="cx-auth-page">
   <div class="cx-auth-shell">
     <section class="cx-auth-copy" aria-labelledby="login-title">
-      <p class="cx-auth-kicker">MY SPACE ACCESS</p>
-      <h1 class="cx-auth-title" id="login-title">Your private space.<br /><em>Your password.</em></h1>
-      <p class="cx-auth-lede">Sign in to save stories, follow moderated conversations, share a workplace story, or check your private submission status. Reading published stories stays open to everyone.</p>
-      <div class="cx-auth-purpose" aria-label="Why CorporateX uses private access">
-        <article><span>Save & follow</span><strong>Keep a private decision shortlist.</strong><p>Your stars and follows belong only to your account.</p></article>
-        <article><span>Contribute safely</span><strong>Email stays private.</strong><p>Your sign-in address is never displayed with a published story.</p></article>
-        <article><span>Password access</span><strong>No sign-in links.</strong><p>Use the email and password connected to your CorporateX account.</p></article>
+      <p class="cx-auth-kicker">SECURE CORPORATEX ACCESS</p>
+      <h1 class="cx-auth-title" id="login-title">Choose your space.<br /><em>Use your password.</em></h1>
+      <p class="cx-auth-lede">Users sign in to My Space for saved stories and private submissions. HRTechify admins use the same secure authentication system but must also have an active moderator role. Reading published stories stays open to everyone.</p>
+      <div class="cx-auth-purpose" aria-label="CorporateX access types">
+        <article><span>User</span><strong>My Space access.</strong><p>Save stories, follow conversations, submit stories and track moderation privately.</p></article>
+        <article><span>HRTechify Admin</span><strong>Moderation access.</strong><p>Review submitted stories, request changes, reject or approve and publish.</p></article>
+        <article><span>Password access</span><strong>No sign-in links.</strong><p>Use the email and password connected to the appropriate CorporateX account.</p></article>
       </div>
       <form class="cx-auth-card" data-login-form>
-        <div class="cx-auth-card__head"><div><h2 data-auth-mode-title>Sign in to My Space</h2><p data-auth-mode-copy>Use the CorporateX email and password you already created.</p></div><span class="cx-auth-private-chip">Private</span></div>
+        <div class="cx-auth-role-switch" role="group" aria-label="Choose sign-in type">
+          <button type="button" data-access-role="user">User</button>
+          <button type="button" data-access-role="admin">HRTechify Admin</button>
+        </div>
+        <div class="cx-auth-card__head"><div><h2 data-auth-mode-title>Sign in to My Space</h2><p data-auth-mode-copy>Use the CorporateX email and password you already created.</p></div><span class="cx-auth-private-chip" data-auth-chip>Private</span></div>
         <label class="cx-auth-field"><span>Email address</span><input required type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" /></label>
         <label class="cx-auth-field"><span>Password</span><input required minlength="10" type="password" name="password" autocomplete="current-password" placeholder="Minimum 10 characters" /><small>At least 10 characters. Letters, numbers and special characters are allowed.</small></label>
         <div class="cx-auth-actions"><button class="cx-auth-button cx-auth-button--primary" type="submit" data-auth-submit>Sign in →</button><button class="cx-auth-button" type="button" data-auth-switch>Create an account</button></div>
@@ -36,19 +40,120 @@
         <p class="cx-auth-note" data-auth-note>New contributors can also create their account directly at the end of Share Your Story. CorporateX never publishes your email address.</p>
       </form>
     </section>
-    <aside class="cx-auth-visual" aria-label="CorporateX private space illustration"><img src="frozen-assets/card-5.webp" alt="Anime-style professional looking toward a new city horizon." style="object-position:center 38%;opacity:.96;filter:brightness(1.12) saturate(1.08) contrast(1.03)" /><div class="cx-auth-visual__overlay"><span>WHY ACCESS EXISTS</span><h2>Your private actions stay yours.</h2><p>Saved stories, follows and contributor status are tied to your account. Public workplace stories remain separately moderated perspectives.</p><div class="cx-auth-timeline"><span>Save</span><span>Follow</span><span>Share</span></div></div></aside>
+    <aside class="cx-auth-visual" aria-label="CorporateX secure access illustration"><img src="frozen-assets/card-5.webp" alt="Anime-style professional looking toward a new city horizon." style="object-position:center 38%;opacity:.96;filter:brightness(1.12) saturate(1.08) contrast(1.03)" /><div class="cx-auth-visual__overlay"><span>ONE SECURE SYSTEM</span><h2>Different roles. Separate permissions.</h2><p>Choosing Admin never grants admin rights. Supabase verifies the account and CorporateX checks the moderator role before opening the private review queue.</p><div class="cx-auth-timeline"><span>User</span><span>Admin</span><span>Private</span></div></div></aside>
   </div>
 </main>
 <footer class="site-footer"><p class="footer-line">CorporateX — Powered by HRTechify · People · Technology · Growth</p><p class="footer-line secondary">© 2026 All Rights Reserved. Stories are contributor perspectives</p></footer>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase=createClient('https://otgnnkaawwwwqxlzrfpx.supabase.co','sb_publishable_bYYz3uHOE9py4E84KpEpiw_A4HGdcoX');
-const form=document.querySelector('[data-login-form]');const status=document.querySelector('[data-login-status]');const params=new URLSearchParams(location.search);const requestedNext=params.get('next')||'account.html';let mode='signin';
+const form=document.querySelector('[data-login-form]');
+const status=document.querySelector('[data-login-status]');
+const params=new URLSearchParams(location.search);
+const requestedNext=params.get('next')||'account.html';
+let mode='signin';
+let accessRole=params.get('access')==='admin'||String(requestedNext).startsWith('moderation.html')?'admin':'user';
+
 function safeNext(value){try{const decoded=decodeURIComponent(value);if(decoded.startsWith('http:')||decoded.startsWith('https:')||decoded.startsWith('//'))return'account.html';if(!/^[a-z0-9/_?=&.%#-]+$/i.test(decoded))return'account.html';return decoded;}catch{return'account.html';}}
-function setMode(nextMode){mode=nextMode;const title=document.querySelector('[data-auth-mode-title]');const copy=document.querySelector('[data-auth-mode-copy]');const button=document.querySelector('[data-auth-submit]');const toggle=document.querySelector('[data-auth-switch]');const password=form.querySelector('input[name="password"]');if(mode==='create'){title.textContent='Create your private account';copy.textContent='Choose an email and password for CorporateX My Space.';button.textContent='Create account →';toggle.textContent='I already have an account';password.autocomplete='new-password';}else{title.textContent='Sign in to My Space';copy.textContent='Use the CorporateX email and password you already created.';button.textContent='Sign in →';toggle.textContent='Create an account';password.autocomplete='current-password';}status.textContent='';}
-const next=safeNext(requestedNext);const {data:{session}}=await supabase.auth.getSession();if(session)location.replace(next);
+const next=safeNext(requestedNext);
+function destination(){if(accessRole==='admin')return next.startsWith('moderation.html')?next:'moderation.html';return next.startsWith('moderation.html')?'account.html':next;}
+
+async function hasModeratorAccess(userId){
+  const {data,error}=await supabase.from('profiles').select('role,account_status').eq('id',userId).single();
+  return !error&&data?.role==='moderator'&&data?.account_status==='active';
+}
+
+function setMode(nextMode){
+  mode=accessRole==='admin'?'signin':nextMode;
+  const title=document.querySelector('[data-auth-mode-title]');
+  const copy=document.querySelector('[data-auth-mode-copy]');
+  const button=document.querySelector('[data-auth-submit]');
+  const toggle=document.querySelector('[data-auth-switch]');
+  const password=form.querySelector('input[name="password"]');
+  if(mode==='create'){
+    title.textContent='Create your private user account';
+    copy.textContent='Choose an email and password for CorporateX My Space.';
+    button.textContent='Create account →';
+    toggle.textContent='I already have an account';
+    password.autocomplete='new-password';
+  }else if(accessRole==='admin'){
+    title.textContent='Sign in as HRTechify Admin';
+    copy.textContent='Use the HRTechify CorporateX moderator email and its CorporateX password. Admin access is role-checked after sign-in.';
+    button.textContent='Sign in as Admin →';
+    password.autocomplete='current-password';
+  }else{
+    title.textContent='Sign in to My Space';
+    copy.textContent='Use the CorporateX email and password you already created.';
+    button.textContent='Sign in →';
+    toggle.textContent='Create an account';
+    password.autocomplete='current-password';
+  }
+  status.textContent='';
+}
+
+function setAccessRole(role){
+  accessRole=role==='admin'?'admin':'user';
+  document.querySelectorAll('[data-access-role]').forEach(button=>button.classList.toggle('is-active',button.dataset.accessRole===accessRole));
+  const toggle=document.querySelector('[data-auth-switch]');
+  const note=document.querySelector('[data-auth-note]');
+  const chip=document.querySelector('[data-auth-chip]');
+  if(accessRole==='admin'){
+    mode='signin';
+    toggle.hidden=true;
+    chip.textContent='Admin restricted';
+    note.textContent='HRTechify Admin is restricted to accounts with an active moderator role. Selecting Admin does not grant permission.';
+  }else{
+    toggle.hidden=false;
+    chip.textContent='Private';
+    note.textContent='New contributors can also create their account directly at the end of Share Your Story. CorporateX never publishes your email address.';
+  }
+  setMode(mode);
+}
+
+setAccessRole(accessRole);
+const {data:{session}}=await supabase.auth.getSession();
+if(session){
+  if(accessRole==='admin'){
+    if(await hasModeratorAccess(session.user.id)) location.replace(destination());
+    else{
+      await supabase.auth.signOut();
+      status.textContent='A non-admin CorporateX session was active. It has been signed out so you can enter the HRTechify Admin account.';
+    }
+  }else location.replace(destination());
+}
+
+document.querySelectorAll('[data-access-role]').forEach(button=>button.addEventListener('click',()=>setAccessRole(button.dataset.accessRole)));
 document.querySelector('[data-auth-switch]')?.addEventListener('click',()=>setMode(mode==='signin'?'create':'signin'));
-form?.addEventListener('submit',async event=>{event.preventDefault();const button=form.querySelector('button[type="submit"]');const values=new FormData(form);const email=String(values.get('email')||'').trim().toLowerCase();const password=String(values.get('password')||'');if(password.length<10){status.textContent='Use a password with at least 10 characters.';return;}button.disabled=true;status.textContent=mode==='create'?'Creating your CorporateX account…':'Signing in…';if(mode==='signin'){const {error}=await supabase.auth.signInWithPassword({email,password});button.disabled=false;if(error){status.textContent='Email or password did not match. Try again or reset your password.';return;}location.replace(next);return;}const redirect=new URL(next,location.href).href;const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:redirect,data:{product:'CorporateX',access:'my-space'}}});button.disabled=false;if(error){status.textContent=error.message||'We could not create your account. Please try again.';return;}if(data.session){location.replace(next);return;}status.textContent='Check your inbox for the CorporateX account-confirmation email. After confirming your email, you can use this password to sign in.';});
+form?.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const button=form.querySelector('button[type="submit"]');
+  const values=new FormData(form);
+  const email=String(values.get('email')||'').trim().toLowerCase();
+  const password=String(values.get('password')||'');
+  if(password.length<10){status.textContent='Use a password with at least 10 characters.';return;}
+  button.disabled=true;
+  status.textContent=mode==='create'?'Creating your CorporateX account…':accessRole==='admin'?'Checking HRTechify Admin access…':'Signing in…';
+
+  if(mode==='signin'){
+    const {data,error}=await supabase.auth.signInWithPassword({email,password});
+    if(error){button.disabled=false;status.textContent='Email or password did not match. Try again or reset your password.';return;}
+    if(accessRole==='admin'){
+      const allowed=await hasModeratorAccess(data.user.id);
+      if(!allowed){await supabase.auth.signOut();button.disabled=false;status.textContent='This account is not an active HRTechify Admin account. Choose User or sign in with the HRTechify moderator account.';return;}
+      status.textContent='HRTechify Admin access confirmed. Opening moderation…';
+    }
+    location.replace(destination());
+    return;
+  }
+
+  if(accessRole==='admin'){button.disabled=false;status.textContent='Admin accounts cannot be created from this page.';return;}
+  const redirect=new URL(destination(),location.href).href;
+  const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:redirect,data:{product:'CorporateX',access:'my-space'}}});
+  button.disabled=false;
+  if(error){status.textContent=error.message||'We could not create your account. Please try again.';return;}
+  if(data.session){location.replace(destination());return;}
+  status.textContent='Check your inbox for the CorporateX account-confirmation email. After confirming your email, you can use this password to sign in.';
+});
 </script>
 <script type="module" src="src/github-production.js"></script>
 </body>

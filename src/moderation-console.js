@@ -15,6 +15,7 @@ const shortId = (id) => String(id || '').replaceAll('-','').slice(0,8).toUpperCa
 const endingLabel = (value) => ({'break-free':'Break Free','next-act':'Next Act','mixed-ending':'Mixed Ending','pass-the-torch':'Pass the Torch'}[value] || 'Story');
 const statusLabel = (value) => String(value || '').replaceAll('_',' ').replace(/\b\w/g,(m)=>m.toUpperCase());
 const companyName = (row) => Array.isArray(row?.companies) ? row.companies[0]?.display_name : row?.companies?.display_name;
+const contributorHrtId = (row) => Array.isArray(row?.contributor_profile) ? row.contributor_profile[0]?.hrt_id : row?.contributor_profile?.hrt_id;
 
 function setStatus(message,state='') {
   if (!status) return;
@@ -30,7 +31,7 @@ function setFilter(next) {
 async function loadQueue({ preserveCurrent = false } = {}) {
   list.innerHTML = '<p class="cx-location-empty">Loading moderation queue…</p>';
   const { data, error } = await supabase.from('experiences')
-    .select('id,status,approved_headline,approved_summary,ending_type,broad_function,broad_region,created_at,updated_at,published_at,ai_analysis,original_text,companies(display_name),profiles(hrt_id)')
+    .select('id,status,approved_headline,approved_summary,ending_type,broad_function,broad_region,created_at,updated_at,published_at,ai_analysis,original_text,companies(display_name)')
     .eq('status',filter)
     .order('updated_at',{ ascending:false });
   if (error) {
@@ -76,7 +77,7 @@ function safetyBlock(analysis) {
 async function openStory(id) {
   setStatus('Loading private moderation record…');
   const { data: row, error } = await supabase.from('experiences')
-    .select('id,status,approved_headline,approved_summary,ending_type,broad_function,broad_region,created_at,updated_at,published_at,public_slug,ai_analysis,original_text,companies(display_name),profiles(hrt_id)')
+    .select('id,status,approved_headline,approved_summary,ending_type,broad_function,broad_region,created_at,updated_at,published_at,public_slug,ai_analysis,original_text,companies(display_name),contributor_profile:profiles!experiences_profile_id_fkey(hrt_id)')
     .eq('id',id).single();
   if (error || !row) {
     setStatus(error?.message || 'Story not found.','error');
@@ -93,7 +94,7 @@ async function openStory(id) {
   const labels = labelsRes.data || [];
   const actions = actionsRes.data || [];
   const employer = companyName(row) || 'Employer pending';
-  const contributor = Array.isArray(row.profiles) ? row.profiles[0]?.hrt_id : row.profiles?.hrt_id;
+  const contributor = contributorHrtId(row);
   const canDecide = row.status === 'pending_moderation';
   const beats = answers.length ? answers.map((answer,index)=>`<article class="cx-mod-beat"><b>${index+1}. ${esc(String(answer.question_key || '').replaceAll('_',' '))}</b><p>${esc(answer.answer)}</p></article>`).join('') : `<article class="cx-mod-beat"><b>Submitted account</b><p>${esc(row.original_text || 'No guided Story Beat text was available.')}</p></article>`;
   const labelHtml = labels.length ? labels.map(({label})=>`<span>${esc(label)}</span>`).join('') : '<span>No theme labels</span>';
@@ -157,7 +158,7 @@ async function initialise() {
   if (sessionError) { setStatus(sessionError.message,'error'); return; }
   if (!session) {
     const next = `moderation.html${location.search || ''}`;
-    location.replace(`login.html?next=${encodeURIComponent(next)}`);
+    location.replace(`login.html?access=admin&next=${encodeURIComponent(next)}`);
     return;
   }
   const { data:profile, error:profileError } = await supabase.from('profiles').select('role,account_status,hrt_id').eq('id',session.user.id).single();
@@ -179,5 +180,5 @@ async function initialise() {
 }
 
 tabs.forEach((button)=>button.addEventListener('click',async()=>{ setFilter(button.dataset.modFilter); current=null; await loadQueue(); detail.innerHTML='<div class="cx-mod-empty"><div><p class="cx-mod-kicker">MODERATION QUEUE</p><h2>Select a story to review.</h2></div></div>'; history.replaceState(null,'','moderation.html'); }));
-document.querySelector('[data-mod-signout]')?.addEventListener('click',async()=>{ await supabase.auth.signOut(); location.replace('index.html'); });
+document.querySelector('[data-mod-signout]')?.addEventListener('click',async()=>{ await supabase.auth.signOut(); location.replace('login.html?access=admin&next=moderation.html'); });
 initialise().catch((error)=>setStatus(error?.message || 'Moderator workspace could not start.','error'));

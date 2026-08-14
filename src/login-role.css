@@ -1,0 +1,7 @@
+.cx-auth-role-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 20px;padding:6px;border:1px solid rgba(246,200,79,.16);border-radius:15px;background:rgba(255,255,255,.018)}
+.cx-auth-role-switch button{min-height:46px;padding:0 14px;border:1px solid transparent;border-radius:10px;color:#a39b91;background:transparent;font:inherit;font-size:.75rem;font-weight:900;letter-spacing:.02em;cursor:pointer;transition:color .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease}
+.cx-auth-role-switch button:hover{color:#f6d572;border-color:rgba(246,200,79,.18);background:rgba(246,200,79,.035)}
+.cx-auth-role-switch button.is-active{color:#18120a;border-color:#f6c84f;background:linear-gradient(135deg,#ffe18a,#eab23b);box-shadow:0 10px 26px rgba(218,151,43,.13)}
+.cx-auth-button[hidden]{display:none!important}
+@media(max-width:520px){.cx-auth-role-switch{grid-template-columns:1fr}.cx-auth-role-switch button{text-align:left;padding-inline:16px}}
+@media(prefers-reduced-motion:reduce){.cx-auth-role-switch button{transition:none}}
