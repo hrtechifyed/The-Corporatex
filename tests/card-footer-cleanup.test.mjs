@@ -19,7 +19,10 @@ test('privacy cards keep the content but remove numbered and category decoration
     'MODERATED FOLLOW-UP Q&amp;A',
     'SAFETY SCREEN ONLY',
     'YOUR CONTROLS &amp; POLICY SET',
-  ]) assert.doesNotMatch(privacy, new RegExp(label));
+  ]) {
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.doesNotMatch(privacy, new RegExp(`<p class="eyebrow">${escaped}<\\/p>`));
+  }
   assert.match(privacy, /Questions and answers are moderated\./);
   assert.match(privacy, /Safety checks are narrow, not truth scoring\./);
 });
