@@ -108,8 +108,20 @@ async function prepareStory(page, { company = 'Quality Test Company' } = {}) {
   await page.fill('[data-guided-team]', 'Product');
   await page.click('[data-guided-context-next]');
   await page.waitForSelector('.ref-journey-card.is-active:visible');
-  const beatArt = await page.evaluate(() => { const card=document.querySelector('.ref-journey-card.is-active'); const svg=card?.querySelector('.ref-art-svg'); return { background:getComputedStyle(card,'::before').backgroundImage, svgDisplay:svg?getComputedStyle(svg).display:'' }; });
-  if (!/(hero\.webp|card-5\.webp)/.test(beatArt.background) || beatArt.svgDisplay !== 'none') throw new Error('Story Beats must use cinematic anime artwork rather than the flat scene illustration.');
+  const beatArt = await page.evaluate(() => {
+    const card = document.querySelector('.ref-journey-card.is-active');
+    const svg = card?.querySelector('.ref-art-svg');
+    const style = svg ? getComputedStyle(svg) : null;
+    return {
+      svgBackground: style?.backgroundImage || '',
+      svgDisplay: style?.display || '',
+      svgVisibility: style?.visibility || '',
+      svgOpacity: style?.opacity || '',
+    };
+  });
+  if (!/card-1\.webp/.test(beatArt.svgBackground) || beatArt.svgDisplay === 'none' || beatArt.svgVisibility !== 'visible' || Number(beatArt.svgOpacity) < .99) {
+    throw new Error('The highlighted Story Beat must keep its clear cinematic artwork visible.');
+  }
   await page.fill('[data-guided-text]', 'I joined for growth and learning. The workload later changed and the role became difficult to sustain.');
   await page.click('[data-guided-review]');
   await page.check('[data-guided-agreement]');
@@ -122,18 +134,18 @@ async function prepareStory(page, { company = 'Quality Test Company' } = {}) {
 let browser;
 try {
   await waitForServer();
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless:true });
 
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const page = await browser.newPage({ viewport:{ width:1440, height:900 } });
   await page.addInitScript(() => { globalThis.__cxMockSession = false; globalThis.__cxExistingAccount = false; });
-  await page.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: mockSupabaseModule }));
+  await page.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status:200, contentType:'application/javascript', body:mockSupabaseModule }));
   await mockGlobalLocationSearch(page);
   await prepareStory(page);
   await page.fill('[data-cx-submit-account] input[name="email"]', 'tester@example.com');
   await page.fill('[data-cx-submit-account] input[name="password"]', 'CorporateX!2026');
   await page.click('[data-cx-account-submit]');
   await page.waitForFunction(() => Array.isArray(globalThis.__cxSubmitCalls) && globalThis.__cxSubmitCalls.length === 1);
-  const state = await page.evaluate(() => ({ submit: globalThis.__cxSubmitCalls[0], auth: globalThis.__cxAuthCalls || [] }));
+  const state = await page.evaluate(() => ({ submit:globalThis.__cxSubmitCalls[0], auth:globalThis.__cxAuthCalls || [] }));
   if (state.auth[0]?.method !== 'signUp') throw new Error('New contributor path must create an email/password account before submission.');
   if (String(state.auth[0]?.input?.password || '').length < 10) throw new Error('Contributor password requirement must be at least 10 characters.');
   if (state.submit.name !== 'submit-story') throw new Error('Password account completion did not invoke submit-story.');
@@ -144,11 +156,11 @@ try {
   if (!state.submit.body?.chapters?.some((chapter) => chapter.response?.includes('growth and learning'))) throw new Error('Story Beat response was lost before submission.');
   await page.close();
 
-  const returning = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const returning = await browser.newPage({ viewport:{ width:1440, height:900 } });
   await returning.addInitScript(() => { globalThis.__cxMockSession = false; globalThis.__cxExistingAccount = true; });
-  await returning.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: mockSupabaseModule }));
+  await returning.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status:200, contentType:'application/javascript', body:mockSupabaseModule }));
   await mockGlobalLocationSearch(returning);
-  await prepareStory(returning, { company: 'Returning User Company' });
+  await prepareStory(returning, { company:'Returning User Company' });
   await returning.fill('[data-cx-submit-account] input[name="email"]', 'returning@example.com');
   await returning.fill('[data-cx-submit-account] input[name="password"]', 'Returning!2026');
   await returning.click('[data-cx-account-submit]');
@@ -162,18 +174,18 @@ try {
   if (returningState.submit?.name !== 'submit-story') throw new Error('Returning contributor sign-in did not continue to submit-story.');
   await returning.close();
 
-  const home = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const home = await browser.newPage({ viewport:{ width:1440, height:900 } });
   await home.addInitScript(() => { globalThis.__cxMockSession = false; globalThis.__cxExistingAccount = false; });
-  await home.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: mockSupabaseModule }));
-  await home.route('**/rest/v1/published_experiences**', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }));
-  await home.route('**/rest/v1/live_story_signals**', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ label:'Growth', pending_count:1, confirmed_count:0, total_count:1 },{ label:'Workload', pending_count:0, confirmed_count:2, total_count:2 }]) }));
-  await home.goto(base, { waitUntil: 'domcontentloaded' });
+  await home.route('**/supabase-js@2/+esm', (route) => route.fulfill({ status:200, contentType:'application/javascript', body:mockSupabaseModule }));
+  await home.route('**/rest/v1/published_experiences**', (route) => route.fulfill({ status:200, contentType:'application/json', body:'[]' }));
+  await home.route('**/rest/v1/live_story_signals**', (route) => route.fulfill({ status:200, contentType:'application/json', body:JSON.stringify([{ label:'Growth', pending_count:1, confirmed_count:0, total_count:1 },{ label:'Workload', pending_count:0, confirmed_count:2, total_count:2 }]) }));
+  await home.goto(base, { waitUntil:'domcontentloaded' });
   await home.waitForSelector('.cx-live-signal');
   const signalText = await home.locator('.cx-live-signal').allTextContents();
   if (!signalText.includes('Growth') || !signalText.includes('Workload')) throw new Error('Homepage live signal cloud did not hydrate from safe aggregated labels.');
   await home.close();
 
-  console.log('Contributor-flow smoke passed: global city search, Remote/Other options, anime Story Beats, account access, submission and live signals are connected.');
+  console.log('Contributor-flow smoke passed: global city search, Remote/Other options, visible anime Story Beats, account access, submission and live signals are connected.');
 } finally {
   if (browser) await browser.close();
   server.kill('SIGTERM');
