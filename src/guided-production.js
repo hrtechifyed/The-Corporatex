@@ -1,9 +1,9 @@
 const ENDING_KEY = 'corporatexStoryEnding';
 const endings = [
-  { id: 'break-free', number: '01', title: 'Break Free', copy: 'Leaving felt necessary — and brought relief.', image: 'frozen-assets/card-1.webp' },
-  { id: 'next-act', number: '02', title: 'Next Act', copy: 'It was a natural move forward, with no regrets.', image: 'frozen-assets/card-2.webp' },
-  { id: 'mixed-ending', number: '03', title: 'Mixed Ending', copy: 'The good and difficult parts both mattered.', image: 'frozen-assets/card-3.webp' },
-  { id: 'pass-the-torch', number: '04', title: 'Pass the Torch', copy: 'I left, but the right person could still thrive here.', image: 'frozen-assets/card-5.webp' },
+  { id: 'break-free', title: 'Break Free', copy: 'Leaving felt necessary — and brought relief.', image: 'frozen-assets/card-1.webp' },
+  { id: 'next-act', title: 'Next Act', copy: 'It was a natural move forward, with no regrets.', image: 'frozen-assets/card-2.webp' },
+  { id: 'mixed-ending', title: 'Mixed Ending', copy: 'The good and difficult parts both mattered.', image: 'frozen-assets/card-3.webp' },
+  { id: 'pass-the-torch', title: 'Pass the Torch', copy: 'I left, but the right person could still thrive here.', image: 'frozen-assets/card-5.webp' },
 ];
 
 const root = document.querySelector('[data-guided-workflow]');
@@ -39,12 +39,12 @@ function buildEndingPanel() {
   panel.setAttribute('aria-labelledby', 'cx-ending-title');
   panel.innerHTML = `
     <div class="cx-ending-head">
-      <p class="ref-editor-kicker">START WITH THE SIGNAL</p>
+      <p class="ref-editor-kicker">CHOOSE YOUR ENDING</p>
       <h2 id="cx-ending-title">How did this chapter <em>end?</em></h2>
-      <p>Choose the ending that feels closest. It sets the lens for your story — not a score for the company.</p>
+      <p>Choose the ending that feels closest. It gives readers useful context without scoring the company.</p>
     </div>
     <div class="cx-ending-grid" role="list"></div>
-    <p class="cx-ending-note">You can still describe nuance in the Story Beats. This choice is only the opening signal.</p>`;
+    <p class="cx-ending-note">You can still describe all the nuance in your Story Beats. This choice is only a starting point.</p>`;
   const grid = panel.querySelector('.cx-ending-grid');
   endings.forEach((ending) => {
     const button = document.createElement('button');
@@ -52,7 +52,7 @@ function buildEndingPanel() {
     button.className = 'cx-ending-card';
     button.dataset.ending = ending.id;
     button.setAttribute('role', 'listitem');
-    button.innerHTML = `<span class="cx-ending-image"><img src="${ending.image}" alt="" /></span><span class="cx-ending-copy"><small>ENDING ${ending.number}</small><strong>${ending.title}</strong><span>${ending.copy}</span><b>Choose this ending →</b></span>`;
+    button.innerHTML = `<span class="cx-ending-image"><img src="${ending.image}" alt="" /></span><span class="cx-ending-copy"><strong>${ending.title}</strong><span>${ending.copy}</span><b>Choose this ending →</b></span>`;
     button.addEventListener('click', () => chooseEnding(ending.id));
     grid.append(button);
   });

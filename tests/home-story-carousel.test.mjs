@@ -10,10 +10,19 @@ test('homepage carousel uses only the five newest published stories', () => {
   assert.match(script, /published_experiences\?select=/);
   assert.match(script, /order=published_at\.desc&limit=5/);
   assert.doesNotMatch(script, /pending_moderation|changes_requested|private_email|profiles/);
-  assert.match(script, /stories\.slice\(0, 5\)/);
+  assert.match(script, /rows\.slice\(0, 5\)/);
 });
 
-test('carousel appends a dedicated Stories archive card after published entries', () => {
+test('five clearly fictional placeholders fill empty live slots and are replaced by published stories', () => {
+  assert.match(script, /const DEMO_STORIES = \[/);
+  assert.equal((script.match(/demo:true/g) || []).length, 5);
+  assert.match(script, /Fictional placeholder only — not an employee submission/);
+  assert.match(script, /DEMO_STORIES\.slice\(0, Math\.max\(0, 5 - published\.length\)\)/);
+  assert.match(script, /Archive forming · 5 clearly fictional demo placeholders/);
+  assert.match(css, /\.cx-home-story-card\.is-demo/);
+});
+
+test('carousel appends a dedicated Stories archive card after five story slots', () => {
   assert.match(script, /More stories\. More sequences\./);
   assert.match(script, /Read more stories →/);
   assert.match(script, /card\.href = 'stories\.html'/);

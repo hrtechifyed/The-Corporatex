@@ -13,6 +13,8 @@ Use the HRTechify mailbox already configured for the project:
 - SMTP username: `hrtechifyed@gmail.com`
 - SMTP password: a Google App Password stored only in Supabase; never commit it.
 
+Every CorporateX Auth email must be visibly CorporateX-branded. Generic Supabase subjects or bodies are not acceptable in production.
+
 ## First-account confirmation
 
 New contributors create an account with an email and a password of at least 10 characters. If email confirmation is enabled, the first account email is a one-time ownership check. It is **not** used for future sign-in.
@@ -35,8 +37,18 @@ The email must make clear that:
 
 CorporateX production uses `signInWithPassword`. Do not use Magic Link / `signInWithOtp` for normal My Space or story-submission access.
 
-Password recovery uses Supabase's password-recovery email and returns the user to `reset-password.html` to choose a new password.
+## Password recovery
 
-## Story-status emails
+Password recovery uses Supabase's recovery flow and returns the user to `reset-password.html` to choose a new password.
 
-Submission receipts, HRTechify moderation alerts and publication-approved emails are separate transactional messages documented in `docs/STORY_NOTIFICATION_EMAILS.md`.
+Use this subject for **Reset password**:
+
+`Reset your CorporateX password`
+
+Use `supabase/templates/recovery.html` as the hosted Reset password template. The recovery email must use `{{ .ConfirmationURL }}` and the same `HRTechify · CorporateX` / `CorporateX by HRTechify` branding as the rest of the product.
+
+For hosted Supabase projects, the Confirm signup and Reset password templates are maintained under Authentication → Email Templates. Repository templates are the canonical copy, but the hosted values must also be updated whenever these files change.
+
+## Story-status and deletion emails
+
+Submission receipts, HRTechify moderation alerts, change requests, publication approvals and permanent-story-deletion receipts are separate transactional messages documented in `docs/STORY_NOTIFICATION_EMAILS.md`.
