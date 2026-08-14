@@ -71,9 +71,10 @@ test('Opening Signal uses the exact homepage ending artwork mapping', () => {
   assert.match(openingRefinement, /data-ending="pass-the-torch"[\s\S]*--cx-frozen-card-5/);
 });
 
-test('footer legal copy is exactly the approved two lines', () => {
-  assert.match(footer, /CorporateX — Powered by HRTechify · People · Technology · Growth/);
-  assert.match(footer, /© 2026 All Rights Reserved\. Stories are contributor perspectives/);
+test('footer uses the approved responsive CorporateX copy', () => {
+  assert.match(footer, /Workplace stories, structured for better career decisions\./);
+  assert.match(footer, /Contributor stories reflect individual perspectives and are moderated before publication\./);
+  assert.match(footer, /© \{year\} HRTechify\. All rights reserved\./);
 });
 
 test('Setting the Scene verifies real locations, supports outage fallback and requires deliberate context choices', () => {
@@ -138,7 +139,7 @@ test('privacy copy describes the actual narrow safety screen and recoverable ver
   assert.match(privacy, /does not replace human moderation/);
 });
 
-test('launch-readiness stylesheet loads last in the app cascade', () => {
+test('launch-readiness stylesheet loads after the older visual refinements', () => {
   const launchIndex = layout.indexOf('./launch-readiness.css');
   assert.ok(launchIndex > layout.indexOf('./opening-signal-refinement.css'));
   assert.ok(launchIndex > layout.indexOf('./interface-refinement.css'));
