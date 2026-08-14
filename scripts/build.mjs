@@ -9,7 +9,7 @@ await cp('src', 'dist/src', { recursive: true });
 
 function withProductionRuntime(html, { submit = false } = {}) {
   let output = html;
-  for (const stylesheet of ['src/github-shell.css','src/visual-fixes-guide.css','src/guided-anime-fix.css','src/stories-polish.css','src/guided-production.css','src/guided-account-polish.css','src/home-live-signals.css','src/location-autocomplete.css','src/moderation-console.css','src/account-submissions.css']) {
+  for (const stylesheet of ['src/github-shell.css','src/visual-fixes-guide.css','src/guided-anime-fix.css','src/stories-polish.css','src/guided-production.css','src/guided-account-polish.css','src/home-live-signals.css','src/location-autocomplete.css','src/moderation-console.css','src/account-submissions.css','src/login-role.css']) {
     if (!output.includes(stylesheet)) output = output.replace('</head>', `  <link rel="stylesheet" href="${stylesheet}" />\n</head>`);
   }
   const candidates = [
