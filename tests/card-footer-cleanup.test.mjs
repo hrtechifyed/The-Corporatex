@@ -7,6 +7,8 @@ const how = await readFile('how-it-works.html', 'utf8');
 const guidedHtml = await readFile('guided-story.html', 'utf8');
 const guided = await readFile('src/guided-production.js', 'utf8');
 const css = await readFile('src/site-chrome-cleanup.css', 'utf8');
+const goldAccent = await readFile('src/card-gold-accent.css', 'utf8');
+const exitSignal = await readFile('src/exit-journey-signal.css', 'utf8');
 const footer = await readFile('src/site-footer.js', 'utf8');
 const nextHome = await readFile('app/page.tsx', 'utf8');
 const nextAbout = await readFile('app/about/page.tsx', 'utf8');
@@ -105,6 +107,25 @@ test('legacy color variants are overridden by one CorporateX card treatment', ()
   assert.match(pagesCleanup, /background:\s*linear-gradient\(160deg, #111214, #08090a 72%\)/);
 });
 
+test('static cards retain a visible black and gold palette without layout overrides', () => {
+  assert.match(goldAccent, /border-color:\s*rgba\(246, 200, 79, \.42\)/);
+  assert.match(goldAccent, /#15120b/);
+  assert.match(goldAccent, /rgba\(246, 200, 79, \.14\)/);
+  assert.match(goldAccent, /#fff0bd/);
+  assert.match(goldAccent, /\.ref-journey-card/);
+  assert.match(goldAccent, /\.cx-ending-card/);
+  assert.match(goldAccent, /\.story-row/);
+  assert.doesNotMatch(goldAccent, /(?:display|position|width|height|grid-template|flex|pointer-events|filter|animation)\s*:/);
+});
+
+test('exit journey animation is isolated from cards and content components', () => {
+  assert.match(exitSignal, /\.cx-unified-signal/);
+  assert.match(exitSignal, /cx-exit-traveller/);
+  for (const selector of ['policy-card', 'ref-journey-card', 'cx-ending-card', 'story-row', 'company-group', 'info-card']) {
+    assert.doesNotMatch(exitSignal, new RegExp(selector));
+  }
+});
+
 test('My Space and secure access use a sharper large hero source', () => {
   assert.match(css, /\.cx-auth-visual/);
   assert.match(css, /frozen-assets\/hero\.webp/);
@@ -130,8 +151,12 @@ test('footers use concise CorporateX copy and responsive safe-area layouts', () 
   assert.match(pagesCleanup, /safe-area-inset-bottom/);
 });
 
-test('production builds load both cleanup layers', () => {
+test('production builds load cleanup, gold palette, then isolated exit signal', () => {
   assert.match(build, /src\/site-chrome-cleanup\.css/);
+  assert.match(build, /src\/card-gold-accent\.css/);
+  assert.match(build, /src\/exit-journey-signal\.css/);
+  assert.ok(build.indexOf('src/site-chrome-cleanup.css') < build.indexOf('src/card-gold-accent.css'));
+  assert.ok(build.indexOf('src/card-gold-accent.css') < build.indexOf('src/exit-journey-signal.css'));
   assert.match(build, /src\/site-footer\.js/);
   assert.match(syncHome, /card-footer-cleanup\.css/);
 });
