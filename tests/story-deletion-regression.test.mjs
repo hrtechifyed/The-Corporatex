@@ -40,7 +40,7 @@ test('deletion receipt is branded and leaves no permanent deletion-job record af
 });
 
 test('CorporateX branding is a contract for every application email subject and sender',()=>{
-  const subjectLines = storyWorker.split('\n').filter((line)=>line.includes('subject ='));
+  const subjectLines = storyWorker.split('\n').filter((line)=>/^\s*subject\s*=/.test(line));
   assert.ok(subjectLines.length >= 5,'expected the story worker email subjects');
   for (const line of subjectLines) assert.match(line,/CorporateX/,`unbranded subject: ${line.trim()}`);
   assert.match(storyWorker,/from: `"HRTechify · CorporateX"/);
