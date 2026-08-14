@@ -19,7 +19,10 @@
 .story-article,
 .story-section,
 .story-side .glass-card,
-.info-card {
+.info-card,
+.pages-how-card,
+.pages-ending-grid .pages-ending-card[data-ending],
+.pages-about-card {
   border-color: rgba(246, 200, 79, .42) !important;
   background:
     radial-gradient(circle at 84% 0%, rgba(246, 200, 79, .14), transparent 34%),
@@ -28,6 +31,13 @@
     0 24px 64px rgba(0, 0, 0, .38),
     0 0 24px rgba(246, 200, 79, .07),
     inset 0 1px 0 rgba(255, 226, 139, .09) !important;
+}
+
+.pages-how-copy,
+.pages-ending-copy {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(246, 200, 79, .1), transparent 38%),
+    linear-gradient(180deg, #14110b 0%, #08090a 78%) !important;
 }
 
 .policy-card summary h2,
@@ -43,7 +53,10 @@
 .story-row h3,
 .story-section h2,
 .info-card h2,
-.info-card h3 {
+.info-card h3,
+.pages-how-card h3,
+.pages-ending-card h3,
+.pages-about-card h3 {
   color: #fff0bd !important;
 }
 
@@ -63,7 +76,13 @@
 .story-row:hover,
 .story-row:focus-visible,
 .cx-how-card:hover,
-.cx-feature-card:hover {
+.cx-feature-card:hover,
+.pages-ending-grid .pages-ending-card[data-ending]:hover,
+.pages-ending-grid .pages-ending-card[data-ending]:focus-visible,
+.pages-how-card:hover,
+.pages-how-card:focus-within,
+.pages-about-card:hover,
+.pages-about-card:focus-within {
   border-color: rgba(246, 200, 79, .78) !important;
   box-shadow:
     0 28px 72px rgba(0, 0, 0, .46),
