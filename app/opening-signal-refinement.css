@@ -97,12 +97,8 @@ body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main::a
   background-position: center 42% !important;
 }
 
-.cx-ending-choice-grid--flow .cx-ending-choice__card::after {
-  top: 232px !important;
-  left: 1.25rem !important;
-}
 .cx-ending-choice-grid--flow .cx-ending-choice__card > strong {
-  margin-top: 1.42rem !important;
+  margin-top: .25rem !important;
   font-size: clamp(1.45rem, 2.1vw, 2rem) !important;
 }
 .cx-ending-choice-grid--flow .cx-ending-choice__card > span:not(.cx-ending-choice__status) {
@@ -123,9 +119,6 @@ body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main::a
   }
   .cx-ending-choice-grid--flow .cx-ending-choice__card::before {
     flex-basis: 215px !important;
-  }
-  .cx-ending-choice-grid--flow .cx-ending-choice__card::after {
-    top: 229px !important;
   }
   body.cx-body:has(.cx-flow-card--opening):not(:has(.cx-frozen-home)) main#main::before {
     top: 430px;

@@ -1,6 +1,6 @@
-/* CorporateX interface refinement: contextual ending cards + disciplined About deck. */
+/* CorporateX interface refinement: consistent ending cards + disciplined About deck. */
 
-/* Opening Signal: turn the four abstract ending panels into contextual cinematic story cards. */
+/* Opening Signal: contextual cinematic story cards using one CorporateX dark/gold treatment. */
 .cx-ending-choice-grid--flow {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(.8rem, 1.25vw, 1.15rem);
@@ -8,13 +8,9 @@
 }
 
 .cx-ending-choice-grid--flow .cx-ending-choice--button {
-  --ending-accent: #f0bd49;
+  --ending-accent: #d8ad43;
   min-width: 0;
 }
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="break-free"] { --ending-accent: #e9a33a; }
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="next-act"] { --ending-accent: #79aef6; }
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="mixed-ending"] { --ending-accent: #9b7bea; }
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="pass-the-torch"] { --ending-accent: #68d1bd; }
 
 .cx-ending-choice-grid--flow .cx-ending-choice__card {
   position: relative;
@@ -27,7 +23,7 @@
   border: 1px solid color-mix(in srgb, var(--ending-accent) 28%, #343536);
   border-radius: 24px;
   background:
-    radial-gradient(circle at 80% 10%, color-mix(in srgb, var(--ending-accent) 9%, transparent), transparent 45%),
+    radial-gradient(circle at 80% 10%, color-mix(in srgb, var(--ending-accent) 7%, transparent), transparent 45%),
     linear-gradient(180deg, #111214, #08090a 64%);
   box-shadow: 0 22px 54px rgba(0, 0, 0, .32), inset 0 1px rgba(255, 255, 255, .035);
   isolation: isolate;
@@ -46,7 +42,7 @@
   filter: saturate(.9) contrast(1.03) brightness(.87);
 }
 
-/* These approved anime workplace scenes are mapped to the meaning of each ending. */
+/* Approved anime workplace scenes remain mapped to the meaning of each ending. */
 .cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="break-free"] .cx-ending-choice__card::before {
   background-image: linear-gradient(180deg, transparent 55%, rgba(7,8,9,.48)), url('/frozen-assets/card-5.webp');
   background-position: center 46%;
@@ -63,21 +59,6 @@
   background-image: linear-gradient(180deg, transparent 55%, rgba(7,8,9,.48)), url('/frozen-assets/card-3.webp');
   background-position: center 38%;
 }
-
-.cx-ending-choice-grid--flow .cx-ending-choice__card::after {
-  position: absolute;
-  left: 1.15rem;
-  top: clamp(199px, calc(14vw + 14px), 239px);
-  color: var(--ending-accent);
-  font-size: .62rem;
-  font-weight: 900;
-  letter-spacing: .17em;
-  text-transform: uppercase;
-}
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="break-free"] .cx-ending-choice__card::after { content: 'ENDING 01'; }
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="next-act"] .cx-ending-choice__card::after { content: 'ENDING 02'; }
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="mixed-ending"] .cx-ending-choice__card::after { content: 'ENDING 03'; }
-.cx-ending-choice-grid--flow .cx-ending-choice--button[data-ending="pass-the-torch"] .cx-ending-choice__card::after { content: 'ENDING 04'; }
 
 .cx-ending-choice-grid--flow .cx-ending-choice__status {
   position: absolute;
@@ -107,7 +88,7 @@
 }
 
 .cx-ending-choice-grid--flow .cx-ending-choice__card > strong {
-  margin-top: 1.45rem;
+  margin-top: .2rem;
   color: #fff8ed;
   font-size: clamp(1.32rem, 1.55vw, 1.72rem);
   line-height: 1.08;
@@ -173,7 +154,6 @@
 @media (max-width: 1100px) {
   .cx-ending-choice-grid--flow { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .cx-ending-choice-grid--flow .cx-ending-choice__card::before { flex-basis: 220px; }
-  .cx-ending-choice-grid--flow .cx-ending-choice__card::after { top: 234px; }
 }
 
 @media (max-width: 820px) {
@@ -188,7 +168,6 @@
   .cx-ending-choice-grid--flow { grid-template-columns: 1fr; }
   .cx-ending-choice-grid--flow .cx-ending-choice__card { min-height: 410px !important; }
   .cx-ending-choice-grid--flow .cx-ending-choice__card::before { flex-basis: 205px; }
-  .cx-ending-choice-grid--flow .cx-ending-choice__card::after { top: 219px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

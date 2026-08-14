@@ -1,4 +1,4 @@
-/* Homepage ending cards — image-first editorial treatment matching the Archive forming cards. */
+/* Homepage ending cards — one CorporateX dark/gold treatment with image-first editorial context. */
 
 .cx-ending-grid {
   display: grid !important;
@@ -8,7 +8,7 @@
 }
 
 .cx-ending-grid .cx-ending-card {
-  --ending-accent: #e9a33a;
+  --ending-accent: #d8ad43;
   position: relative !important;
   min-width: 0 !important;
   min-height: 410px !important;
@@ -25,11 +25,6 @@
   isolation: isolate;
   transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease !important;
 }
-
-.cx-ending-grid .cx-ending-card[data-ending="break-free"] { --ending-accent: #e9a33a; }
-.cx-ending-grid .cx-ending-card[data-ending="next-act"] { --ending-accent: #79aef6; }
-.cx-ending-grid .cx-ending-card[data-ending="mixed-ending"] { --ending-accent: #9b7bea; }
-.cx-ending-grid .cx-ending-card[data-ending="pass-the-torch"] { --ending-accent: #68d1bd; }
 
 /* The old abstract sun/door/person composition is replaced by the same working frozen asset routes used by the Archive strip. */
 .cx-ending-grid .cx-ending-card__scene {
@@ -91,29 +86,12 @@
   flex-direction: column !important;
   align-items: flex-start !important;
   justify-content: flex-start !important;
-  padding: 1.1rem 1.15rem 1.2rem !important;
+  padding: 1.2rem 1.15rem 1.25rem !important;
   background:
-    radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--ending-accent) 8%, transparent), transparent 42%),
+    radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--ending-accent) 7%, transparent), transparent 42%),
     linear-gradient(180deg, #101113 0%, #090a0b 72%) !important;
   text-align: left !important;
   transform: none !important;
-}
-
-.cx-ending-grid .cx-ending-card__copy > span {
-  display: inline-flex !important;
-  align-items: center !important;
-  min-height: 24px !important;
-  margin: 0 0 .65rem !important;
-  padding: .24rem .48rem !important;
-  border: 1px solid color-mix(in srgb, var(--ending-accent) 28%, transparent) !important;
-  border-radius: 7px !important;
-  color: var(--ending-accent) !important;
-  background: color-mix(in srgb, var(--ending-accent) 8%, transparent) !important;
-  font-size: .59rem !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  letter-spacing: .16em !important;
-  text-transform: uppercase !important;
 }
 
 .cx-ending-grid .cx-ending-card__copy h3 {
