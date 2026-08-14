@@ -70,22 +70,6 @@ function storyCard(story, index) {
   return card;
 }
 
-function moreStoriesCard() {
-  const card = make('a', 'cx-home-story-more');
-  card.href = 'stories.html';
-  card.setAttribute('aria-label', 'Read more CorporateX stories');
-  const orbit = make('span', 'cx-home-story-more__orbit');
-  orbit.setAttribute('aria-hidden', 'true');
-  card.append(
-    orbit,
-    make('span', 'cx-home-story-more__kicker', 'KEEP READING'),
-    make('h3', '', 'More stories. More sequences.'),
-    make('p', '', 'Explore the full CorporateX archive for more published workplace perspectives.'),
-    make('span', 'cx-home-story-more__action', 'Read more stories →'),
-  );
-  return card;
-}
-
 function mountCarousel(stories, realCount) {
   const section = document.querySelector('.pages-stories');
   const shell = section?.querySelector('.pages-shell');
@@ -120,7 +104,6 @@ function mountCarousel(stories, realCount) {
   viewport.setAttribute('aria-label', 'Scrollable latest story cards');
   const track = make('div', 'cx-home-story-carousel__track');
   stories.slice(0, 5).forEach((story, index) => track.append(storyCard(story, index)));
-  track.append(moreStoriesCard());
   viewport.append(track);
   carousel.append(chrome, viewport);
   shell.append(carousel);
