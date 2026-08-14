@@ -38,11 +38,22 @@ function setBusy(busy, label = '') {
   button.textContent = label || 'Click here to submit';
 }
 
+function selectedLocationMetadata() {
+  const locationField = document.querySelector('[data-guided-location]');
+  return {
+    kind: locationField?.dataset.locationKind || null,
+    city: locationField?.dataset.locationCity || null,
+    countryCode: locationField?.dataset.locationCountryCode || null,
+    stateCode: locationField?.dataset.locationStateCode || null,
+  };
+}
+
 function productionPayload(submission) {
   return {
     draftId: crypto.randomUUID(),
     ending: document.querySelector('[data-guided-workflow]')?.dataset.ending || localStorage.getItem(ENDING_KEY) || null,
     context: submission.context,
+    locationSelection: selectedLocationMetadata(),
     chapters: submission.chapters,
   };
 }
