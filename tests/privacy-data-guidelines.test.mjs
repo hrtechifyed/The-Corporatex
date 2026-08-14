@@ -27,18 +27,22 @@ test('privacy page matches the live My Space data model', () => {
   assert.match(privacy, /terms\.html/);
 });
 
-test('terms cover private account actions and moderated conversations', () => {
-  assert.match(terms, /SAVED &amp; FOLLOWING/i);
+test('terms cover private account actions and moderated conversations without category labels', () => {
+  assert.match(terms, /Your shortlist is for your use\./i);
+  assert.match(terms, /Saved and Following are private organization features/i);
   assert.match(terms, /questions and contributor responses also require moderation/i);
   assert.match(terms, /No harassment, doxxing or identity fishing/i);
   assert.match(terms, /privacy-safety\.html/);
+  assert.doesNotMatch(terms, /<summary><div><p class="eyebrow">/i);
 });
 
-test('community rules prohibit identity hunting and pile-ons in follow-up Q&A', () => {
+test('community rules prohibit identity hunting and pile-ons without category labels', () => {
   assert.match(community, /Ask for context, not identity/i);
   assert.match(community, /Questions are moderated before publication/i);
-  assert.match(community, /NO PILE-ONS/i);
+  assert.match(community, /Following is not a license to target/i);
+  assert.match(community, /Do not coordinate attacks, repeatedly target one contributor/i);
   assert.match(community, /Saved and Following are private product tools, not public popularity signals/i);
+  assert.doesNotMatch(community, /<summary><div><p class="eyebrow">/i);
 });
 
 test('staging privacy copy stays aligned with the GitHub production model', () => {
