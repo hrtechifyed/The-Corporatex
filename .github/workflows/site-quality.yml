@@ -50,7 +50,20 @@ jobs:
         run: node scripts/sync-live-home.mjs
 
       - name: Validate static and server builds
-        run: npm run check
+        shell: bash
+        run: |
+          set +e
+          npm run check > check-output.txt 2>&1
+          status=$?
+          cat check-output.txt
+          if [ "$status" -ne 0 ]; then
+            message="$(tail -n 80 check-output.txt)"
+            message="${message//'%'/'%25'}"
+            message="${message//$'\r'/'%0D'}"
+            message="${message//$'\n'/'%0A'}"
+            echo "::error title=Validation output::$message"
+            exit "$status"
+          fi
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
