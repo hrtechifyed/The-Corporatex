@@ -64,6 +64,9 @@ jobs:
       - name: Validate moderation lifecycle
         run: node scripts/static-moderation-flow-smoke.mjs
 
+      - name: Validate self-service story deletion
+        run: node scripts/static-story-deletion-smoke.mjs
+
       - name: Run browser regression suite
         run: npm run test:e2e
 
