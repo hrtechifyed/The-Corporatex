@@ -1,53 +1,44 @@
 /* CorporateX header signal: a small workplace-story timeline.
-   Plain language should explain the idea even before the animation is noticed. */
+   Each stage must read independently before the animation is noticed. */
 
 .cx-unified-signal {
-  height: 30px;
+  height: 32px;
   opacity: .94;
 }
 
 .cx-unified-signal::before {
-  top: 19px;
-  left: 6%;
-  right: 6%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(246, 200, 79, .34) 9%,
-    rgba(246, 200, 79, .52) 13%,
-    rgba(246, 200, 79, .25) 38%,
-    rgba(246, 200, 79, .46) 63%,
-    rgba(246, 200, 79, .26) 89%,
-    transparent 100%
-  );
+  top: 21px;
+  left: 5%;
+  right: 5%;
+  background: linear-gradient(90deg, transparent, rgba(246,200,79,.46) 10%, rgba(246,200,79,.24) 90%, transparent);
 }
 
 .cx-unified-signal i {
-  top: 17px;
+  top: 19px;
   width: 5px;
   height: 5px;
-  opacity: .42;
-  transform: scale(.82);
-  color: rgba(221, 215, 203, .64);
-  animation-duration: 7.6s;
+  opacity: .34;
+  transform: scale(.84);
+  color: rgba(221,215,203,.58);
+  background: rgba(246,200,79,.78);
+  box-shadow: 0 0 8px rgba(246,200,79,.24);
+  animation-duration: 8.8s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-  background: rgba(246, 200, 79, .78);
-  box-shadow: 0 0 8px rgba(246, 200, 79, .28);
 }
 
 .cx-unified-signal i::before,
 .cx-unified-signal i:nth-child(3)::after {
   position: absolute;
-  top: -14px;
+  top: -15px;
   font-style: normal;
-  font-size: 8px;
+  font-size: 7.6px;
   font-weight: 900;
   line-height: 1;
-  letter-spacing: .08em;
+  letter-spacing: .075em;
   white-space: nowrap;
   color: currentColor;
-  text-shadow: 0 0 10px rgba(246, 200, 79, .08);
+  text-shadow: 0 0 10px rgba(246,200,79,.08);
 }
 
 .cx-unified-signal i::before {
@@ -56,222 +47,167 @@
 }
 
 .cx-unified-signal i:nth-child(1) {
-  left: 12.5%;
+  left: 10%;
   animation-name: cx-exit-stop-one;
 }
 .cx-unified-signal i:nth-child(1)::before { content: 'JOINED'; }
 
 .cx-unified-signal i:nth-child(2) {
-  left: 37.5%;
+  left: 36%;
   animation-name: cx-exit-stop-two;
 }
 .cx-unified-signal i:nth-child(2)::before { content: 'WHAT CHANGED'; }
 
 .cx-unified-signal i:nth-child(3) {
-  right: 37.5%;
+  left: 64%;
+  right: auto;
   animation-name: cx-exit-stop-three;
 }
-.cx-unified-signal i:nth-child(3)::before { content: 'WHY IT ENDED'; }
+.cx-unified-signal i:nth-child(3)::before { content: 'THE DECISION'; }
+
+/* The fourth milestone stays visually independent from the third. Its inverse scale
+   cancels the parent dot's pulse, so THE DECISION and WHAT'S NEXT never zoom together. */
 .cx-unified-signal i:nth-child(3)::after {
   content: 'WHAT’S NEXT →';
-  left: clamp(64px, 8vw, 108px);
-  transform: translateX(-50%);
-  opacity: .48;
-  animation: cx-exit-next-label 7.6s ease-in-out infinite;
+  left: clamp(70px, 7.5vw, 118px);
+  width: max-content;
+  height: 22px;
+  padding-top: 0;
+  transform: translateX(-50%) scale(1.19);
+  transform-origin: center 15px;
+  opacity: .34;
+  background: radial-gradient(circle at 50% 18px, rgba(246,200,79,.72) 0 2px, transparent 2.5px);
+  animation: cx-exit-next-label 8.8s ease-in-out infinite;
 }
 
-/* One brighter point represents the contributor moving through the timeline. */
+/* One brighter point represents a person moving through four distinct moments. */
 .cx-unified-signal::after {
   content: '';
   position: absolute;
   z-index: 2;
-  top: 16px;
+  top: 18px;
   left: 4%;
   width: 7px;
   height: 7px;
   margin-left: -3.5px;
   border-radius: 50%;
   background: #ffe18a;
-  box-shadow:
-    0 0 10px rgba(255, 225, 138, .96),
-    0 0 22px rgba(246, 200, 79, .44);
+  box-shadow: 0 0 10px rgba(255,225,138,.96), 0 0 22px rgba(246,200,79,.44);
   opacity: 0;
   pointer-events: none;
-  animation: cx-exit-traveller 7.6s cubic-bezier(.42, 0, .2, 1) infinite;
+  animation: cx-exit-traveller 8.8s cubic-bezier(.42,0,.2,1) infinite;
 }
 
 @keyframes cx-exit-traveller {
-  0% {
-    left: 4%;
-    opacity: 0;
-    transform: scale(.55);
-  }
-  6% { opacity: .72; }
-  14% {
-    left: 12.5%;
-    opacity: 1;
-    transform: scale(1);
-  }
-  23% {
-    left: 12.5%;
-    opacity: 1;
-    transform: scale(.92);
-  }
-  43% {
-    left: 37.5%;
-    opacity: 1;
-    transform: scale(1);
-  }
-  53% {
-    left: 37.5%;
-    opacity: 1;
-    transform: scale(.92);
-  }
-  73% {
-    left: 62.5%;
-    opacity: 1;
-    transform: scale(1);
-  }
-  82% {
-    left: 62.5%;
-    opacity: 1;
-    transform: scale(.92);
-  }
-  94%, 100% {
-    left: 90%;
-    opacity: 0;
-    transform: translateY(-2px) scale(.58);
-  }
+  0% { left: 4%; opacity: 0; transform: scale(.55); }
+  5% { opacity: .72; }
+  11% { left: 10%; opacity: 1; transform: scale(1); }
+  19% { left: 10%; opacity: 1; transform: scale(.92); }
+  35% { left: 36%; opacity: 1; transform: scale(1); }
+  43% { left: 36%; opacity: 1; transform: scale(.92); }
+  59% { left: 64%; opacity: 1; transform: scale(1); }
+  67% { left: 64%; opacity: 1; transform: scale(.92); }
+  83% { left: 88%; opacity: 1; transform: scale(1); }
+  91% { left: 88%; opacity: 1; transform: scale(.92); }
+  98%, 100% { left: 96%; opacity: 0; transform: translateY(-2px) scale(.58); }
 }
 
 @keyframes cx-exit-stop-one {
-  0%, 7%, 28%, 100% {
-    opacity: .42;
-    color: rgba(221, 215, 203, .64);
-    transform: scale(.82);
-    box-shadow: 0 0 8px rgba(246, 200, 79, .22);
-  }
-  14%, 22% {
-    opacity: 1;
-    color: #f7d56d;
-    transform: scale(1.28);
-    box-shadow: 0 0 14px rgba(246, 200, 79, .68);
-  }
+  0%, 5%, 24%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  11%, 19% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
 }
 
 @keyframes cx-exit-stop-two {
-  0%, 35%, 59%, 100% {
-    opacity: .42;
-    color: rgba(221, 215, 203, .64);
-    transform: scale(.82);
-    box-shadow: 0 0 8px rgba(246, 200, 79, .22);
-  }
-  43%, 53% {
-    opacity: 1;
-    color: #f7d56d;
-    transform: scale(1.28);
-    box-shadow: 0 0 14px rgba(246, 200, 79, .68);
-  }
+  0%, 29%, 48%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  35%, 43% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
 }
 
 @keyframes cx-exit-stop-three {
-  0%, 65%, 88%, 100% {
-    opacity: .42;
-    color: rgba(221, 215, 203, .64);
-    transform: scale(.82);
-    box-shadow: 0 0 8px rgba(246, 200, 79, .22);
-  }
-  73%, 82% {
-    opacity: 1;
-    color: #f7d56d;
-    transform: scale(1.28);
-    box-shadow: 0 0 14px rgba(246, 200, 79, .68);
-  }
+  0%, 53%, 74%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  59%, 67% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
 }
 
 @keyframes cx-exit-next-label {
-  0%, 78%, 100% {
-    opacity: .48;
-    color: rgba(221, 215, 203, .64);
+  0%, 73%, 100% {
+    opacity: .34;
+    color: rgba(221,215,203,.58);
+    transform: translateX(-50%) scale(1.19);
     text-shadow: none;
   }
-  88%, 95% {
+  83%, 91% {
     opacity: 1;
     color: #f7d56d;
-    text-shadow: 0 0 12px rgba(246, 200, 79, .34);
+    transform: translateX(-50%) scale(1.19);
+    text-shadow: 0 0 12px rgba(246,200,79,.34);
   }
 }
 
-/* On phones, reserve a real strip below the brand/menu row instead of floating the
-   journey over the header divider. This avoids the double-line / misplaced-label look. */
+/* Mobile gets a dedicated strip below the logo/menu. Four milestones are evenly spaced
+   and the final label is kept away from THE DECISION. */
 @media (max-width: 920px) {
-  .cx-unified-header {
-    height: calc(var(--cx-shell-header-mobile) + 34px);
-  }
-
+  .cx-unified-header { height: calc(var(--cx-shell-header-mobile) + 38px); }
   .cx-unified-header::after { display: none; }
-
-  .cx-unified-header__inner {
-    height: var(--cx-shell-header-mobile);
-  }
+  .cx-unified-header__inner { height: var(--cx-shell-header-mobile); }
 
   .cx-unified-signal {
     display: block !important;
     position: absolute;
     z-index: 4;
-    left: 14px;
-    right: 14px;
+    left: 12px;
+    right: 12px;
     bottom: 0;
     width: auto;
     min-width: 0;
-    height: 34px;
+    height: 38px;
     opacity: 1;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(246, 200, 79, .025), rgba(5, 6, 8, 0));
+    background: linear-gradient(180deg, rgba(246,200,79,.025), rgba(5,6,8,0));
   }
 
-  .cx-unified-signal::before { top: 23px; }
-  .cx-unified-signal::after { top: 20px; }
-  .cx-unified-signal i { top: 21px; }
+  .cx-unified-signal::before { top: 27px; left: 5%; right: 5%; }
+  .cx-unified-signal::after { top: 24px; }
+  .cx-unified-signal i { top: 25px; }
+
+  .cx-unified-signal i:nth-child(1) { left: 8%; }
+  .cx-unified-signal i:nth-child(2) { left: 36%; }
+  .cx-unified-signal i:nth-child(3) { left: 64%; }
 
   .cx-unified-signal i::before,
   .cx-unified-signal i:nth-child(3)::after {
-    top: -15px;
-    font-size: 6.4px;
-    letter-spacing: .045em;
+    top: -17px;
+    font-size: 6.1px;
+    letter-spacing: .035em;
   }
 
   .cx-unified-signal i:nth-child(3)::after {
-    left: 25vw;
+    left: 28vw;
+    height: 25px;
+    background-position: center 20px;
+  }
+
+  @keyframes cx-exit-traveller {
+    0% { left: 3%; opacity:0; transform:scale(.55); }
+    5% { opacity:.72; }
+    11% { left:8%; opacity:1; transform:scale(1); }
+    19% { left:8%; opacity:1; transform:scale(.92); }
+    35% { left:36%; opacity:1; transform:scale(1); }
+    43% { left:36%; opacity:1; transform:scale(.92); }
+    59% { left:64%; opacity:1; transform:scale(1); }
+    67% { left:64%; opacity:1; transform:scale(.92); }
+    83% { left:92%; opacity:1; transform:scale(1); }
+    91% { left:92%; opacity:1; transform:scale(.92); }
+    98%,100% { left:98%; opacity:0; transform:translateY(-2px) scale(.58); }
   }
 }
 
 @media (max-width: 390px) {
-  .cx-unified-signal {
-    left: 9px;
-    right: 9px;
-  }
-
+  .cx-unified-signal { left: 7px; right: 7px; }
   .cx-unified-signal i::before,
-  .cx-unified-signal i:nth-child(3)::after {
-    font-size: 5.9px;
-    letter-spacing: .025em;
-  }
+  .cx-unified-signal i:nth-child(3)::after { font-size: 5.65px; letter-spacing: .015em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cx-unified-signal::after { display: none; }
-
-  .cx-unified-signal i {
-    animation: none !important;
-    opacity: .76;
-    color: rgba(247, 213, 109, .86);
-    transform: none;
-  }
-
-  .cx-unified-signal i:nth-child(3)::after {
-    animation: none !important;
-    opacity: .76;
-    color: rgba(247, 213, 109, .86);
-  }
+  .cx-unified-signal i { animation:none !important; opacity:.76; color:rgba(247,213,109,.86); transform:none; }
+  .cx-unified-signal i:nth-child(3)::after { animation:none !important; opacity:.76; color:rgba(247,213,109,.86); transform:translateX(-50%); }
 }
