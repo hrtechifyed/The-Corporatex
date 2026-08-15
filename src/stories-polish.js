@@ -102,24 +102,31 @@ function keepOneHomepageStorySurface() {
   if (!isHome) return;
 
   const archive = document.querySelector('.pages-archive');
-  if (!archive || archive.classList.contains('cx-home-story-guide')) return;
+  if (!archive) return;
 
-  const guide = make('div', 'pages-archive cx-home-story-guide');
+  const guide = archive.classList.contains('cx-home-story-guide') ? archive : make('div', 'pages-archive cx-home-story-guide');
   guide.setAttribute('aria-label', 'How to read a CorporateX workplace story');
 
-  const card = make('article', 'cx-home-story-guide__card');
-  const art = make('div', 'cx-home-story-guide__art');
-  art.setAttribute('aria-hidden', 'true');
-  const copy = make('div', 'cx-home-story-guide__copy');
-  copy.append(
-    make('small', '', 'HOW TO READ A STORY'),
-    make('h2', '', 'Follow the sequence, not just the ending.'),
-    make('p', '', 'What attracted them, what worked, what changed and what they would ask before joining—that is where the useful signal lives.'),
-  );
-  card.append(art, copy);
-  guide.append(card);
+  const renderGuide = () => {
+    if (guide.querySelector('.cx-home-story-guide__card')) return;
+    const card = make('article', 'cx-home-story-guide__card');
+    const art = make('div', 'cx-home-story-guide__art');
+    art.setAttribute('aria-hidden', 'true');
+    const copy = make('div', 'cx-home-story-guide__copy');
+    copy.append(
+      make('small', '', 'HOW TO READ A STORY'),
+      make('h2', '', 'Follow the sequence, not just the ending.'),
+      make('p', '', 'What attracted them, what worked, what changed and what they would ask before joining—that is where the useful signal lives.'),
+    );
+    card.append(art, copy);
+    guide.replaceChildren(card);
+  };
 
-  archive.replaceWith(guide);
+  if (archive !== guide) archive.replaceWith(guide);
+  renderGuide();
+
+  const observer = new MutationObserver(renderGuide);
+  observer.observe(guide, { childList: true });
 }
 
 keepOneHomepageStorySurface();
