@@ -1,0 +1,133 @@
+/* Published Stories page artwork only.
+   Replaces the tiny sparkle placeholder with the existing CorporateX cinematic art. */
+
+.cx-story-shell .story-row .story-thumb {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 118px;
+  flex: none;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(246, 200, 79, .48);
+  border-radius: 17px;
+  background-color: #100b08;
+  background-image: url('../frozen-assets/card-1.webp');
+  background-size: cover;
+  background-position: center 42%;
+  background-repeat: no-repeat;
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, .38),
+    inset 0 0 0 1px rgba(255, 240, 189, .035);
+  font-size: 0;
+}
+
+.cx-story-shell .story-row .story-thumb::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5, 6, 8, .02) 40%, rgba(5, 6, 8, .72) 100%),
+    linear-gradient(90deg, rgba(246, 200, 79, .08), transparent 36%);
+  pointer-events: none;
+}
+
+.cx-story-shell .story-row .story-thumb::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  left: 10px;
+  bottom: 10px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f7d56d;
+  box-shadow: 0 0 14px rgba(246, 200, 79, .72);
+  pointer-events: none;
+}
+
+.cx-story-shell .story-row[data-theme='growth'] .story-thumb {
+  background-image: url('../frozen-assets/card-2.webp');
+  background-position: center 38%;
+}
+
+.cx-story-shell .story-row[data-theme='leadership'] .story-thumb {
+  background-image: url('../frozen-assets/card-4.webp');
+  background-position: center 40%;
+}
+
+.cx-story-shell .story-row[data-theme='wellbeing'] .story-thumb {
+  background-image: url('../frozen-assets/card-3.webp');
+  background-position: center 42%;
+}
+
+.cx-story-shell .story-row[data-theme='change'] .story-thumb,
+.cx-story-shell .story-row[data-theme='personal'] .story-thumb {
+  background-image: url('../frozen-assets/card-5.webp');
+  background-position: center 38%;
+}
+
+.cx-story-shell .story-row[data-theme='compensation'] .story-thumb {
+  background-image: url('../frozen-assets/card-1.webp');
+  background-position: center 44%;
+}
+
+.cx-story-shell .story-row[data-theme='ai'] .story-thumb {
+  background-image: url('../frozen-assets/hero.webp');
+  background-position: 68% center;
+}
+
+.cx-story-shell .story-row {
+  grid-template-columns: 96px 1fr auto !important;
+}
+
+.cx-story-shell .story-row:hover .story-thumb,
+.cx-story-shell .story-row:focus-visible .story-thumb {
+  border-color: rgba(246, 200, 79, .82);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, .44),
+    0 0 24px rgba(246, 200, 79, .12);
+}
+
+/* On phones the image becomes a real story poster instead of a narrow token at the left. */
+@media (max-width: 620px) {
+  .cx-story-shell .story-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+    padding: 10px !important;
+  }
+
+  .cx-story-shell .story-row .story-thumb {
+    width: 100%;
+    height: clamp(138px, 42vw, 176px);
+    border-radius: 17px;
+    background-position: center 36%;
+  }
+
+  .cx-story-shell .story-row > div {
+    padding: 0 4px 4px;
+  }
+
+  .cx-story-shell .story-row h3 {
+    margin-top: 8px !important;
+    font-size: 1rem !important;
+    line-height: 1.24;
+  }
+
+  .cx-story-shell .story-row p {
+    font-size: .7rem !important;
+    line-height: 1.5;
+  }
+
+  .cx-story-shell .story-row .story-arrow {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-story-shell .story-row .story-thumb {
+    transition: none;
+  }
+}
