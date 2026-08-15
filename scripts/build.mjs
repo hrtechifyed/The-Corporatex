@@ -14,6 +14,7 @@ function withProductionRuntime(html, { submit = false } = {}) {
   }
   const candidates = [
     'src/github-production.js',
+    'src/journey-fourth-stage.js',
     'src/site-footer.js',
     'src/feedback-nav.js',
     'src/contributor-nav.js',
