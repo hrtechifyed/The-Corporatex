@@ -78,10 +78,9 @@ function polishStoryDetail() {
 
     article.querySelectorAll('.story-section').forEach((section) => {
       const heading = section.querySelector('h2');
-      const kicker = section.querySelector('small');
       if (heading?.textContent?.trim() === 'What the contributor approved for publication') {
-        heading.textContent = 'The experience';
-        if (kicker) kicker.textContent = 'THE STORY';
+        section.remove();
+        return;
       }
       const paragraph = section.querySelector('p');
       if (paragraph?.textContent?.trim() === 'Contributor-selected broad context.') {
