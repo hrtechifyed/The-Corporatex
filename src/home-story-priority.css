@@ -1,0 +1,62 @@
+/* Homepage content priority: value proposition first, published proof immediately after.
+   This file only repositions the existing story/guide surfaces and adjusts their spacing. */
+
+body.cx-home-priority-ready .pages-hero {
+  padding-bottom: 0;
+}
+
+body.cx-home-priority-ready .pages-stories.cx-home-stories-priority {
+  padding-top: clamp(46px, 5.5vw, 70px);
+  padding-bottom: clamp(50px, 6vw, 76px);
+  border-top-color: rgba(246, 200, 79, .12);
+}
+
+body.cx-home-priority-ready .pages-stories.cx-home-stories-priority .pages-section-heading {
+  margin-bottom: 4px;
+}
+
+.cx-home-story-guide-section {
+  padding-top: clamp(30px, 4vw, 48px);
+  padding-bottom: clamp(42px, 5vw, 62px);
+  background:
+    radial-gradient(circle at 18% 0, rgba(246, 200, 79, .045), transparent 23rem),
+    #08090a;
+}
+
+.cx-home-story-guide-section .pages-archive,
+.cx-home-story-guide-section .pages-archive.cx-home-story-guide {
+  position: static !important;
+  inset: auto !important;
+  width: 100%;
+  margin: 0;
+  z-index: auto;
+  grid-template-columns: minmax(0, 680px) !important;
+  justify-content: start;
+}
+
+@media (max-width: 820px) {
+  body.cx-home-priority-ready .pages-stories.cx-home-stories-priority {
+    padding-top: 38px;
+    padding-bottom: 46px;
+  }
+
+  .cx-home-story-guide-section {
+    padding-top: 26px;
+    padding-bottom: 42px;
+  }
+
+  .cx-home-story-guide-section .pages-archive,
+  .cx-home-story-guide-section .pages-archive.cx-home-story-guide {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 520px) {
+  body.cx-home-priority-ready .pages-stories.cx-home-stories-priority {
+    padding-top: 32px;
+  }
+
+  .cx-home-story-guide-section {
+    padding-top: 22px;
+  }
+}
