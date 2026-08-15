@@ -1,5 +1,4 @@
-/* CorporateX header signal: a small workplace-story timeline.
-   Each stage must read independently before the animation is noticed. */
+/* CorporateX header signal: four real, independent workplace-story milestones. */
 
 .cx-unified-signal {
   height: 32px;
@@ -27,10 +26,11 @@
   animation-iteration-count: infinite;
 }
 
-.cx-unified-signal i::before,
-.cx-unified-signal i:nth-child(3)::after {
+.cx-unified-signal i::before {
   position: absolute;
   top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
   font-style: normal;
   font-size: 7.6px;
   font-weight: 900;
@@ -41,46 +41,19 @@
   text-shadow: 0 0 10px rgba(246,200,79,.08);
 }
 
-.cx-unified-signal i::before {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.cx-unified-signal i:nth-child(1) {
-  left: 10%;
-  animation-name: cx-exit-stop-one;
-}
+.cx-unified-signal i:nth-child(1) { left: 10%; animation-name: cx-exit-stop-one; }
 .cx-unified-signal i:nth-child(1)::before { content: 'JOINED'; }
 
-.cx-unified-signal i:nth-child(2) {
-  left: 36%;
-  animation-name: cx-exit-stop-two;
-}
+.cx-unified-signal i:nth-child(2) { left: 36%; animation-name: cx-exit-stop-two; }
 .cx-unified-signal i:nth-child(2)::before { content: 'WHAT CHANGED'; }
 
-.cx-unified-signal i:nth-child(3) {
-  left: 64%;
-  right: auto;
-  animation-name: cx-exit-stop-three;
-}
+.cx-unified-signal i:nth-child(3) { left: 64%; right: auto; animation-name: cx-exit-stop-three; }
 .cx-unified-signal i:nth-child(3)::before { content: 'THE DECISION'; }
 
-/* The fourth milestone stays visually independent from the third. Its inverse scale
-   cancels the parent dot's pulse, so THE DECISION and WHAT'S NEXT never zoom together. */
-.cx-unified-signal i:nth-child(3)::after {
-  content: 'WHAT’S NEXT →';
-  left: clamp(70px, 7.5vw, 118px);
-  width: max-content;
-  height: 22px;
-  padding-top: 0;
-  transform: translateX(-50%) scale(1.19);
-  transform-origin: center 15px;
-  opacity: .34;
-  background: radial-gradient(circle at 50% 18px, rgba(246,200,79,.72) 0 2px, transparent 2.5px);
-  animation: cx-exit-next-label 8.8s ease-in-out infinite;
-}
+.cx-unified-signal i:nth-child(4) { left: 90%; animation-name: cx-exit-stop-four; }
+.cx-unified-signal i:nth-child(4)::before { content: 'WHAT’S NEXT →'; }
 
-/* One brighter point represents a person moving through four distinct moments. */
+/* One brighter point represents a person moving through the four independent milestones. */
 .cx-unified-signal::after {
   content: '';
   position: absolute;
@@ -107,8 +80,8 @@
   43% { left: 36%; opacity: 1; transform: scale(.92); }
   59% { left: 64%; opacity: 1; transform: scale(1); }
   67% { left: 64%; opacity: 1; transform: scale(.92); }
-  83% { left: 88%; opacity: 1; transform: scale(1); }
-  91% { left: 88%; opacity: 1; transform: scale(.92); }
+  83% { left: 90%; opacity: 1; transform: scale(1); }
+  91% { left: 90%; opacity: 1; transform: scale(.92); }
   98%, 100% { left: 96%; opacity: 0; transform: translateY(-2px) scale(.58); }
 }
 
@@ -123,27 +96,16 @@
 }
 
 @keyframes cx-exit-stop-three {
-  0%, 53%, 74%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  0%, 53%, 72%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
   59%, 67% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
 }
 
-@keyframes cx-exit-next-label {
-  0%, 73%, 100% {
-    opacity: .34;
-    color: rgba(221,215,203,.58);
-    transform: translateX(-50%) scale(1.19);
-    text-shadow: none;
-  }
-  83%, 91% {
-    opacity: 1;
-    color: #f7d56d;
-    transform: translateX(-50%) scale(1.19);
-    text-shadow: 0 0 12px rgba(246,200,79,.34);
-  }
+@keyframes cx-exit-stop-four {
+  0%, 77%, 96%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  83%, 91% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
 }
 
-/* Mobile gets a dedicated strip below the logo/menu. Four milestones are evenly spaced
-   and the final label is kept away from THE DECISION. */
+/* Mobile gets a dedicated strip below the logo/menu with four equally independent stops. */
 @media (max-width: 920px) {
   .cx-unified-header { height: calc(var(--cx-shell-header-mobile) + 38px); }
   .cx-unified-header::after { display: none; }
@@ -171,22 +133,20 @@
   .cx-unified-signal i:nth-child(1) { left: 8%; }
   .cx-unified-signal i:nth-child(2) { left: 36%; }
   .cx-unified-signal i:nth-child(3) { left: 64%; }
+  .cx-unified-signal i:nth-child(4) { left: 92%; }
 
-  .cx-unified-signal i::before,
-  .cx-unified-signal i:nth-child(3)::after {
+  .cx-unified-signal i::before {
     top: -17px;
     font-size: 6.1px;
     letter-spacing: .035em;
   }
 
-  .cx-unified-signal i:nth-child(3)::after {
-    left: 28vw;
-    height: 25px;
-    background-position: center 20px;
+  .cx-unified-signal i:nth-child(4)::before {
+    transform: translateX(-74%);
   }
 
   @keyframes cx-exit-traveller {
-    0% { left: 3%; opacity:0; transform:scale(.55); }
+    0% { left:3%; opacity:0; transform:scale(.55); }
     5% { opacity:.72; }
     11% { left:8%; opacity:1; transform:scale(1); }
     19% { left:8%; opacity:1; transform:scale(.92); }
@@ -202,12 +162,16 @@
 
 @media (max-width: 390px) {
   .cx-unified-signal { left: 7px; right: 7px; }
-  .cx-unified-signal i::before,
-  .cx-unified-signal i:nth-child(3)::after { font-size: 5.65px; letter-spacing: .015em; }
+  .cx-unified-signal i::before { font-size: 5.65px; letter-spacing: .015em; }
+  .cx-unified-signal i:nth-child(4)::before { transform: translateX(-78%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cx-unified-signal::after { display: none; }
-  .cx-unified-signal i { animation:none !important; opacity:.76; color:rgba(247,213,109,.86); transform:none; }
-  .cx-unified-signal i:nth-child(3)::after { animation:none !important; opacity:.76; color:rgba(247,213,109,.86); transform:translateX(-50%); }
+  .cx-unified-signal i {
+    animation: none !important;
+    opacity: .76;
+    color: rgba(247,213,109,.86);
+    transform: none;
+  }
 }
