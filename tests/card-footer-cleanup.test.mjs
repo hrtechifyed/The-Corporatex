@@ -126,11 +126,12 @@ test('exit journey animation is isolated from cards and content components', () 
   }
 });
 
-test('exit journey returns at the mobile menu breakpoint without affecting layout content', () => {
+test('exit journey owns a dedicated mobile strip without overlapping page content', () => {
   assert.match(exitSignal, /@media \(max-width: 920px\)/);
   assert.match(exitSignal, /display:\s*block !important/);
   assert.match(exitSignal, /position:\s*absolute/);
-  assert.match(exitSignal, /bottom:\s*-\d+px/);
+  assert.match(exitSignal, /bottom:\s*0/);
+  assert.match(exitSignal, /height:\s*calc\(var\(--cx-shell-header-mobile\) \+ 34px\)/);
   assert.match(exitSignal, /pointer-events:\s*none/);
 });
 
