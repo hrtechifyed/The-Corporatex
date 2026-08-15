@@ -2,16 +2,58 @@
    Keeps legacy/demo markup out of first paint and gives published cards the same editorial
    black/gold, image-led treatment as the homepage story carousel. */
 
-/* One canonical published-story surface on the homepage: the lower carousel.
-   The hero archive was duplicating the same live stories. */
-.pages-archive {
-  display: none !important;
+/* The homepage hero keeps a useful story-reading guide, but no longer repeats live published
+   stories already shown in the canonical lower carousel. */
+.pages-archive.cx-home-story-guide {
+  grid-template-columns: minmax(300px, 560px) !important;
+  justify-content: start;
 }
 
-@media (min-width: 821px) {
-  .pages-hero {
-    padding-bottom: 64px !important;
-  }
+.cx-home-story-guide__card {
+  min-height: 150px;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 17px;
+  align-items: center;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(246, 200, 79, .28);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 0, rgba(246, 200, 79, .10), transparent 28%),
+    linear-gradient(155deg, #11100d, #08090a 72%);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, .32);
+}
+
+.cx-home-story-guide__art {
+  width: 88px;
+  height: 112px;
+  border: 1px solid rgba(246, 200, 79, .24);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, transparent 38%, rgba(5, 6, 8, .70)),
+    url('../frozen-assets/card-5.webp') center 40% / cover no-repeat;
+}
+
+.cx-home-story-guide__copy small {
+  color: #d7ad43;
+  font-size: .58rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.cx-home-story-guide__copy h2 {
+  margin: 7px 0 7px;
+  color: #fff2c7;
+  font-size: 1rem;
+  line-height: 1.18;
+}
+
+.cx-home-story-guide__copy p {
+  margin: 0;
+  color: #938c83;
+  font-size: .7rem;
+  line-height: 1.5;
 }
 
 /* Prevent the static fictional company list from flashing before live stories hydrate. */
@@ -327,6 +369,21 @@ body[data-ref-page='stories']:not([data-page='stories']).cx-story-detail-ready .
 }
 
 @media (max-width: 760px) {
+  .pages-archive.cx-home-story-guide {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cx-home-story-guide__card {
+    grid-template-columns: 74px minmax(0, 1fr);
+    min-height: 132px;
+    padding: 14px;
+  }
+
+  .cx-home-story-guide__art {
+    width: 74px;
+    height: 96px;
+  }
+
   .cx-story-shell .story-row {
     min-height: 0;
     grid-template-rows: minmax(174px, 44vw) auto auto;
