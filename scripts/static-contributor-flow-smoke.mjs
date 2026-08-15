@@ -105,7 +105,17 @@ async function prepareStory(page, { company = 'Quality Test Company' } = {}) {
   await page.locator('.cx-location-option', { hasText:'Hyderabad, Telangana, India' }).click();
   if ((await page.inputValue('[data-guided-location]')) !== 'Hyderabad, Telangana, India') throw new Error('Selected global city was not normalized into the field.');
 
-  await page.fill('[data-guided-team]', 'Product');
+  await page.fill('[data-guided-team]', 'P');
+  await page.waitForSelector('.cx-role-option');
+  const roleSuggestions = await page.locator('.cx-role-option strong').allTextContents();
+  if (!roleSuggestions.includes('Product Manager') || !roleSuggestions.includes('Product Engineer') || !roleSuggestions.includes('Project Manager')) throw new Error('Typing P must show prominent matching role suggestions.');
+  if (roleSuggestions.some((title) => !title.toLowerCase().startsWith('p'))) throw new Error('Role suggestions must use strict prefix matching.');
+  await page.locator('.cx-role-option', { hasText:'Product Engineer' }).click();
+  if ((await page.inputValue('[data-guided-team]')) !== 'Product Engineer') throw new Error('Selected role was not applied to the context field.');
+
+  await page.fill('[data-guided-left-date]', '0624');
+  if ((await page.inputValue('[data-guided-left-date]')) !== '06/24') throw new Error('Leaving month must format MMYY input as MM/YY.');
+
   await page.click('[data-guided-context-next]');
   await page.waitForSelector('.ref-journey-card.is-active:visible');
   const beatArt = await page.evaluate(() => {
@@ -124,6 +134,8 @@ async function prepareStory(page, { company = 'Quality Test Company' } = {}) {
   }
   await page.fill('[data-guided-text]', 'I joined for growth and learning. The workload later changed and the role became difficult to sustain.');
   await page.click('[data-guided-review]');
+  const reviewContext = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('.ref-context-review > div')].map((item) => [item.querySelector('dt')?.textContent?.trim(), item.querySelector('dd')?.textContent?.trim()])));
+  if (reviewContext.Role !== 'Product Engineer' || reviewContext.Left !== '06/24') throw new Error('Final Cut must show the selected role and leaving month.');
   await page.check('[data-guided-agreement]');
   const confirmText = await page.locator('[data-guided-confirm]').textContent();
   if (!/Click here to submit/i.test(confirmText || '')) throw new Error('Final Cut must use the direct submit label.');
@@ -152,6 +164,8 @@ try {
   if (state.submit.body?.ending !== 'break-free') throw new Error('Chosen ending was lost before submission.');
   if (state.submit.body?.context?.company !== 'Quality Test Company') throw new Error('Story context was lost before submission.');
   if (state.submit.body?.context?.location !== 'Hyderabad, Telangana, India') throw new Error('Validated global city was lost before submission.');
+  if (state.submit.body?.context?.role !== 'Product Engineer' || state.submit.body?.context?.team !== 'Product Engineer') throw new Error('Role context was lost before submission.');
+  if (state.submit.body?.context?.leftDate !== '06/24' || state.submit.body?.context?.departureMonth !== '2024-06-01') throw new Error('Leaving month context was lost before submission.');
   if (state.submit.body?.locationSelection?.kind !== 'city' || state.submit.body?.locationSelection?.city !== 'Hyderabad' || state.submit.body?.locationSelection?.countryCode !== 'IN' || state.submit.body?.locationSelection?.stateCode !== 'TG') throw new Error('Validated global location metadata was lost before submission.');
   if (!state.submit.body?.chapters?.some((chapter) => chapter.response?.includes('growth and learning'))) throw new Error('Story Beat response was lost before submission.');
   await page.close();
@@ -185,7 +199,7 @@ try {
   if (!signalText.includes('Growth') || !signalText.includes('Workload')) throw new Error('Homepage live signal cloud did not hydrate from safe aggregated labels.');
   await home.close();
 
-  console.log('Contributor-flow smoke passed: global city search, Remote/Other options, visible anime Story Beats, account access, submission and live signals are connected.');
+  console.log('Contributor-flow smoke passed: global city search, role suggestions, leaving month, Remote/Other options, visible anime Story Beats, account access, submission and live signals are connected.');
 } finally {
   if (browser) await browser.close();
   server.kill('SIGTERM');
