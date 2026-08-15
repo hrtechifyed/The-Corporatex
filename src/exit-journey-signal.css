@@ -8,16 +8,16 @@
 
 .cx-unified-signal::before {
   top: 19px;
-  left: 4%;
-  right: 4%;
+  left: 6%;
+  right: 6%;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(246, 200, 79, .34) 7%,
-    rgba(246, 200, 79, .52) 12%,
+    rgba(246, 200, 79, .34) 9%,
+    rgba(246, 200, 79, .52) 13%,
     rgba(246, 200, 79, .25) 38%,
-    rgba(246, 200, 79, .46) 67%,
-    rgba(246, 200, 79, .26) 91%,
+    rgba(246, 200, 79, .46) 63%,
+    rgba(246, 200, 79, .26) 89%,
     transparent 100%
   );
 }
@@ -44,7 +44,7 @@
   font-size: 8px;
   font-weight: 900;
   line-height: 1;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   white-space: nowrap;
   color: currentColor;
   text-shadow: 0 0 10px rgba(246, 200, 79, .08);
@@ -56,24 +56,24 @@
 }
 
 .cx-unified-signal i:nth-child(1) {
-  left: 10%;
+  left: 12.5%;
   animation-name: cx-exit-stop-one;
 }
 .cx-unified-signal i:nth-child(1)::before { content: 'JOINED'; }
 
 .cx-unified-signal i:nth-child(2) {
-  left: 38%;
+  left: 37.5%;
   animation-name: cx-exit-stop-two;
 }
-.cx-unified-signal i:nth-child(2)::before { content: 'WORK CHANGED'; }
+.cx-unified-signal i:nth-child(2)::before { content: 'WHAT CHANGED'; }
 
 .cx-unified-signal i:nth-child(3) {
-  right: 33%;
+  right: 37.5%;
   animation-name: cx-exit-stop-three;
 }
-.cx-unified-signal i:nth-child(3)::before { content: 'LEFT'; }
+.cx-unified-signal i:nth-child(3)::before { content: 'WHY IT ENDED'; }
 .cx-unified-signal i:nth-child(3)::after {
-  content: 'NEXT CHAPTER →';
+  content: 'WHAT’S NEXT →';
   left: clamp(64px, 8vw, 108px);
   transform: translateX(-50%);
   opacity: .48;
@@ -108,37 +108,37 @@
   }
   6% { opacity: .72; }
   14% {
-    left: 10%;
+    left: 12.5%;
     opacity: 1;
     transform: scale(1);
   }
   23% {
-    left: 10%;
+    left: 12.5%;
     opacity: 1;
     transform: scale(.92);
   }
   43% {
-    left: 38%;
+    left: 37.5%;
     opacity: 1;
     transform: scale(1);
   }
   53% {
-    left: 38%;
+    left: 37.5%;
     opacity: 1;
     transform: scale(.92);
   }
   73% {
-    left: 67%;
+    left: 62.5%;
     opacity: 1;
     transform: scale(1);
   }
   82% {
-    left: 67%;
+    left: 62.5%;
     opacity: 1;
     transform: scale(.92);
   }
   94%, 100% {
-    left: 94%;
+    left: 90%;
     opacity: 0;
     transform: translateY(-2px) scale(.58);
   }
@@ -237,12 +237,12 @@
   .cx-unified-signal i::before,
   .cx-unified-signal i:nth-child(3)::after {
     top: -15px;
-    font-size: 6.8px;
-    letter-spacing: .07em;
+    font-size: 6.4px;
+    letter-spacing: .045em;
   }
 
   .cx-unified-signal i:nth-child(3)::after {
-    left: clamp(58px, 17vw, 72px);
+    left: 25vw;
   }
 }
 
@@ -254,12 +254,9 @@
 
   .cx-unified-signal i::before,
   .cx-unified-signal i:nth-child(3)::after {
-    font-size: 6.2px;
-    letter-spacing: .045em;
+    font-size: 5.9px;
+    letter-spacing: .025em;
   }
-
-  .cx-unified-signal i:nth-child(2)::before { content: 'CHANGED'; }
-  .cx-unified-signal i:nth-child(3)::after { content: 'NEXT →'; }
 }
 
 @media (prefers-reduced-motion: reduce) {
