@@ -33,6 +33,21 @@ function clean(value: unknown, max = 12000) { return String(value ?? "").replace
 function normalize(value: unknown) { return clean(value, 240).normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "company"; }
 
+function parseDepartureMonth(value: unknown) {
+  const raw = clean(value, 10);
+  if (!raw) return null;
+  const match = raw.match(/^(\d{4})-(\d{2})-01$/);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) return null;
+  const date = new Date(Date.UTC(year, month - 1, 1));
+  const now = new Date();
+  const currentMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  if (date > currentMonth) return null;
+  return `${year}-${String(month).padStart(2, "0")}-01`;
+}
+
 function validateGlobalLocation(selection: Record<string, unknown> | null | undefined) {
   const kind = clean(selection?.kind, 20).toLowerCase();
   if (kind === "remote") return { displayName: "Remote", category: "remote" };
@@ -79,10 +94,14 @@ Deno.serve(async (req: Request) => {
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(draftId)) return json({ error: "Invalid draft identifier." }, 422);
 
     const company = clean(input?.context?.company, 180);
-    const team = clean(input?.context?.team, 120);
+    const team = clean(input?.context?.team, 140);
+    const role = clean(input?.context?.role || input?.context?.team, 140);
+    const departureMonthInput = clean(input?.context?.departureMonth, 10);
+    const departureMonth = parseDepartureMonth(departureMonthInput);
     let location = clean(input?.context?.location, 240);
     const ending = clean(input?.ending, 40);
     if (!endings.has(ending)) return json({ error: "Choose one of the four story endings before submitting." }, 422);
+    if (departureMonthInput && !departureMonth) return json({ error: "Enter a valid month and year you left in MM/YY format." }, 422);
 
     const chapters = Array.isArray(input?.chapters) ? input.chapters : [];
     const answered = chapters.map((chapter: Record<string, unknown>, index: number) => ({
@@ -147,6 +166,12 @@ Deno.serve(async (req: Request) => {
     const labels = labelRules.filter(([, pattern]) => pattern.test(storyText)).map(([label]) => label).slice(0, 12);
     const analysis = { suggestedHeadline: headline, shortSummary: summary, suggestedLabels: labels, possibleIdentifyingDetails: identifying, possibleAbusiveContent: safetyFlags, possibleUnsupportedClaims: [], seriousTopic: false };
 
+    const employmentContext = {
+      broad_function: role || team || null,
+      role_title: role || null,
+      departure_month: departureMonth,
+    };
+
     if (!existing) {
       const inserted = await admin.from("experiences").insert({
         id: draftId,
@@ -155,7 +180,7 @@ Deno.serve(async (req: Request) => {
         original_text: clean(answered.map((chapter: { title: string; answer: string }) => `${chapter.title}: ${chapter.answer}`).join("\n\n"), 30000),
         approved_headline: headline,
         approved_summary: summary,
-        broad_function: team || null,
+        ...employmentContext,
         broad_region: location,
         story_path: "guided",
         ending_type: ending,
@@ -166,7 +191,8 @@ Deno.serve(async (req: Request) => {
       const storedAnswers = await admin.from("guided_answers").insert(answerRows);
       if (storedAnswers.error) throw storedAnswers.error;
     } else {
-      await admin.from("experiences").update({ ending_type: ending, broad_region: location }).eq("id", draftId);
+      const updated = await admin.from("experiences").update({ ending_type: ending, broad_region: location, ...employmentContext }).eq("id", draftId);
+      if (updated.error) throw updated.error;
     }
 
     const toAnalysis = await admin.from("experiences").update({ status: "awaiting_ai_analysis" }).eq("id", draftId).eq("status", "draft");
@@ -192,7 +218,7 @@ Deno.serve(async (req: Request) => {
       console.error("story notification scheduling failed", error);
     }
 
-    return json({ id: draftId, status: "pending_moderation", location, liveLabels: labels, emailQueued: true });
+    return json({ id: draftId, status: "pending_moderation", location, role: role || null, departureMonth, liveLabels: labels, emailQueued: true });
   } catch (error) {
     console.error("submit-story failed", error);
     return json({ error: error instanceof Error ? error.message : "Submission failed" }, 400);
