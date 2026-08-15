@@ -1,0 +1,86 @@
+/* Compact public footer. Loaded after the shared chrome so both legacy .pages-footer
+   and .site-footer routes converge on the same minimal presentation. */
+
+.site-footer[data-cx-footer='true'] {
+  margin-top: clamp(34px, 5vw, 64px) !important;
+}
+
+.site-footer[data-cx-footer='true'] .cx-footer-inner {
+  width: min(1120px, calc(100% - 40px));
+  padding: 24px 0 calc(24px + env(safe-area-inset-bottom, 0px));
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+}
+
+.site-footer[data-cx-footer='true'] .cx-footer-brand strong {
+  font-size: .88rem;
+  white-space: nowrap;
+}
+
+.site-footer[data-cx-footer='true'] .cx-footer-links {
+  justify-content: center;
+  gap: 8px 22px;
+}
+
+.site-footer[data-cx-footer='true'] .cx-footer-links a {
+  font-size: .69rem;
+  color: #a9a299;
+}
+
+.site-footer[data-cx-footer='true'] .cx-footer-meta {
+  text-align: right;
+}
+
+.site-footer[data-cx-footer='true'] .cx-footer-meta p {
+  margin: 0;
+  color: #817b74;
+  font-size: .68rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .site-footer[data-cx-footer='true'] {
+    margin-top: 40px !important;
+  }
+
+  .site-footer[data-cx-footer='true'] .cx-footer-inner {
+    width: 100%;
+    padding:
+      22px max(20px, env(safe-area-inset-right, 0px))
+      calc(24px + env(safe-area-inset-bottom, 0px))
+      max(20px, env(safe-area-inset-left, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    text-align: center;
+  }
+
+  .site-footer[data-cx-footer='true'] .cx-footer-brand,
+  .site-footer[data-cx-footer='true'] .cx-footer-meta {
+    text-align: center;
+  }
+
+  .site-footer[data-cx-footer='true'] .cx-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 0;
+  }
+
+  .site-footer[data-cx-footer='true'] .cx-footer-links a {
+    display: inline-flex;
+    align-items: center;
+    font-size: .7rem;
+  }
+
+  .site-footer[data-cx-footer='true'] .cx-footer-links a + a::before {
+    content: '·';
+    margin: 0 10px;
+    color: rgba(246,200,79,.42);
+  }
+
+  .site-footer[data-cx-footer='true'] .cx-footer-meta p {
+    font-size: .65rem;
+  }
+}
