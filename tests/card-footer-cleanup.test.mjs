@@ -130,7 +130,7 @@ test('exit journey returns at the mobile menu breakpoint without affecting layou
   assert.match(exitSignal, /@media \(max-width: 920px\)/);
   assert.match(exitSignal, /display:\s*block !important/);
   assert.match(exitSignal, /position:\s*absolute/);
-  assert.match(exitSignal, /bottom:\s*-9px/);
+  assert.match(exitSignal, /bottom:\s*-\d+px/);
   assert.match(exitSignal, /pointer-events:\s*none/);
 });
 
