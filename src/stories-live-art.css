@@ -1,24 +1,183 @@
-/* Published Stories page artwork only.
-   Replaces the tiny sparkle placeholder with the existing CorporateX cinematic art. */
+/* CorporateX public story surfaces.
+   Keeps legacy/demo markup out of first paint and gives published cards the same editorial
+   black/gold, image-led treatment as the homepage story carousel. */
+
+/* The homepage hero keeps a useful story-reading guide, but no longer repeats live published
+   stories already shown in the canonical lower carousel. */
+.pages-archive.cx-home-story-guide {
+  grid-template-columns: minmax(300px, 560px) !important;
+  justify-content: start;
+}
+
+.cx-home-story-guide__card {
+  min-height: 150px;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 17px;
+  align-items: center;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(246, 200, 79, .28);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 0, rgba(246, 200, 79, .10), transparent 28%),
+    linear-gradient(155deg, #11100d, #08090a 72%);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, .32);
+}
+
+.cx-home-story-guide__art {
+  width: 88px;
+  height: 112px;
+  border: 1px solid rgba(246, 200, 79, .24);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, transparent 38%, rgba(5, 6, 8, .70)),
+    url('../frozen-assets/card-5.webp') center 40% / cover no-repeat;
+}
+
+.cx-home-story-guide__copy small {
+  color: #d7ad43;
+  font-size: .58rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.cx-home-story-guide__copy h2 {
+  margin: 7px 0 7px;
+  color: #fff2c7;
+  font-size: 1rem;
+  line-height: 1.18;
+}
+
+.cx-home-story-guide__copy p {
+  margin: 0;
+  color: #938c83;
+  font-size: .7rem;
+  line-height: 1.5;
+}
+
+/* Prevent the static fictional company list from flashing before live stories hydrate. */
+body[data-page='stories']:not(.cx-stories-ready) .company-list > * {
+  display: none !important;
+}
+
+body[data-page='stories']:not(.cx-stories-ready) .company-list::before {
+  content: 'Loading published stories…';
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  border: 1px solid rgba(246, 200, 79, .22);
+  border-radius: 22px;
+  color: #a9a197;
+  background:
+    radial-gradient(circle at 82% 4%, rgba(246, 200, 79, .08), transparent 24rem),
+    linear-gradient(160deg, #11100d, #08090a 72%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+body[data-page='stories'].cx-stories-ready .company-list::before,
+body[data-page='stories'] [data-empty-state] {
+  display: none !important;
+}
+
+/* Prevent the old fictional detail article and sidebar from flashing before the
+   requested published story is loaded. */
+body[data-ref-page='stories']:not([data-page='stories']):not(.cx-story-detail-ready) .story-article > *,
+body[data-ref-page='stories']:not([data-page='stories']):not(.cx-story-detail-ready) .story-side {
+  display: none !important;
+}
+
+body[data-ref-page='stories']:not([data-page='stories']):not(.cx-story-detail-ready) .story-article::before {
+  content: 'Loading story…';
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(246, 200, 79, .22);
+  border-radius: 24px;
+  color: #a9a197;
+  background:
+    linear-gradient(180deg, rgba(246, 200, 79, .055), transparent 42%),
+    #08090a;
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+body[data-ref-page='stories']:not([data-page='stories']).cx-story-detail-ready .story-article::before {
+  display: none;
+}
+
+/* Employer groups stay useful as grouping chrome, while each live story card mirrors
+   the homepage editorial card language. */
+.cx-story-shell {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(246, 200, 79, .28);
+  border-radius: 23px;
+  background:
+    radial-gradient(circle at 88% 0, rgba(246, 200, 79, .09), transparent 25%),
+    linear-gradient(180deg, #0b0c0e, #070809 76%);
+  box-shadow:
+    0 25px 64px rgba(0, 0, 0, .34),
+    inset 0 1px 0 rgba(255, 239, 189, .045);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+.cx-story-shell:hover,
+.cx-story-shell:focus-within {
+  transform: translateY(-4px);
+  border-color: rgba(246, 200, 79, .58);
+  box-shadow:
+    0 32px 78px rgba(0, 0, 0, .42),
+    0 0 28px rgba(246, 200, 79, .08);
+}
+
+.cx-story-shell .story-row {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 190px 1fr auto;
+  gap: 0 !important;
+  align-items: stretch !important;
+  min-height: 390px;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #f7f0e6;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none;
+  transform: none !important;
+}
+
+.cx-story-shell .story-row:hover,
+.cx-story-shell .story-row:focus-visible {
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  outline: none;
+}
 
 .cx-story-shell .story-row .story-thumb {
   position: relative;
   display: block;
-  width: 96px;
-  height: 118px;
-  flex: none;
+  width: 100%;
+  height: 190px;
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid rgba(246, 200, 79, .48);
-  border-radius: 17px;
+  border: 0;
+  border-bottom: 1px solid rgba(246, 200, 79, .16);
+  border-radius: 0;
   background-color: #100b08;
   background-image: url('../frozen-assets/card-1.webp');
   background-size: cover;
-  background-position: center 42%;
+  background-position: center 40%;
   background-repeat: no-repeat;
-  box-shadow:
-    0 16px 34px rgba(0, 0, 0, .38),
-    inset 0 0 0 1px rgba(255, 240, 189, .035);
+  filter: saturate(.9) contrast(1.04) brightness(.9);
   font-size: 0;
 }
 
@@ -28,22 +187,31 @@
   z-index: 1;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(5, 6, 8, .02) 40%, rgba(5, 6, 8, .72) 100%),
-    linear-gradient(90deg, rgba(246, 200, 79, .08), transparent 36%);
+    linear-gradient(180deg, rgba(5, 6, 8, .02) 35%, rgba(5, 6, 8, .78) 100%),
+    linear-gradient(90deg, rgba(246, 200, 79, .075), transparent 42%);
   pointer-events: none;
 }
 
 .cx-story-shell .story-row .story-thumb::after {
-  content: '';
+  content: 'WORKPLACE STORY';
   position: absolute;
   z-index: 2;
-  left: 10px;
-  bottom: 10px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #f7d56d;
-  box-shadow: 0 0 14px rgba(246, 200, 79, .72);
+  left: 14px;
+  bottom: 13px;
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid rgba(246, 200, 79, .30);
+  border-radius: 999px;
+  color: #f5d574;
+  background: rgba(5, 6, 8, .72);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .26);
+  font-size: .58rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: .09em;
   pointer-events: none;
 }
 
@@ -78,56 +246,189 @@
   background-position: 68% center;
 }
 
-.cx-story-shell .story-row {
-  grid-template-columns: 96px 1fr auto !important;
+.cx-story-shell .story-row > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 18px 8px;
 }
 
-.cx-story-shell .story-row:hover .story-thumb,
-.cx-story-shell .story-row:focus-visible .story-thumb {
-  border-color: rgba(246, 200, 79, .82);
-  box-shadow:
-    0 18px 42px rgba(0, 0, 0, .44),
-    0 0 24px rgba(246, 200, 79, .12);
+.cx-story-shell .story-row .story-meta {
+  margin: 0 0 9px;
 }
 
-/* On phones the image becomes a real story poster instead of a narrow token at the left. */
-@media (max-width: 620px) {
-  .cx-story-shell .story-row {
+.cx-story-shell .story-row .chip {
+  max-width: 100%;
+  overflow: hidden;
+  border-color: rgba(246, 200, 79, .18);
+  color: #d6b14d;
+  background: rgba(246, 200, 79, .055);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cx-story-shell .story-row h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 !important;
+  color: #fff5d9 !important;
+  font-size: 1.08rem !important;
+  font-weight: 850;
+  line-height: 1.22 !important;
+  letter-spacing: -.022em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.cx-story-shell .story-row p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 10px 0 0 !important;
+  color: #918a82 !important;
+  font-size: .7rem !important;
+  line-height: 1.5 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.cx-story-shell .story-row .story-arrow {
+  justify-self: start;
+  min-height: 36px;
+  margin: 12px 18px 17px;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid rgba(246, 200, 79, .32);
+  border-radius: 10px;
+  color: #f4ce66;
+  background: linear-gradient(180deg, rgba(246, 200, 79, .10), rgba(246, 200, 79, .035));
+  font-size: 0;
+  font-weight: 900;
+}
+
+.cx-story-shell .story-row .story-arrow::before {
+  content: 'Read story';
+  font-size: .7rem;
+}
+
+.cx-story-shell .story-row .story-arrow::after {
+  content: '→';
+  font-size: .82rem;
+}
+
+.cx-story-shell .cx-story-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 17px 16px;
+  border-top: 1px solid rgba(246, 200, 79, .10);
+  background: rgba(0, 0, 0, .14);
+}
+
+.cx-story-shell .cx-story-action {
+  min-height: 34px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, .11);
+  border-radius: 999px;
+  color: #c8c0b6;
+  background: rgba(255, 255, 255, .035);
+  box-shadow: none;
+  font-size: .66rem;
+  font-weight: 800;
+}
+
+.cx-story-shell .cx-story-action:hover,
+.cx-story-shell .cx-story-action:focus-visible,
+.cx-story-shell .cx-story-action.is-active {
+  border-color: rgba(246, 200, 79, .46);
+  color: #f3d776;
+  background: rgba(246, 200, 79, .075);
+  outline: none;
+}
+
+/* Public story detail sidebar generated after hydration. */
+.cx-public-story-side {
+  display: grid;
+  gap: 12px;
+}
+
+.cx-public-story-side .glass-card {
+  border-color: rgba(246, 200, 79, .20) !important;
+  background: linear-gradient(160deg, #11100d, #08090a 76%) !important;
+}
+
+.cx-public-story-side h3 {
+  color: #fff2c8;
+}
+
+.cx-public-story-side p {
+  color: #9e978e;
+  line-height: 1.58;
+}
+
+@media (max-width: 760px) {
+  .pages-archive.cx-home-story-guide {
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
-    align-items: stretch !important;
-    padding: 10px !important;
+  }
+
+  .cx-home-story-guide__card {
+    grid-template-columns: 74px minmax(0, 1fr);
+    min-height: 132px;
+    padding: 14px;
+  }
+
+  .cx-home-story-guide__art {
+    width: 74px;
+    height: 96px;
+  }
+
+  .cx-story-shell .story-row {
+    min-height: 0;
+    grid-template-rows: minmax(174px, 44vw) auto auto;
   }
 
   .cx-story-shell .story-row .story-thumb {
-    width: 100%;
-    height: clamp(138px, 42vw, 176px);
-    border-radius: 17px;
+    height: clamp(174px, 44vw, 214px);
     background-position: center 36%;
   }
 
   .cx-story-shell .story-row > div {
-    padding: 0 4px 4px;
+    padding: 16px 16px 7px;
   }
 
   .cx-story-shell .story-row h3 {
-    margin-top: 8px !important;
-    font-size: 1rem !important;
-    line-height: 1.24;
-  }
-
-  .cx-story-shell .story-row p {
-    font-size: .7rem !important;
-    line-height: 1.5;
+    font-size: 1.03rem !important;
   }
 
   .cx-story-shell .story-row .story-arrow {
-    display: none !important;
+    margin: 11px 16px 15px;
+  }
+
+  .cx-story-shell .cx-story-actions {
+    flex-wrap: wrap;
+    padding: 11px 16px 15px;
+  }
+}
+
+@media (max-width: 440px) {
+  .cx-story-shell {
+    border-radius: 20px;
+  }
+
+  .cx-story-shell .story-row .story-thumb {
+    height: min(52vw, 196px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cx-story-shell .story-row .story-thumb {
+  .cx-story-shell {
     transition: none;
+  }
+
+  .cx-story-shell:hover,
+  .cx-story-shell:focus-within {
+    transform: none;
   }
 }
