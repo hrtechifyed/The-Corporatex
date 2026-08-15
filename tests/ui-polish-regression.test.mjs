@@ -8,13 +8,17 @@ const storyArchiveArt = await readFile('src/stories-live-art.css', 'utf8');
 const storyPolish = await readFile('src/stories-polish.js', 'utf8');
 const build = await readFile('scripts/build.mjs', 'utf8');
 
-test('header signal explains the workplace journey in plain language and owns a mobile strip', () => {
-  for (const label of ["content: 'JOINED'", "content: 'WHAT CHANGED'", "content: 'WHY IT ENDED'", "content: 'WHAT’S NEXT →'"]) {
+test('header signal explains four distinct workplace journey stages and owns a mobile strip', () => {
+  for (const label of ["content: 'JOINED'", "content: 'WHAT CHANGED'", "content: 'THE DECISION'", "content: 'WHAT’S NEXT →'"]) {
     assert.match(journey, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.doesNotMatch(journey, /content:\s*'SHIFT'/);
+  assert.doesNotMatch(journey, /content:\s*'WHY IT ENDED'/);
+  assert.match(journey, /cx-exit-next-label 8\.8s/);
+  assert.match(journey, /transform:\s*translateX\(-50%\) scale\(1\.19\)/);
+  assert.match(journey, /83%, 91%/);
   assert.match(journey, /@media \(max-width: 920px\)/);
-  assert.match(journey, /height:\s*calc\(var\(--cx-shell-header-mobile\) \+ 34px\)/);
+  assert.match(journey, /height:\s*calc\(var\(--cx-shell-header-mobile\) \+ 38px\)/);
   assert.match(journey, /\.cx-unified-header__inner[\s\S]*height:\s*var\(--cx-shell-header-mobile\)/);
   assert.match(journey, /bottom:\s*0/);
   assert.match(journey, /pointer-events:\s*none/);
