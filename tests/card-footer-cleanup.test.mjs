@@ -7,6 +7,7 @@ const how = await readFile('how-it-works.html', 'utf8');
 const guidedHtml = await readFile('guided-story.html', 'utf8');
 const guided = await readFile('src/guided-production.js', 'utf8');
 const css = await readFile('src/site-chrome-cleanup.css', 'utf8');
+const compactFooter = await readFile('src/footer-compact.css', 'utf8');
 const goldAccent = await readFile('src/card-gold-accent.css', 'utf8');
 const exitSignal = await readFile('src/exit-journey-signal.css', 'utf8');
 const footer = await readFile('src/site-footer.js', 'utf8');
@@ -14,7 +15,6 @@ const nextHome = await readFile('app/page.tsx', 'utf8');
 const nextAbout = await readFile('app/about/page.tsx', 'utf8');
 const nextMore = await readFile('app/more/page.tsx', 'utf8');
 const nextCleanup = await readFile('app/card-footer-cleanup.css', 'utf8');
-const nextFooter = await readFile('components/site-footer.tsx', 'utf8');
 const pagesHome = await readFile('pages-preview/index.html', 'utf8');
 const pagesCleanup = await readFile('pages-preview/card-footer-cleanup.css', 'utf8');
 const syncHome = await readFile('scripts/sync-live-home.mjs', 'utf8');
@@ -131,7 +131,7 @@ test('exit journey owns a dedicated mobile strip without overlapping page conten
   assert.match(exitSignal, /display:\s*block !important/);
   assert.match(exitSignal, /position:\s*absolute/);
   assert.match(exitSignal, /bottom:\s*0/);
-  assert.match(exitSignal, /height:\s*calc\(var\(--cx-shell-header-mobile\) \+ 34px\)/);
+  assert.match(exitSignal, /height:\s*calc\(var\(--cx-shell-header-mobile\) \+ 38px\)/);
   assert.match(exitSignal, /pointer-events:\s*none/);
 });
 
@@ -141,31 +141,29 @@ test('My Space and secure access use a sharper large hero source', () => {
   assert.match(css, /\.cx-auth-visual > img/);
 });
 
-test('footers use concise CorporateX copy and responsive safe-area layouts', () => {
-  for (const source of [footer, nextFooter, pagesHome]) {
-    assert.match(source, /Workplace stories, structured for better career decisions\./);
-    assert.match(source, /Contributor stories reflect individual perspectives and are moderated before publication\./);
-  }
-  assert.match(footer, /Stories/);
-  assert.match(footer, /Privacy & Safety/);
-  assert.match(footer, /Terms/);
-  assert.match(nextFooter, /Community Guidelines/);
-  assert.match(css, /@media \(max-width: 900px\)/);
-  assert.match(css, /@media \(max-width: 620px\)/);
-  assert.match(css, /@media \(max-width: 390px\)/);
-  assert.match(css, /safe-area-inset-bottom/);
-  assert.match(css, /safe-area-inset-left/);
-  assert.match(css, /safe-area-inset-right/);
+test('public footers are compact and the homepage legacy footer is unified', () => {
+  assert.match(footer, /document\.querySelector\('\.site-footer, \.pages-footer'\)/);
+  assert.match(footer, /classList\.remove\('pages-footer'\)/);
+  assert.match(footer, /classList\.add\('site-footer'\)/);
+  for (const label of ['Stories', 'How It Works', 'Privacy', 'Terms']) assert.match(footer, new RegExp(`'${label}'`));
+  assert.doesNotMatch(footer, /tagline\.textContent/);
+  assert.doesNotMatch(footer, /Contributor stories reflect individual perspectives/);
+  assert.match(footer, /© \$\{new Date\(\)\.getFullYear\(\)\} HRTechify/);
+  assert.match(compactFooter, /\.site-footer\[data-cx-footer='true'\]/);
+  assert.match(compactFooter, /flex-direction:\s*column/);
+  assert.match(compactFooter, /safe-area-inset-bottom/);
+  assert.match(compactFooter, /content:\s*'·'/);
   assert.match(nextCleanup, /safe-area-inset-bottom/);
-  assert.match(pagesCleanup, /safe-area-inset-bottom/);
 });
 
-test('production builds load cleanup, gold palette, then isolated exit signal', () => {
+test('production builds load cleanup, gold palette, journey, then compact footer', () => {
   assert.match(build, /src\/site-chrome-cleanup\.css/);
   assert.match(build, /src\/card-gold-accent\.css/);
   assert.match(build, /src\/exit-journey-signal\.css/);
+  assert.match(build, /src\/footer-compact\.css/);
   assert.ok(build.indexOf('src/site-chrome-cleanup.css') < build.indexOf('src/card-gold-accent.css'));
   assert.ok(build.indexOf('src/card-gold-accent.css') < build.indexOf('src/exit-journey-signal.css'));
+  assert.ok(build.indexOf('src/exit-journey-signal.css') < build.indexOf('src/footer-compact.css'));
   assert.match(build, /src\/site-footer\.js/);
   assert.match(syncHome, /card-footer-cleanup\.css/);
 });
