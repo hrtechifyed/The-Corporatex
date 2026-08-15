@@ -5,6 +5,7 @@ import test from 'node:test';
 const journey = await readFile('src/exit-journey-signal.css', 'utf8');
 const storyCard = await readFile('src/home-published-card.css', 'utf8');
 const storyArchiveArt = await readFile('src/stories-live-art.css', 'utf8');
+const storyPolish = await readFile('src/stories-polish.js', 'utf8');
 const build = await readFile('scripts/build.mjs', 'utf8');
 
 test('header signal explains the workplace journey in plain language and owns a mobile strip', () => {
@@ -23,6 +24,36 @@ test('header signal explains the workplace journey in plain language and owns a 
   }
 });
 
+test('legacy public story markup is hidden until live data is ready', () => {
+  assert.match(storyArchiveArt, /body\[data-page='stories'\]:not\(\.cx-stories-ready\) \.company-list > \*/);
+  assert.match(storyArchiveArt, /Loading published stories/);
+  assert.match(storyArchiveArt, /not\(\.cx-story-detail-ready\) \.story-article > \*/);
+  assert.match(storyArchiveArt, /Loading story/);
+  assert.match(storyPolish, /MutationObserver/);
+  assert.match(storyPolish, /cx-stories-ready/);
+  assert.match(storyPolish, /cx-story-detail-ready/);
+});
+
+test('public story detail removes moderation-only approval language and stale demo sidebar', () => {
+  assert.match(storyPolish, /What the contributor approved for publication/);
+  assert.match(storyPolish, /section\.remove\(\)/);
+  assert.match(storyPolish, /Published contributor perspective/);
+  assert.match(storyPolish, /chip\.textContent = 'Workplace story'/);
+  assert.match(storyPolish, /replaceDetailSidebar/);
+  assert.match(storyPolish, /One perspective/);
+  assert.match(storyPolish, /Use it forward/);
+  assert.match(storyArchiveArt, /\.cx-public-story-side/);
+});
+
+test('homepage keeps one published-story archive and uses the hero for a reading guide instead', () => {
+  assert.match(storyPolish, /pages-archive cx-home-story-guide/);
+  assert.match(storyPolish, /HOW TO READ A STORY/);
+  assert.match(storyPolish, /Follow the sequence, not just the ending/);
+  assert.match(storyPolish, /guide\.replaceChildren\(card\)/);
+  assert.match(storyArchiveArt, /\.pages-archive\.cx-home-story-guide/);
+  assert.match(storyArchiveArt, /\.cx-home-story-guide__card/);
+});
+
 test('live homepage story preview has an isolated editorial thumbnail and branded controls', () => {
   assert.match(storyCard, /\.cx-home-published\s*\{/);
   assert.match(storyCard, /\.cx-home-published::before/);
@@ -38,19 +69,21 @@ test('live homepage story preview has an isolated editorial thumbnail and brande
   assert.match(storyCard, /\.cx-home-published \.pages-story-copy > p[\s\S]*display:\s*none !important/);
 });
 
-test('published Stories cards use cinematic artwork instead of the sparkle placeholder', () => {
-  assert.match(storyArchiveArt, /\.cx-story-shell \.story-row \.story-thumb/);
-  assert.match(storyArchiveArt, /font-size:\s*0/);
+test('published Stories cards match the homepage image-led black and gold card language', () => {
+  assert.match(storyArchiveArt, /\.cx-story-shell\s*\{/);
+  assert.match(storyArchiveArt, /grid-template-rows:\s*190px 1fr auto/);
+  assert.match(storyArchiveArt, /content:\s*'WORKPLACE STORY'/);
+  assert.match(storyArchiveArt, /content:\s*'Read story'/);
+  assert.match(storyArchiveArt, /\.cx-story-shell \.cx-story-actions/);
   assert.match(storyArchiveArt, /frozen-assets\/card-1\.webp/);
   assert.match(storyArchiveArt, /frozen-assets\/card-2\.webp/);
   assert.match(storyArchiveArt, /frozen-assets\/card-3\.webp/);
   assert.match(storyArchiveArt, /frozen-assets\/card-4\.webp/);
   assert.match(storyArchiveArt, /frozen-assets\/card-5\.webp/);
   assert.match(storyArchiveArt, /frozen-assets\/hero\.webp/);
-  assert.match(storyArchiveArt, /@media \(max-width: 620px\)/);
-  assert.match(storyArchiveArt, /grid-template-columns:\s*1fr !important/);
+  assert.match(storyArchiveArt, /@media \(max-width: 760px\)/);
   assert.match(storyArchiveArt, /width:\s*100%/);
-  assert.match(storyArchiveArt, /height:\s*clamp\(138px, 42vw, 176px\)/);
+  assert.match(storyArchiveArt, /height:\s*clamp\(174px, 44vw, 214px\)/);
 });
 
 test('story artwork and homepage polish load after shared palette and before nav journey', () => {
