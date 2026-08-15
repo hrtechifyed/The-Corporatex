@@ -1,0 +1,289 @@
+/* CorporateX live published-story preview.
+   This file intentionally targets only homepage cards injected by github-production.js. */
+
+.cx-home-published {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto auto auto !important;
+  min-width: 0;
+  overflow: hidden !important;
+  border: 1px solid rgba(246, 200, 79, .34) !important;
+  border-radius: 22px !important;
+  background:
+    radial-gradient(circle at 88% 2%, rgba(246, 200, 79, .11), transparent 28%),
+    linear-gradient(160deg, #12100b 0%, #0a0a09 52%, #060708 100%) !important;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, .42),
+    0 0 24px rgba(246, 200, 79, .055),
+    inset 0 1px 0 rgba(255, 232, 167, .07) !important;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+/* The live card previously had no image node, so create an editorial thumbnail without
+   changing the data/interaction markup. Existing frozen assets keep the treatment consistent. */
+.cx-home-published::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: clamp(150px, 16vw, 205px);
+  border-bottom: 1px solid rgba(246, 200, 79, .18);
+  background:
+    linear-gradient(180deg, rgba(5, 6, 8, .02) 28%, rgba(5, 6, 8, .76) 100%),
+    linear-gradient(100deg, rgba(246, 200, 79, .09), transparent 48%),
+    url('../frozen-assets/card-1.webp') center 44% / cover no-repeat;
+  filter: saturate(.88) contrast(1.04) brightness(.88);
+}
+
+.cx-home-published:nth-child(3n + 2)::before {
+  background-image:
+    linear-gradient(180deg, rgba(5, 6, 8, .02) 28%, rgba(5, 6, 8, .76) 100%),
+    linear-gradient(100deg, rgba(246, 200, 79, .08), transparent 48%),
+    url('../frozen-assets/card-3.webp');
+  background-position: center 43%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.cx-home-published:nth-child(3n)::before {
+  background-image:
+    linear-gradient(180deg, rgba(5, 6, 8, .02) 28%, rgba(5, 6, 8, .76) 100%),
+    linear-gradient(100deg, rgba(246, 200, 79, .08), transparent 48%),
+    url('../frozen-assets/card-5.webp');
+  background-position: center 42%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.cx-home-published:hover,
+.cx-home-published:focus-within {
+  transform: translateY(-4px);
+  border-color: rgba(246, 200, 79, .66) !important;
+  box-shadow:
+    0 30px 74px rgba(0, 0, 0, .48),
+    0 0 30px rgba(246, 200, 79, .105),
+    inset 0 1px 0 rgba(255, 232, 167, .1) !important;
+}
+
+.cx-home-published .pages-story-copy {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 18px 18px 14px !important;
+}
+
+.cx-home-published .pages-story-copy::before {
+  content: 'PUBLISHED STORY';
+  color: #d7ad43;
+  font-size: .57rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: .17em;
+}
+
+.cx-home-published .pages-story-copy h2 {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 !important;
+  color: #fff4d2 !important;
+  font-size: clamp(1.03rem, 1.25vw, 1.28rem) !important;
+  font-weight: 850;
+  line-height: 1.18 !important;
+  letter-spacing: -.026em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.cx-home-published .pages-story-copy > p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 !important;
+  color: #a69f96 !important;
+  font-size: .73rem !important;
+  line-height: 1.52 !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.cx-home-published .pages-story-copy > div {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center !important;
+  justify-content: initial !important;
+  gap: 9px !important;
+  min-width: 0;
+  margin-top: 2px;
+}
+
+.cx-home-published .pages-story-copy span {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 7px 10px !important;
+  border: 1px solid rgba(246, 200, 79, .18);
+  border-radius: 9px !important;
+  color: #e7c45c !important;
+  background: rgba(246, 200, 79, .075) !important;
+  font-size: .64rem !important;
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cx-home-published .pages-story-copy small {
+  display: -webkit-box;
+  overflow: hidden;
+  min-width: 0;
+  color: #888178 !important;
+  font-size: .64rem !important;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.cx-home-published .cx-home-story-link {
+  justify-self: start;
+  min-height: 38px;
+  margin: 0 18px 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border: 1px solid rgba(246, 200, 79, .34);
+  border-radius: 10px;
+  color: #f4ce66 !important;
+  background: linear-gradient(180deg, rgba(246, 200, 79, .10), rgba(246, 200, 79, .035));
+  box-shadow: inset 0 1px 0 rgba(255, 235, 177, .07);
+  font-size: .7rem;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: transform .18s ease, border-color .18s ease, color .18s ease, background .18s ease;
+}
+
+.cx-home-published .cx-home-story-link:hover,
+.cx-home-published .cx-home-story-link:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(246, 200, 79, .72);
+  color: #fff1b4 !important;
+  background: rgba(246, 200, 79, .12);
+  outline: none;
+}
+
+.cx-home-published .cx-story-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid rgba(246, 200, 79, .10);
+  background: rgba(0, 0, 0, .14);
+}
+
+.cx-home-published .cx-story-action {
+  min-height: 34px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 11px;
+  border: 1px solid rgba(255, 255, 255, .11);
+  border-radius: 999px;
+  color: #c7c0b6;
+  background: rgba(255, 255, 255, .035);
+  box-shadow: none;
+  font: inherit;
+  font-size: .65rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.cx-home-published .cx-story-action:hover,
+.cx-home-published .cx-story-action:focus-visible,
+.cx-home-published .cx-story-action.is-active {
+  transform: translateY(-1px);
+  border-color: rgba(246, 200, 79, .48);
+  color: #f3d776;
+  background: rgba(246, 200, 79, .075);
+  outline: none;
+}
+
+.cx-home-published .cx-story-action:disabled {
+  opacity: .55;
+  cursor: wait;
+  transform: none;
+}
+
+@media (max-width: 820px) {
+  .cx-home-published::before {
+    height: clamp(165px, 38vw, 205px);
+  }
+}
+
+@media (max-width: 620px) {
+  .cx-home-published {
+    border-radius: 20px !important;
+  }
+
+  .cx-home-published::before {
+    height: min(46vw, 182px);
+  }
+
+  .cx-home-published .pages-story-copy {
+    gap: 9px;
+    padding: 16px 16px 13px !important;
+  }
+
+  .cx-home-published .pages-story-copy h2 {
+    font-size: 1.04rem !important;
+    line-height: 1.2 !important;
+    -webkit-line-clamp: 3;
+  }
+
+  /* On a phone the headline already carries the preview; removing the extra paragraph
+     avoids the duplicated/truncated line shown in the old card while keeping desktop detail. */
+  .cx-home-published .pages-story-copy > p {
+    display: none !important;
+  }
+
+  .cx-home-published .pages-story-copy > div {
+    grid-template-columns: 1fr;
+    align-items: start !important;
+    gap: 6px !important;
+  }
+
+  .cx-home-published .pages-story-copy span {
+    justify-self: start;
+    max-width: min(100%, 220px);
+  }
+
+  .cx-home-published .cx-home-story-link {
+    margin: 0 16px 12px;
+  }
+
+  .cx-home-published .cx-story-actions {
+    flex-wrap: wrap;
+    padding: 11px 16px 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-home-published,
+  .cx-home-published .cx-home-story-link,
+  .cx-home-published .cx-story-action {
+    transition: none !important;
+  }
+
+  .cx-home-published:hover,
+  .cx-home-published:focus-within,
+  .cx-home-published .cx-home-story-link:hover,
+  .cx-home-published .cx-home-story-link:focus-visible,
+  .cx-home-published .cx-story-action:hover,
+  .cx-home-published .cx-story-action:focus-visible {
+    transform: none;
+  }
+}
