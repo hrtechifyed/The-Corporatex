@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 
+const HRTECHIFY_URL = 'https://hrtechifyed.github.io/HRTECHIFY/';
+
 const primaryLinks = [
   ['Home', '/'],
   ['Stories', '/browse'],
@@ -30,99 +32,31 @@ export function SiteHeader() {
   const [signedIn, setSignedIn] = useState(false);
   const isHome = pathname === '/';
 
-  useEffect(() => {
-    setPendingHref(null);
-  }, [pathname]);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      idleWarmRoutes.forEach((href) => router.prefetch(href));
-    }, 650);
-
-    return () => window.clearTimeout(timer);
-  }, [router]);
-
-  useEffect(() => {
-    if (!pendingHref) return;
-    const safetyTimer = window.setTimeout(() => setPendingHref(null), 5000);
-    return () => window.clearTimeout(safetyTimer);
-  }, [pendingHref]);
-
+  useEffect(() => { setPendingHref(null); }, [pathname]);
+  useEffect(() => { const timer = window.setTimeout(() => { idleWarmRoutes.forEach((href) => router.prefetch(href)); }, 650); return () => window.clearTimeout(timer); }, [router]);
+  useEffect(() => { if (!pendingHref) return; const safetyTimer = window.setTimeout(() => setPendingHref(null), 5000); return () => window.clearTimeout(safetyTimer); }, [pendingHref]);
   useEffect(() => {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !anonKey) return;
-
     const supabase = createBrowserClient(url, anonKey);
     let mounted = true;
-
-    void supabase.auth.getSession().then(({ data }) => {
-      if (mounted) setSignedIn(Boolean(data.session?.user));
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (mounted) setSignedIn(Boolean(session?.user));
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    void supabase.auth.getSession().then(({ data }) => { if (mounted) setSignedIn(Boolean(data.session?.user)); });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => { if (mounted) setSignedIn(Boolean(session?.user)); });
+    return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
-  function normalizedPath(href: string) {
-    return href.split('#')[0] || '/';
-  }
-
-  function isCurrent(href: string) {
-    const target = normalizedPath(href);
-    if (target === '/') return pathname === '/';
-    if (target === '/browse') return pathname === '/browse' || pathname.startsWith('/experience/');
-    return pathname === target || pathname.startsWith(`${target}/`);
-  }
-
-  function warm(href: string) {
-    router.prefetch(normalizedPath(href));
-  }
-
+  function normalizedPath(href: string) { return href.split('#')[0] || '/'; }
+  function isCurrent(href: string) { const target = normalizedPath(href); if (target === '/') return pathname === '/'; if (target === '/browse') return pathname === '/browse' || pathname.startsWith('/experience/'); return pathname === target || pathname.startsWith(`${target}/`); }
+  function warm(href: string) { router.prefetch(normalizedPath(href)); }
   function startNavigation(href: string, event: MouseEvent<HTMLAnchorElement>) {
     const target = normalizedPath(href);
-    if (
-      target === pathname ||
-      event.defaultPrevented ||
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey
-    ) {
-      return;
-    }
-
+    if (target === pathname || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     setPendingHref(target);
   }
-
   function navLink(label: ReactNode, href: string, className?: string) {
-    const current = isCurrent(href);
-    const target = normalizedPath(href);
-    const pending = pendingHref === target;
-
-    return (
-      <Link
-        href={href}
-        key={href}
-        className={className}
-        prefetch
-        aria-current={current ? 'page' : undefined}
-        data-pending={pending ? 'true' : 'false'}
-        onPointerEnter={() => warm(href)}
-        onFocus={() => warm(href)}
-        onTouchStart={() => warm(href)}
-        onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation(href, event)}
-      >
-        {label}
-      </Link>
-    );
+    const current = isCurrent(href); const target = normalizedPath(href); const pending = pendingHref === target;
+    return <Link href={href} key={href} className={className} prefetch aria-current={current ? 'page' : undefined} data-pending={pending ? 'true' : 'false'} onPointerEnter={() => warm(href)} onFocus={() => warm(href)} onTouchStart={() => warm(href)} onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation(href, event)}>{label}</Link>;
   }
 
   const accountHref = signedIn ? '/account' : '/login';
@@ -131,14 +65,7 @@ export function SiteHeader() {
   return (
     <header className="site-header" data-home={isHome ? 'true' : 'false'} data-route-pending={pendingHref ? 'true' : 'false'}>
       <div className="site-header-inner">
-        <Link
-          href="/"
-          className="cx-brand"
-          aria-label="HRTechify CorporateX home"
-          prefetch
-          onPointerEnter={() => warm('/')}
-          onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation('/', event)}
-        >
+        <Link href="/" className="cx-brand" aria-label="HRTechify CorporateX home" prefetch onPointerEnter={() => warm('/')} onClick={(event: MouseEvent<HTMLAnchorElement>) => startNavigation('/', event)}>
           <span className="cx-brand-orbit" aria-hidden="true" />
           <img src="/hrtechify-logo.svg" alt="HRTechify" width="54" height="54" />
           <span className="cx-brand-parent">HRTechify</span>
@@ -149,6 +76,7 @@ export function SiteHeader() {
 
         <nav className="cx-primary-nav" aria-label="Primary navigation">
           {primaryLinks.map(([label, href]) => navLink(label, href))}
+          <a href={HRTECHIFY_URL} target="_blank" rel="noopener noreferrer" aria-label="Visit HRTechify website">HRTechify ↗</a>
           {navLink(<><UserIcon /><span>{accountLabel}</span></>, accountHref, 'cx-sign-in')}
         </nav>
 
@@ -156,6 +84,7 @@ export function SiteHeader() {
           <summary aria-label="Open navigation"><span /></summary>
           <nav aria-label="Mobile navigation">
             {primaryLinks.map(([label, href]) => navLink(label, href))}
+            <a href={HRTECHIFY_URL} target="_blank" rel="noopener noreferrer">Visit HRTechify ↗</a>
             {navLink('Privacy & Safety', '/privacy')}
             {navLink(accountLabel, accountHref)}
             {navLink('Share Your Story', '/submit')}
