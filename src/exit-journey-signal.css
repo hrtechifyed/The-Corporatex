@@ -1,6 +1,7 @@
 /* CorporateX header signal: four real, independent workplace-story milestones. */
 
 .cx-unified-signal {
+  --cx-exit-duration: 8.8s;
   height: 32px;
   opacity: .94;
 }
@@ -21,8 +22,11 @@
   color: rgba(221,215,203,.58);
   background: rgba(246,200,79,.78);
   box-shadow: 0 0 8px rgba(246,200,79,.24);
-  animation-duration: 8.8s;
-  animation-timing-function: ease-in-out;
+  animation-duration: var(--cx-exit-duration);
+  /* Reset the legacy shell's negative delays. Every stop starts on the exact same clock as the traveller. */
+  animation-delay: 0s !important;
+  /* Milestones switch state only at arrival/departure keyframes; they never begin zooming while the traveller is between stops. */
+  animation-timing-function: steps(1, end);
   animation-iteration-count: infinite;
 }
 
@@ -68,7 +72,7 @@
   box-shadow: 0 0 10px rgba(255,225,138,.96), 0 0 22px rgba(246,200,79,.44);
   opacity: 0;
   pointer-events: none;
-  animation: cx-exit-traveller 8.8s cubic-bezier(.42,0,.2,1) infinite;
+  animation: cx-exit-traveller var(--cx-exit-duration) cubic-bezier(.42,0,.2,1) 0s infinite;
 }
 
 @keyframes cx-exit-traveller {
@@ -86,23 +90,27 @@
 }
 
 @keyframes cx-exit-stop-one {
-  0%, 5%, 24%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  0%, 10.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
   11%, 19% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  19.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 @keyframes cx-exit-stop-two {
-  0%, 29%, 48%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  0%, 34.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
   35%, 43% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  43.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 @keyframes cx-exit-stop-three {
-  0%, 53%, 72%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  0%, 58.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
   59%, 67% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  67.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 @keyframes cx-exit-stop-four {
-  0%, 77%, 96%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  0%, 82.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
   83%, 91% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  91.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 /* Mobile gets a dedicated strip below the logo/menu with four equally independent stops. */
