@@ -91,26 +91,26 @@
 
 @keyframes cx-exit-stop-one {
   0%, 10.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
-  11%, 18.99% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
-  19%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  11%, 19% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  19.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 @keyframes cx-exit-stop-two {
   0%, 34.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
-  35%, 42.99% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
-  43%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  35%, 43% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  43.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 @keyframes cx-exit-stop-three {
   0%, 58.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
-  59%, 66.99% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
-  67%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  59%, 67% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  67.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 @keyframes cx-exit-stop-four {
   0%, 82.99% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
-  83%, 90.99% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
-  91%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
+  83%, 91% { opacity:1; color:#f7d56d; transform:scale(1.25); box-shadow:0 0 14px rgba(246,200,79,.68); }
+  91.01%, 100% { opacity:.34; color:rgba(221,215,203,.58); transform:scale(.84); box-shadow:0 0 8px rgba(246,200,79,.20); }
 }
 
 /* Mobile gets a dedicated strip below the logo/menu with four equally independent stops. */
