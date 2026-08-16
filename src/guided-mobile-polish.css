@@ -1,0 +1,149 @@
+/* Mobile-only polish for the guided contributor journey. Scoped to the share route. */
+@media (max-width: 760px) {
+  body[data-ref-page="share"] .ref-guided-main {
+    padding-top: 8px;
+  }
+
+  body[data-ref-page="share"] .ref-story-heading {
+    width: calc(100% - 28px);
+    margin: 0 auto 12px;
+    text-align: center;
+  }
+
+  body[data-ref-page="share"] .ref-story-heading > p {
+    margin-bottom: 7px;
+    font-size: .72rem;
+    letter-spacing: .19em;
+  }
+
+  body[data-ref-page="share"] .ref-story-heading h1 {
+    margin: 0;
+    font-size: clamp(2rem, 10.2vw, 2.65rem);
+    line-height: 1.02;
+    letter-spacing: -.045em;
+  }
+
+  body[data-ref-page="share"] .ref-story-heading > span {
+    display: block;
+    margin-top: 10px;
+    font-size: .88rem;
+    line-height: 1.45;
+  }
+
+  /* Four explicit stages: 2 x 2 on a phone instead of the broken 3 + 1 wrap. */
+  body[data-ref-page="share"] .ref-guided-steps {
+    width: calc(100% - 28px);
+    margin: 0 auto 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  body[data-ref-page="share"] .ref-guided-steps li {
+    min-height: 48px;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 12px;
+    border-left: 0 !important;
+    color: #a79e94;
+    font-size: .69rem;
+    line-height: 1.15;
+  }
+
+  body[data-ref-page="share"] .ref-guided-steps li:nth-child(even) {
+    border-left: 1px solid rgba(255,255,255,.07) !important;
+  }
+
+  body[data-ref-page="share"] .ref-guided-steps li:nth-child(n+3) {
+    border-top: 1px solid rgba(255,255,255,.07);
+  }
+
+  body[data-ref-page="share"] .ref-guided-steps li[aria-current="step"] {
+    background: linear-gradient(125deg, rgba(246,200,79,.16), rgba(116,69,16,.08));
+  }
+
+  body[data-ref-page="share"] .ref-guided-steps span {
+    flex: 0 0 auto;
+    width: 25px;
+    height: 25px;
+  }
+
+  /* Ending selection should expose choices quickly instead of filling a screen with one card. */
+  body[data-ref-page="share"] .cx-ending-panel {
+    width: calc(100% - 20px);
+    margin: 4px auto 24px;
+    padding: 18px 12px 14px;
+    border-radius: 22px;
+  }
+
+  body[data-ref-page="share"] .cx-ending-head {
+    margin-bottom: 16px;
+  }
+
+  body[data-ref-page="share"] .cx-ending-head .ref-editor-kicker {
+    margin-bottom: 7px;
+    font-size: .68rem;
+    letter-spacing: .17em;
+  }
+
+  body[data-ref-page="share"] .cx-ending-head h2 {
+    margin: 3px 0 9px;
+    font-size: clamp(1.85rem, 9vw, 2.35rem);
+    line-height: 1;
+  }
+
+  body[data-ref-page="share"] .cx-ending-head > p:last-child {
+    max-width: 330px;
+    font-size: .84rem;
+    line-height: 1.5;
+  }
+
+  body[data-ref-page="share"] .cx-ending-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  body[data-ref-page="share"] .cx-ending-card {
+    border-radius: 17px;
+  }
+
+  body[data-ref-page="share"] .cx-ending-image {
+    height: 142px;
+  }
+
+  body[data-ref-page="share"] .cx-ending-copy {
+    gap: 5px;
+    margin-top: -28px;
+    padding: 0 11px 13px;
+  }
+
+  body[data-ref-page="share"] .cx-ending-copy strong {
+    font-size: .98rem;
+    line-height: 1.15;
+  }
+
+  body[data-ref-page="share"] .cx-ending-copy > span {
+    min-height: 0;
+    color: #b7aea4;
+    font-size: .69rem;
+    line-height: 1.35;
+  }
+
+  body[data-ref-page="share"] .cx-ending-copy b {
+    margin-top: 2px;
+    font-size: .64rem;
+    line-height: 1.25;
+  }
+
+  body[data-ref-page="share"] .cx-ending-note {
+    margin-top: 13px;
+    padding: 0 8px;
+    font-size: .68rem;
+    line-height: 1.45;
+  }
+}
+
+@media (max-width: 360px) {
+  body[data-ref-page="share"] .cx-ending-image { height: 128px; }
+  body[data-ref-page="share"] .cx-ending-copy > span { display: none; }
+}
