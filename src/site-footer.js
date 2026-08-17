@@ -12,12 +12,15 @@ function mountCorporateXFooter() {
 
   const brand = document.createElement('div');
   brand.className = 'cx-footer-brand';
-  const brandLine = document.createElement('strong');
-  brandLine.append('CorporateX ');
+  const product = document.createElement('span');
+  product.className = 'cx-unified-brand__product';
+  product.append('Corporate');
+  const productX = document.createElement('b');
+  productX.textContent = 'X';
+  product.append(productX);
   const byline = document.createElement('span');
-  byline.textContent = 'by HRTechify';
-  brandLine.append(byline);
-  brand.append(brandLine);
+  byline.textContent = ' by HRTechify';
+  brand.append(product, byline);
 
   const links = document.createElement('nav');
   links.className = 'cx-footer-links';
