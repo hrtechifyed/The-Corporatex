@@ -72,9 +72,14 @@ test('Opening Signal uses the exact homepage ending artwork mapping', () => {
 });
 
 test('footer uses the approved responsive CorporateX copy', () => {
-  assert.match(footer, /Workplace stories, structured for better career decisions\./);
-  assert.match(footer, /Contributor stories reflect individual perspectives and are moderated before publication\./);
-  assert.match(footer, /© \{year\} HRTechify\. All rights reserved\./);
+  assert.match(footer, /cx-brand-product/);
+  assert.match(footer, /cx-brand-x/);
+  assert.match(footer, />by HRTechify</);
+  for (const label of ['About', 'Privacy', 'Contact']) assert.match(footer, new RegExp(`>${label}<`));
+  assert.match(footer, /mailto:hrtechifyed@gmail\.com/);
+  assert.match(footer, /© 2026 HRTechify\. All rights reserved\./);
+  assert.doesNotMatch(footer, /Workplace stories, structured for better career decisions\./);
+  assert.doesNotMatch(footer, /Contributor stories reflect individual perspectives/);
 });
 
 test('Setting the Scene verifies real locations, supports outage fallback and requires deliberate context choices', () => {
