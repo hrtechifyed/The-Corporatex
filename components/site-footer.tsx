@@ -4,8 +4,9 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="footer-grid !grid-cols-1 !items-center !gap-4 text-center md:!grid-cols-[1fr_auto_1fr] md:text-left">
-        <div className="text-sm font-semibold md:justify-self-start">
-          CorporateX by HRTechify
+        <div className="flex items-baseline justify-center gap-1 md:justify-self-start">
+          <span className="cx-brand-product">Corporate<span className="cx-brand-x">X</span></span>
+          <span className="text-sm font-semibold">by HRTechify</span>
         </div>
         <nav className="cx-footer-nav !justify-center !gap-2" aria-label="Footer navigation">
           <Link href="/about">About</Link>
