@@ -174,8 +174,12 @@ test('global black-gold design remains intact while current launch overrides and
   assert.match(frozenGlobalCss, /\.site-header/);
   assert.match(frozenGlobalCss, /\.site-footer/);
   assert.ok(rootLayout.indexOf('./launch-readiness.css') > rootLayout.indexOf('./frozen-global.css'));
-  assert.match(siteFooter, /Workplace stories, structured for better career decisions\./);
-  assert.match(siteFooter, /Contributor stories reflect individual perspectives and are moderated before publication\./);
+  assert.match(siteFooter, /cx-brand-product/);
+  assert.match(siteFooter, /cx-brand-x/);
+  assert.match(siteFooter, />by HRTechify</);
+  assert.match(siteFooter, /© 2026 HRTechify\. All rights reserved\./);
+  assert.doesNotMatch(siteFooter, /Workplace stories, structured for better career decisions\./);
+  assert.doesNotMatch(siteFooter, /Contributor stories reflect individual perspectives/);
   for (const [name, source] of Object.entries({ morePage, privacyPage, storyPage })) assert.match(source, /cx-frozen-mini-art/, `${name} should use approved visual language`);
 });
 
