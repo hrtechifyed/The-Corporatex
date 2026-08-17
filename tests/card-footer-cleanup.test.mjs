@@ -145,10 +145,15 @@ test('public footers are compact and the homepage legacy footer is unified', () 
   assert.match(footer, /document\.querySelector\('\.site-footer, \.pages-footer'\)/);
   assert.match(footer, /classList\.remove\('pages-footer'\)/);
   assert.match(footer, /classList\.add\('site-footer'\)/);
-  for (const label of ['Stories', 'How It Works', 'Privacy', 'Terms']) assert.match(footer, new RegExp(`'${label}'`));
+  for (const label of ['About', 'Privacy', 'Contact']) assert.match(footer, new RegExp(`'${label}'`));
+  for (const label of ['Stories', 'How It Works', 'Terms']) assert.doesNotMatch(footer, new RegExp(`'${label}'`));
+  assert.match(footer, /product\.append\('Corporate'\)/);
+  assert.match(footer, /productX\.textContent = 'X'/);
+  assert.match(footer, /byline\.textContent = ' by HRTechify'/);
   assert.doesNotMatch(footer, /tagline\.textContent/);
   assert.doesNotMatch(footer, /Contributor stories reflect individual perspectives/);
-  assert.match(footer, /© \$\{new Date\(\)\.getFullYear\(\)\} HRTechify/);
+  assert.match(footer, /© 2026 HRTechify\. All rights reserved\./);
+  assert.doesNotMatch(footer, /new Date\(\)\.getFullYear\(\)/);
   assert.match(compactFooter, /\.site-footer\[data-cx-footer='true'\]/);
   assert.match(compactFooter, /flex-direction:\s*column/);
   assert.match(compactFooter, /safe-area-inset-bottom/);
