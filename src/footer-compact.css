@@ -10,7 +10,7 @@
   padding: 24px 0 calc(24px + env(safe-area-inset-bottom, 0px));
   grid-template-columns: auto 1fr auto;
   gap: 24px;
-  align-items: center;
+  align-items: baseline;
 }
 
 .site-footer[data-cx-footer='true'] .cx-footer-brand strong {
