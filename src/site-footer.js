@@ -12,32 +12,45 @@ function mountCorporateXFooter() {
 
   const brand = document.createElement('div');
   brand.className = 'cx-footer-brand';
-  const brandLine = document.createElement('strong');
-  brandLine.append('CorporateX ');
+  const product = document.createElement('span');
+  product.className = 'cx-unified-brand__product';
+  product.append('Corporate');
+  const productX = document.createElement('b');
+  productX.textContent = 'X';
+  product.append(productX);
   const byline = document.createElement('span');
-  byline.textContent = 'by HRTechify';
-  brandLine.append(byline);
-  brand.append(brandLine);
+  byline.textContent = ' by HRTechify';
+  brand.append(product, byline);
 
   const links = document.createElement('nav');
   links.className = 'cx-footer-links';
   links.setAttribute('aria-label', 'Footer navigation');
-  for (const [label, href] of [
-    ['Stories', 'stories.html'],
-    ['How It Works', 'how-it-works.html'],
+  links.style.columnGap = '8px';
+
+  const navItems = [
+    ['About', 'index.html#about'],
     ['Privacy', 'privacy-safety.html'],
-    ['Terms', 'terms.html'],
-  ]) {
+    ['Contact', 'mailto:hrtechifyed@gmail.com'],
+  ];
+
+  navItems.forEach(([label, href], index) => {
+    if (index > 0) {
+      const separator = document.createElement('span');
+      separator.textContent = '·';
+      separator.setAttribute('aria-hidden', 'true');
+      links.append(separator);
+    }
+
     const link = document.createElement('a');
     link.href = href;
     link.textContent = label;
     links.append(link);
-  }
+  });
 
   const meta = document.createElement('div');
   meta.className = 'cx-footer-meta';
   const copyright = document.createElement('p');
-  copyright.textContent = `© ${new Date().getFullYear()} HRTechify`;
+  copyright.textContent = '© 2026 HRTechify. All rights reserved.';
   meta.append(copyright);
 
   inner.append(brand, links, meta);
