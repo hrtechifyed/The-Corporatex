@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     branch: main
-    buildCommand: npm install --no-audit --no-fund && npm run build
+    buildCommand: npm install -g npm@11.19.0 && npm install --no-audit --no-fund && npm run build
     startCommand: npm run start
     healthCheckPath: /api/health
     envVars:
