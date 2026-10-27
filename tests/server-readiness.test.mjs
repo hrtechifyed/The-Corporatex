@@ -213,6 +213,6 @@ test('environment and CI do not require an external story-analysis key', () => {
 test('CI installs dependencies and validates the server while Pages stays static', () => {
   assert.match(siteWorkflow, /npm install --legacy-peer-deps --no-audit --no-fund/);
   assert.match(siteWorkflow, /npm run check/);
-  assert.match(pagesWorkflow, /npm install --no-audit --no-fund/);
+  assert.match(pagesWorkflow, /npm install --legacy-peer-deps --no-audit --no-fund/);
   assert.match(pagesWorkflow, /npm run check:static/);
 });
