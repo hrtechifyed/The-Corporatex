@@ -8,6 +8,8 @@ services:
     startCommand: npm run start
     healthCheckPath: /api/health
     envVars:
+      - key: NODE_VERSION
+        value: 22.23.4
       - key: NEXT_PUBLIC_SUPABASE_URL
         sync: false
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
