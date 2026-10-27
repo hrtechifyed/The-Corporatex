@@ -73,7 +73,8 @@ test('story analysis stays local and treats AI as an emergent signal rather than
 test('Render blueprint creates a Node web service with health check and private server secrets', () => {
   assert.match(renderBlueprint, /type: web/);
   assert.match(renderBlueprint, /runtime: node/);
-  assert.match(renderBlueprint, /buildCommand: npm install --no-audit --no-fund && npm run build/);
+  assert.match(renderBlueprint, /buildCommand: npm install -g npm@11\.19\.0 && npm install --legacy-peer-deps --no-audit --no-fund && npm run build/);
+  assert.match(renderBlueprint, /key: NODE_VERSION\s+value: 22\.23\.4/);
   assert.match(renderBlueprint, /startCommand: npm run start/);
   assert.match(renderBlueprint, /healthCheckPath: \/api\/health/);
   assert.match(renderBlueprint, /key: SUPABASE_SERVICE_ROLE_KEY\s+sync: false/);
@@ -210,7 +211,7 @@ test('environment and CI do not require an external story-analysis key', () => {
 });
 
 test('CI installs dependencies and validates the server while Pages stays static', () => {
-  assert.match(siteWorkflow, /npm install --no-audit --no-fund/);
+  assert.match(siteWorkflow, /npm install --legacy-peer-deps --no-audit --no-fund/);
   assert.match(siteWorkflow, /npm run check/);
   assert.match(pagesWorkflow, /npm install --no-audit --no-fund/);
   assert.match(pagesWorkflow, /npm run check:static/);
